@@ -1,5 +1,6 @@
 #include "SceneMain.h"
 #include "DxLib.h"
+#include "../Game/Player.h"
 
 SceneMain::SceneMain():
 m_frameCount(0)
@@ -9,6 +10,8 @@ m_frameCount(0)
 SceneMain::~SceneMain()
 {
 }
+
+
 
 void SceneMain::Init()
 {
