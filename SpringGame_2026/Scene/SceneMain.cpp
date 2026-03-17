@@ -9,10 +9,8 @@ m_frameCount(0)
 
 SceneMain::~SceneMain()
 {
+	m_pPlayer->End();
 }
-
-
-
 void SceneMain::Init()
 {
 	// Zバッファの設定
@@ -24,16 +22,19 @@ void SceneMain::Init()
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(200.0f, 1500.0f);
 
-
+	m_pPlayer = std::make_shared<Player>();
+	m_pPlayer->Init();
 }
 
 void SceneMain::Update()
 {
 	m_frameCount++;
+	m_pPlayer->Update();
 }
 
 void SceneMain::Draw()
 {
+	m_pPlayer->Draw();
 	DrawGrid();
 	DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));
 	DrawFormatString(0, 16, GetColor(255, 255, 255), "FRAME:%d", m_frameCount);

@@ -9,6 +9,8 @@ public:
 	void End();
 	void Update();
 	void Draw();
+private:
+	int m_modelHandle;
 
 };
 
