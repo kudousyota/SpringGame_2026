@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="SpringGame_2026.vcxproj" />
+  <Project Path="SpringGame_2026.vcxproj" Id="2ad7ee5a-3a3b-45cc-be3f-3c398a049a4c" />
 </Solution>
