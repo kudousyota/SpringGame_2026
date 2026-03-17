@@ -135,14 +135,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Game\GameObject.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SceneMain.cpp" />
+    <ClCompile Include="Scene\SceneMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="SceneMain.h" />
+    <ClInclude Include="Game\GameObject.h" />
+    <ClInclude Include="Scene\SceneMain.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

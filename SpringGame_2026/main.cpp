@@ -3,7 +3,7 @@
 
 #include <memory> //シェアードポイント
 
-#include "SceneMain.h"
+#include "Scene/SceneMain.h"
 //定数定義
 namespace
 {
