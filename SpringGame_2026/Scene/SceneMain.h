@@ -3,6 +3,7 @@
 #include <vector>
 #include "../Game/Player.h"
 
+class Input;
 class Player;
 class SceneMain
 {
@@ -11,7 +12,7 @@ public:
 	~SceneMain();
 
 	void Init();
-	void Update();
+	void Update(Input input);
 	void Draw();
 private:
 	void DrawGrid();

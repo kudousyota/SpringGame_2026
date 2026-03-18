@@ -1,8 +1,9 @@
 #include "Player.h"
 #include "Dxlib.h"
 #include "Input.h"
-Player::Player():
-	m_modelHandle(-1)
+Player::Player() :
+	m_modelHandle(-1),
+	m_pos(VGet(0, 0, 0))
 
 {
 }
@@ -21,11 +22,23 @@ void Player::End()
 	MV1DeleteModel(m_modelHandle);
 }
 
-void Player::Update()
+void Player::Update(Input input)
 {
-	if (Input::IsPressed(""))
+	if (input.IsPressed("up"))
 	{
-
+		m_pos.z += 3.0f;
+	}
+	if (input.IsPressed("down"))
+	{
+		m_pos.z -= 3.0f;
+	}
+	if (input.IsPressed("left"))
+	{
+		m_pos.x -= 3.0f;
+	}
+	if (input.IsPressed("right"))
+	{
+		m_pos.x += 3.0f;
 	}
 	
 

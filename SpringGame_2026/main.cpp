@@ -2,7 +2,7 @@
 #include "Game.h"
 
 #include <memory> //シェアードポイント
-
+#include "Game/Input.h"
 #include "Scene/SceneMain.h"
 //定数定義
 namespace
@@ -34,7 +34,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//シーンの作成
 	std::shared_ptr<SceneMain>pScene = std::make_shared<SceneMain>();
 	pScene->Init();
-
+	Input input;
+	
 	
 
 
@@ -47,8 +48,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//前のフレームに描画した内容をクリアする
 		ClearDrawScreen();
 
+
+
 		//ここにゲームの処理を書く
-		pScene->Update();
+		pScene->Update(input);
 
 		pScene->Draw();
 

@@ -1,5 +1,6 @@
 #pragma once
-#include "system/Vector3.h"
+#include "../system/Vector3.h"
+class Input;
 class Player
 {
 public:
@@ -8,7 +9,7 @@ public:
 
 	void Init();
 	void End();
-	void Update();
+	void Update(Input input);
 	void Draw();
 private:
 	int m_modelHandle;
