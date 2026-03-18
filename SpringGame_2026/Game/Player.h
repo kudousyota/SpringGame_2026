@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include "system/Vector3.h"
 class Player
 {
 public:
@@ -12,6 +12,12 @@ public:
 	void Draw();
 private:
 	int m_modelHandle;
+
+	Vector3 m_pos;
+
+	float m_abgle;
+
+
 	
 
 };

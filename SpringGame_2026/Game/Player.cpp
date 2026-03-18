@@ -23,7 +23,10 @@ void Player::End()
 
 void Player::Update()
 {
+	if (Input::IsPressed(""))
+	{
 
+	}
 	
 
 }
