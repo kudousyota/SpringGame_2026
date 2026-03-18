@@ -48,10 +48,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//前のフレームに描画した内容をクリアする
 		ClearDrawScreen();
 
-
+		input.Update();
 
 		//ここにゲームの処理を書く
-		pScene->Update(input);
+
+        pScene->Update(input);
 
 		pScene->Draw();
 

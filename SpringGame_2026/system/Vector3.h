@@ -24,6 +24,7 @@ public:
 	//外積
 	Vector3 Cross(const Vector3& right)const;
 
+	VECTOR ToDxLibVector()const;
 
 	//演算子オーバーロード
 	Vector3 operator+(const Vector3& right)const;

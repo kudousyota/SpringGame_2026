@@ -67,12 +67,17 @@ Vector3 Vector3::Cross(const Vector3& right) const
 
 }
 
+DxLib::VECTOR Vector3::ToDxLibVector() const
+{
+	return VGet(this->x, this->y, this->z);
+}
+
 Vector3 Vector3::operator+(const Vector3& right) const
 {
 	Vector3 ans;
-	ans.x = this->x - right.x;
-	ans.y = this->y - right.y;
-	ans.z = this->z - right.z;
+	ans.x = this->x + right.x;
+	ans.y = this->y + right.y;
+	ans.z = this->z + right.z;
 	return ans;
 }
 

@@ -41,6 +41,7 @@ void Player::Update(Input input)
 		m_pos.x += 3.0f;
 	}
 	
+	MV1SetPosition(m_modelHandle, m_pos);
 
 }
 

@@ -1,7 +1,7 @@
 #include "SceneMain.h"
 #include <DxLib.h>
 #include "../Game/Player.h"
-#include "../Game/input.h"
+#include "../Game/Input.h"
 
 SceneMain::SceneMain():
 m_frameCount(0)
@@ -10,7 +10,10 @@ m_frameCount(0)
 
 SceneMain::~SceneMain()
 {
-	m_pPlayer->End();
+    if (m_pPlayer)
+	{
+		m_pPlayer->End();
+	}
 }
 void SceneMain::Init()
 {
@@ -30,7 +33,10 @@ void SceneMain::Init()
 void SceneMain::Update(Input input)
 {
 	m_frameCount++;
-	m_pPlayer->Update(input);
+    if (m_pPlayer)
+	{
+		m_pPlayer->Update(input);
+	}
 }
 
 void SceneMain::Draw()

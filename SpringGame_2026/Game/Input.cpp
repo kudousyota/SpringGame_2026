@@ -173,5 +173,15 @@ void Input::Update()
 	//			FileRead_read(info.data(), dataNum * sizeof(InputState), handle);
 	//		}
 	//	}
-	//	FileRead_close(handle);	// クローズを忘れないように
-	
+//	FileRead_close(handle);	// クローズを忘れないように
+
+// 簡易実装: 永続化は未実装のため、リンカ用に空の定義を追加
+void Input::Save()
+{
+	// 未実装
+}
+
+void Input::Load()
+{
+	// 未実装: 設定ファイル読み込みは行わない
+}
