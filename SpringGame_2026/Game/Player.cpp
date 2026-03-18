@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Dxlib.h"
+#include "Input.h"
 Player::Player():
 	m_modelHandle(-1)
 

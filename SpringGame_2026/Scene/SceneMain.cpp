@@ -1,5 +1,5 @@
 #include "SceneMain.h"
-#include "DxLib.h"
+#include <DxLib.h>
 #include "../Game/Player.h"
 
 SceneMain::SceneMain():

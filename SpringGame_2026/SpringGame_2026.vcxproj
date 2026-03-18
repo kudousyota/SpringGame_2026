@@ -136,15 +136,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\GameObject.cpp" />
+    <ClCompile Include="Game\Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Game\Player.cpp" />
     <ClCompile Include="Scene\SceneMain.cpp" />
+    <ClCompile Include="system\Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\GameObject.h" />
     <ClInclude Include="Game\Player.h" />
+    <ClInclude Include="Game\Input.h" />
     <ClInclude Include="Scene\SceneMain.h" />
+    <ClInclude Include="system\Vector3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
