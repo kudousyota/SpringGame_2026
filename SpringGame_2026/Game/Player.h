@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 class Player
 {
 public:
@@ -11,6 +12,7 @@ public:
 	void Draw();
 private:
 	int m_modelHandle;
+	
 
 };
 

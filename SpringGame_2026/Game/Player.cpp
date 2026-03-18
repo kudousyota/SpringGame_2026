@@ -2,6 +2,7 @@
 #include "Dxlib.h"
 Player::Player():
 	m_modelHandle(-1)
+
 {
 }
 Player::~Player()
@@ -21,6 +22,9 @@ void Player::End()
 
 void Player::Update()
 {
+
+	
+
 }
 
 void Player::Draw()
