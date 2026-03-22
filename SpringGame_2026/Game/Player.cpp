@@ -9,6 +9,7 @@ namespace
 
 Player::Player() :
 	m_modelHandle(-1),
+	m_abgle(0.0f),
 	m_pos(VGet(0, 0, 0))
 
 {

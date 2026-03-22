@@ -33,10 +33,8 @@ void SceneMain::Init()
 void SceneMain::Update(Input input)
 {
 	m_frameCount++;
-    if (m_pPlayer)
-	{
-		m_pPlayer->Update(input);
-	}
+	m_pPlayer->Update(input);
+
 }
 
 void SceneMain::Draw()
