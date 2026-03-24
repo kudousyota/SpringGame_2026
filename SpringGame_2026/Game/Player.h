@@ -11,14 +11,23 @@ public:
 	void End();
 	void Update(Input input);
 	void Draw();
+
+	
 private:
+
+
+
 	int m_modelHandle;
 
 	Vector3 m_pos;
 
 	float m_abgle;
 
+	//2回入力されたか
+	bool m_isDoubleInput;
+	float m_doubleInputTimer;
 
+	
 	
 
 };
