@@ -12,7 +12,7 @@ namespace
 	constexpr float kdodgeSpeed = 12.0f;
 	// 回避時間
 	constexpr float kdodgeTime = 10.0f;
-    // 回避後の無敵時間（フレーム）
+    // 回避後の無敵時間
     constexpr float kinvincibleTime = 60.0f;
 }
 
@@ -37,12 +37,16 @@ Player::~Player()
 
 void Player::Init()
 {
-	m_modelHandle = MV1LoadModel("data/Player.mv1");
+    m_modelHandle = MV1LoadModel("data/Player.mv1");
 }
 
 void Player::End()
 {
-	MV1DeleteModel(m_modelHandle);
+    if (m_modelHandle != -1)
+    {
+        MV1DeleteModel(m_modelHandle);
+        m_modelHandle = -1;
+    }
 }
 
 void Player::Update(Input input)
@@ -100,7 +104,7 @@ void Player::Update(Input input)
         MV1SetPosition(m_modelHandle, m_pos.ToDxLibVector());
         return; //回避中は通常移動をさせない
     }
-    //  ダブルタップ回避開始
+        //ダブルタップ回避開始
     if (m_isInput)
     {
         // ダブルタップ条件今フレームで入力がトリガーされた場合

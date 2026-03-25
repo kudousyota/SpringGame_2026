@@ -11,7 +11,15 @@ m_frameCount(0)
 
 SceneMain::~SceneMain()
 {
-	m_pPlayer->End();
+	// Player‚ÆEnemy ‚ÌI—¹ˆ—‚ğŒÄ‚Ño‚·
+    if (m_pPlayer)
+	{
+		m_pPlayer->End();
+	}
+	if (m_pEnemy)
+	{
+		m_pEnemy->End();
+	}
 }
 void SceneMain::Init()
 {
@@ -24,21 +32,38 @@ void SceneMain::Init()
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(200.0f, 1500.0f);
 
-	m_pPlayer = std::make_shared<Player>();
+    m_pPlayer = std::make_shared<Player>();
 	m_pPlayer->Init();
+	// Enemy ‚ğ¶¬‚µ‚Ä‰Šú‰»
+	m_pEnemy = std::make_shared<Enemy>();
+	m_pEnemy->Init();
 }
 
 void SceneMain::Update(Input input)
 {
 	m_frameCount++;
-	m_pPlayer->Update(input);
+    if (m_pPlayer)
+	{
+		m_pPlayer->Update(input);
+	}
+	if (m_pEnemy)
+	{
+		m_pEnemy->Update();
+	}
 
 }
 
 void SceneMain::Draw()
 {
-	m_pPlayer->Draw();
-	m_pEnemy->Draw();
+	
+	if (m_pPlayer)
+	{
+		m_pPlayer->Draw();
+	}
+	if (m_pEnemy)
+	{
+		m_pEnemy->Draw();
+	}
 	DrawGrid();
 	DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));
 	DrawFormatString(0, 16, GetColor(255, 255, 255), "FRAME:%d", m_frameCount);

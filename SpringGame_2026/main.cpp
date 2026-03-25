@@ -36,7 +36,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	pScene->Init();
 	Input input;
 	
-	
+
 
 
 	while (ProcessMessage() != -1)
@@ -76,7 +76,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	
 	//shared_ptrはメモリの開放を自動でやってくれる
-
+	// DxLib_End() を呼ぶ前に Dx ライブラリを使う可能性のあるオブジェクトを破棄する
+	// (デストラクタで MV1DeleteModel 等を呼ぶと DxLib_End() 後だとクラッシュする)
+	pScene.reset();
 
 	DxLib_End();				// ＤＸライブラリ使用の終了処理
 
