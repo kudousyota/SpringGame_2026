@@ -13,10 +13,16 @@ public:
 	void Draw();
 
 	
+	
 private:
-
-
-
+	enum class Inputdata
+	{
+		None,
+		Up,
+		Down,
+		Left,
+		Right
+	};
 	int m_modelHandle;
 
 	Vector3 m_pos;
@@ -27,8 +33,13 @@ private:
 	bool m_isDoubleInput;
 	float m_doubleInputTimer;
 
+	Inputdata m_inputData;
+	bool m_isInput;
 	
-	
+	// 回避中か
+	bool m_isDodge;
+	// 回避の残り時間
+	float m_dodgeTimer;  
 
 };
 
