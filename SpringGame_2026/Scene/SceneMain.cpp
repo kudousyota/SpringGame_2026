@@ -10,10 +10,7 @@ m_frameCount(0)
 
 SceneMain::~SceneMain()
 {
-    if (m_pPlayer)
-	{
-		m_pPlayer->End();
-	}
+	m_pPlayer->End();
 }
 void SceneMain::Init()
 {

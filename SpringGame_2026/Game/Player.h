@@ -12,8 +12,6 @@ public:
 	void Update(Input input);
 	void Draw();
 
-	
-	
 private:
 	enum class Inputdata
 	{
@@ -27,19 +25,21 @@ private:
 
 	Vector3 m_pos;
 
-	float m_abgle;
+	float m_angle;
 
 	//2回入力されたか
 	bool m_isDoubleInput;
 	float m_doubleInputTimer;
-
 	Inputdata m_inputData;
 	bool m_isInput;
 	
 	// 回避中か
 	bool m_isDodge;
 	// 回避の残り時間
-	float m_dodgeTimer;  
+	float m_dodgeTimer;
+
+	//無敵時間
+	float m_invincibleTimer;
 
 };
 

@@ -16,7 +16,7 @@ namespace
 
 Player::Player() :
 	m_modelHandle(-1),
-	m_abgle(0.0f),
+	m_angle(0.0f),
     m_isDoubleInput(false),
     m_doubleInputTimer(0.0f),
     m_inputData(Inputdata::None),
@@ -137,5 +137,8 @@ void Player::Update(Input input)
 void Player::Draw()
 {
 	MV1DrawModel(m_modelHandle);
+
+    //当たり判定
+	DrawSphere3D(m_pos.ToDxLibVector(),200,10,GetColor(255,0,0),GetColor(255,0,0),false);
 }
 
