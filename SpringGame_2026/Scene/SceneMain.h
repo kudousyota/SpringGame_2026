@@ -5,6 +5,7 @@
 
 class Input;
 class Player;
+class Enemy;
 class SceneMain
 {
 public:
@@ -20,6 +21,7 @@ private:
 private:
 	int m_frameCount;
 	std::shared_ptr<Player> m_pPlayer;
+	std::shared_ptr<Enemy>  m_pEnemy;
 
 };
 

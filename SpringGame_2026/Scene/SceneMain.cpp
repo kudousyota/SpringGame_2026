@@ -1,6 +1,7 @@
 #include "SceneMain.h"
 #include <DxLib.h>
 #include "../Game/Player.h"
+#include "../Game/Enemy.h"
 #include "../Game/Input.h"
 
 SceneMain::SceneMain():
@@ -37,6 +38,7 @@ void SceneMain::Update(Input input)
 void SceneMain::Draw()
 {
 	m_pPlayer->Draw();
+	m_pEnemy->Draw();
 	DrawGrid();
 	DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));
 	DrawFormatString(0, 16, GetColor(255, 255, 255), "FRAME:%d", m_frameCount);

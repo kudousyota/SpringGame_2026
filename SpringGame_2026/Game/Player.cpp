@@ -12,6 +12,8 @@ namespace
 	constexpr float kdodgeSpeed = 12.0f;
 	// 回避時間
 	constexpr float kdodgeTime = 10.0f;
+    // 回避後の無敵時間（フレーム）
+    constexpr float kinvincibleTime = 60.0f;
 }
 
 Player::Player() :
@@ -23,6 +25,7 @@ Player::Player() :
     m_isInput(false),
     m_isDodge(false),
     m_dodgeTimer(0.0f),
+	m_invincibleTimer(0.0f),
     m_pos(VGet(0, 0, 0))
 
 {
@@ -114,6 +117,8 @@ void Player::Update(Input input)
             m_isDodge = true;
             // 回避時間
             m_dodgeTimer = kdodgeTime;
+            // 回避成功時に無敵時間を付与
+            m_invincibleTimer = kinvincibleTime;
             // 回避方向を記憶
             m_inputData = now;
         }
@@ -132,13 +137,34 @@ void Player::Update(Input input)
 
 	MV1SetPosition(m_modelHandle,m_pos.ToDxLibVector());
 
+    // 無敵時間のカウントダウン
+    if (m_invincibleTimer > 0.0f)
+    {
+        m_invincibleTimer -= 1.0f;
+        if (m_invincibleTimer < 0.0f) m_invincibleTimer = 0.0f;
+    }
+
 }
 
 void Player::Draw()
 {
-	MV1DrawModel(m_modelHandle);
+    // 無敵時間中は点滅表示、それ以外は通常描画
+    bool shouldDrawModel = true;
+    if (m_invincibleTimer > 0.0f)
+    {
+        const int blinkFrequency = 5; // 点滅の頻度（フレーム）
+        int timer = static_cast<int>(m_invincibleTimer);
+        bool show = ((timer / blinkFrequency) % 2) == 0;
+        shouldDrawModel = show;
+    }
 
-    //当たり判定
-	DrawSphere3D(m_pos.ToDxLibVector(),200,10,GetColor(255,0,0),GetColor(255,0,0),false);
+    if (shouldDrawModel && m_modelHandle != -1)
+    {
+        MV1DrawModel(m_modelHandle);
+    }
+
+    // 当たり判定の可視化
+    DrawSphere3D(m_pos.ToDxLibVector(), 200, 10, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
+
 }
 
