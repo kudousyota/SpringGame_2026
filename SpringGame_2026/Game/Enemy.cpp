@@ -1,7 +1,7 @@
 #include "Enemy.h"
 
 Enemy::Enemy():
-	m_pos(VGet(300.0f, 0.0f, -300.0f))
+	m_pos(VGet(300.0f, 30.0f, 300.0f))
 {
 }
 
