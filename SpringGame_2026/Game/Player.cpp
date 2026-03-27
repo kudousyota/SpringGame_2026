@@ -16,6 +16,11 @@ namespace
     constexpr float kinvincibleTime = 60.0f;
 }
 
+Vector3 Player::GetPosition() const
+{
+    return m_pos;
+}
+
 Player::Player() :
 	m_modelHandle(-1),
 	m_angle(0.0f),
@@ -156,7 +161,7 @@ void Player::Draw()
     bool shouldDrawModel = true;
     if (m_invincibleTimer > 0.0f)
     {
-        const int blinkFrequency = 5; // 点滅の頻度（フレーム）
+        const int blinkFrequency = 5; // 点滅の頻度
         int timer = static_cast<int>(m_invincibleTimer);
         bool show = ((timer / blinkFrequency) % 2) == 0;
         shouldDrawModel = show;

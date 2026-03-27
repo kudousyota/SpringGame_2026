@@ -46,9 +46,9 @@ void SceneMain::Update(Input input)
 	{
 		m_pPlayer->Update(input);
 	}
-	if (m_pEnemy)
+    if (m_pEnemy && m_pPlayer)
 	{
-		m_pEnemy->Update();
+		m_pEnemy->Update(*m_pPlayer);
 	}
 
 }

@@ -11,6 +11,9 @@ public:
 	void End();
 	void Update(Input input);
 	void Draw();
+	Vector3 GetPosition() const;
+
+	void GetPos(Vector3& pos)const { pos = m_pos; }
 
 private:
 	enum class Inputdata
