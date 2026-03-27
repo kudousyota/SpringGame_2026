@@ -16,9 +16,13 @@ private:
 	//弾
 	Vector3 m_bulletPos;
 	Vector3 m_bulletDir;
+	Vector3 m_bulletStartPos;
+
 	bool m_hasBullet;
 
-	
+	//クールタイム
+	int m_shotTimer;
+
 	
 };
 

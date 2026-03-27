@@ -8,12 +8,13 @@ namespace
 	constexpr float kBulletSpeed = 5.0f;
 }
 
-Enemy::Enemy():
-    m_pos(VGet(300.0f, 30.0f, 300.0f)),
-	m_bulletPos(VGet(0,0,0)),
-	m_bulletDir(VGet(0,0,0)),
-	m_hasBullet(false)
-
+Enemy::Enemy() :
+	m_pos(VGet(300.0f, 30.0f, 300.0f)),
+	m_bulletPos(VGet(0, 0, 0)),
+	m_bulletDir(VGet(0, 0, 0)),
+	m_bulletStartPos(VGet(0, 0, 0)),
+	m_hasBullet(false),
+	m_shotTimer(0)
 {
 }
 
@@ -35,18 +36,31 @@ void Enemy::Update(const Player& player)
 	// プレイヤーの位置を取得
 	Vector3 playerPos = player.GetPosition();
 
-	// まだ弾が無ければ発射する
-	if (!m_hasBullet)
+	// クールタイムを更新
+	m_shotTimer++;
+
+	// 弾が無く、一定時間たったら発射
+	if (!m_hasBullet && m_shotTimer >= 60)
 	{
 		m_hasBullet = true;
 		m_bulletPos = m_pos;
+		m_bulletStartPos = m_pos;
 		m_bulletDir = (playerPos - m_pos).Normalize();
+		m_shotTimer = 0;
 	}
 
 	// 弾を進める
 	if (m_hasBullet)
 	{
 		m_bulletPos += m_bulletDir * kBulletSpeed;
+
+        // 一定距離進んだら消す（ルート計算を避けるため二乗距離で判定）
+		float distSq = (m_bulletPos - m_bulletStartPos).SqMagnitude();
+		constexpr float kMaxDist = 500.0f;
+		if (distSq > kMaxDist * kMaxDist)
+		{
+			m_hasBullet = false;
+		}
 	}
 }
 
