@@ -47,10 +47,18 @@ private:
 	bool m_isDodge;
 	// 回避の残り時間
 	float m_dodgeTimer;
-
 	//無敵時間
 	float m_invincibleTimer;
-
+	//アニメーション
+	float m_currentAnimCount;
+	float m_lastAnimCount;
+	//アニメーションのハンドル
+	int m_cureentAnimHandle;
+	int m_lastAnimHandle;
+    // 現在セットしているアニメーションのインデックス
+	int m_currentAnimIndex;
+	//アニメーション切り替えフレーム数
+	int m_animChangeFrame;
 
 };
 

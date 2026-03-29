@@ -14,6 +14,11 @@ namespace
 	constexpr float kdodgeTime = 10.0f;
     // 回避後の無敵時間
     constexpr float kinvincibleTime = 60.0f;
+    //アニメーションの名前
+    const char* const kIdleAnimName = "CharacterArmature|Idle";
+    const char* const kRunAnimName = "CharacterArmature|Run";
+	// アニメーションの切り替えフレーム数
+    constexpr int kAnimChangeFrame = 7;
 }
 
 Vector3 Player::GetPosition() const
@@ -31,8 +36,13 @@ Player::Player() :
     m_isDodge(false),
     m_dodgeTimer(0.0f),
 	m_invincibleTimer(0.0f),
-    m_pos(VGet(0, 0, 0))
-
+    m_pos(VGet(0, 0, 0)),
+    m_cureentAnimHandle(-1),
+    m_lastAnimHandle(-1),
+    m_currentAnimIndex(-1),
+    m_animChangeFrame(0),
+    m_lastAnimCount(0.0f),
+    m_currentAnimCount(0.0f)
 {
 }
 Player::~Player()
@@ -43,12 +53,33 @@ Player::~Player()
 void Player::Init()
 {
     m_modelHandle = MV1LoadModel("data/Player.mv1");
+
+    int animNo = MV1GetAnimIndex(m_modelHandle, kIdleAnimName);
+	m_currentAnimCount = 0.0f;
+
+    m_cureentAnimHandle = MV1AttachAnim(m_modelHandle, animNo, -1, -1);
+    m_currentAnimIndex = animNo;
+
+    m_lastAnimHandle = -1;
+    m_lastAnimCount = 0.0f;
+
+    m_animChangeFrame = 0;
 }
 
 void Player::End()
 {
     if (m_modelHandle != -1)
     {
+        if (m_cureentAnimHandle != -1)
+        {
+            MV1DetachAnim(m_modelHandle, m_cureentAnimHandle);
+            m_cureentAnimHandle = -1;
+        }
+        if (m_lastAnimHandle != -1)
+        {
+            MV1DetachAnim(m_modelHandle, m_lastAnimHandle);
+            m_lastAnimHandle = -1;
+        }
         MV1DeleteModel(m_modelHandle);
         m_modelHandle = -1;
     }
@@ -168,7 +199,46 @@ void Player::Update(Input input)
     MATRIX world = MMult(rotMtx, transMtx);
     MV1SetMatrix(m_modelHandle, world);
 
+    // アニメーションは切り替わったときだけAttach/Detachする
+    // 今は移動していればRun、していなければIdleを再生する
+    const char* desiredAnim = (moveVec.SqMagnitude() > 0.0001f) ? kRunAnimName : kIdleAnimName;
+    int animNo = MV1GetAnimIndex(m_modelHandle, desiredAnim);
+    if (animNo != m_currentAnimIndex)
+    {
+        // 古いアニメーションを外す
+        if (m_cureentAnimHandle != -1)
+        {
+            MV1DetachAnim(m_modelHandle, m_cureentAnimHandle);
+            m_cureentAnimHandle = -1;
+        }
+        // 新しいアニメーションをセット
+        m_cureentAnimHandle = MV1AttachAnim(m_modelHandle, animNo, -1, -1);
+        m_currentAnimIndex = animNo;
+        m_currentAnimCount = 0.0f;
+    }
 
+    //アニメーションの進行
+    m_currentAnimCount += 0.5f;
+    //アニメーションのループ再生
+    float totalCount = MV1GetAttachAnimTotalTime(m_modelHandle, m_cureentAnimHandle);
+    if (m_currentAnimCount >= totalCount)
+    {
+        m_currentAnimCount -= totalCount;
+    }
+    MV1SetAttachAnimTime(m_modelHandle, m_cureentAnimHandle, m_currentAnimCount);
+    //もう一つのアニメーションも一応カウントを進める
+    if (m_lastAnimHandle != -1)
+    {
+        m_lastAnimCount += 0.5f;
+        //アニメーションのループ再生
+        float totalCount = MV1GetAttachAnimTotalTime(m_modelHandle, m_lastAnimHandle);
+        if (m_lastAnimCount >= totalCount)
+        {
+            m_lastAnimCount -= totalCount;
+        }
+        MV1SetAttachAnimTime(m_modelHandle, m_lastAnimHandle, m_lastAnimCount);
+
+    }
 }
 
 void Player::Draw()
