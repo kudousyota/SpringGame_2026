@@ -136,15 +136,24 @@ void Player::Update(Input input)
         m_inputData = now;
         m_doubleInputTimer = 0;
     }
-    //通常移動
+    // 通常移動 (移動量をベクトルで保持)
     float speed = kspeed;
+    Vector3 moveVec(0.0f, 0.0f, 0.0f);
 
-    if (now == Inputdata::Up)    m_pos.z += speed;
-    if (now == Inputdata::Down)  m_pos.z -= speed;
-    if (now == Inputdata::Left)  m_pos.x -= speed;
-    if (now == Inputdata::Right) m_pos.x += speed;
+    if (now == Inputdata::Up)    moveVec.z += speed;
+    if (now == Inputdata::Down)  moveVec.z -= speed;
+    if (now == Inputdata::Left)  moveVec.x -= speed;
+    if (now == Inputdata::Right) moveVec.x += speed;
 
-	MV1SetPosition(m_modelHandle,m_pos.ToDxLibVector());
+    // 位置更新
+    m_pos += moveVec;
+
+    // モデルを移動方向に向ける (移動ベクトルがあるとき)
+    if (moveVec.SqMagnitude() > 0.0001f)
+    {
+        // atan2f(x, z) によって、0 が +Z 方向を向くように角度を算出
+        m_angle = atan2f(moveVec.x, moveVec.z);
+    }
 
     // 無敵時間のカウントダウン
     if (m_invincibleTimer > 0.0f)
@@ -152,6 +161,13 @@ void Player::Update(Input input)
         m_invincibleTimer -= 1.0f;
         if (m_invincibleTimer < 0.0f) m_invincibleTimer = 0.0f;
     }
+
+    // 回転行列と平行移動行列を合成してモデルに反映
+    MATRIX rotMtx = MGetRotY(m_angle);
+    MATRIX transMtx = MGetTranslate(m_pos.ToDxLibVector());
+    MATRIX world = MMult(rotMtx, transMtx);
+    MV1SetMatrix(m_modelHandle, world);
+
 
 }
 

@@ -13,7 +13,14 @@ public:
 	void Draw();
 	Vector3 GetPosition() const;
 
-	void GetPos(Vector3& pos)const { pos = m_pos; }
+	// プレイヤーの位置と向きを取得する関数
+	Vector3 getPos() const { return m_pos.ToDxLibVector(); }
+	float getAngle() const { return m_angle; }
+	// カメラの注視点を取得する関数
+	Vector3 getCameraTarget()const;
+
+	Vector3 GetColCenter()const;
+	float GetColRadius()const;
 
 private:
 	enum class Inputdata
@@ -43,6 +50,7 @@ private:
 
 	//無敵時間
 	float m_invincibleTimer;
+
 
 };
 
