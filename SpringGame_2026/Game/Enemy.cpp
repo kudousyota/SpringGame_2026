@@ -34,7 +34,7 @@ void Enemy::End()
 void Enemy::Update(const Player& player)
 {
 	// プレイヤーの位置を取得
-	Vector3 playerPos = player.GetPosition();
+	Vector3 playerPos = player.getPos();
 
 	// クールタイムを更新
 	m_shotTimer++;

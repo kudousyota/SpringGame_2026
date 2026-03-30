@@ -11,7 +11,6 @@ public:
 	void End();
 	void Update(Input input);
 	void Draw();
-	Vector3 GetPosition() const;
 
 	// プレイヤーの位置と向きを取得する関数
 	Vector3 getPos() const { return m_pos.ToDxLibVector(); }

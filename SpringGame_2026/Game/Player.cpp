@@ -5,25 +5,23 @@
 namespace
 {
 	constexpr float kspeed = 3.0f;
-	constexpr float kdoubleInputSpeed = 6.0f;
+	constexpr float kDoubleInputSpeed = 6.0f;
 	//2回入力されたとみなす時間
-	constexpr int kdoubleInputTime = 30;
+	constexpr int kDoubleInputTime = 30;
 	// 回避速度
-	constexpr float kdodgeSpeed = 12.0f;
+	constexpr float kDodgeSpeed = 12.0f;
 	// 回避時間
-	constexpr float kdodgeTime = 10.0f;
+	constexpr float kDodgeTime = 10.0f;
     // 回避後の無敵時間
-    constexpr float kinvincibleTime = 60.0f;
+    constexpr float kInvincibleTime = 60.0f;
     //アニメーションの名前
     const char* const kIdleAnimName = "CharacterArmature|Idle";
     const char* const kRunAnimName = "CharacterArmature|Run";
 	// アニメーションの切り替えフレーム数
-    constexpr int kAnimChangeFrame = 7;
-}
-
-Vector3 Player::GetPosition() const
-{
-    return m_pos;
+    constexpr int kAnimChangeFrame = 9;
+    //プレイヤー基準位置から注視点までのベクトル
+    //プレイヤー位置から注視点に向かうベクトル
+    const Vector3 kPlayerToTarget = VGet(0.0f, 290.0f, 0.0f);
 }
 
 Player::Player() :
@@ -116,7 +114,7 @@ void Player::Update(Input input)
     if (m_isDodge)
     {
         //回避速度
-        float dodgeSpeed = kdodgeSpeed;  
+        float dodgeSpeed = kDodgeSpeed;  
 
         // 回避方向にステップ移動
         switch (m_inputData)
@@ -151,14 +149,14 @@ void Player::Update(Input input)
         if (now == Inputdata::Left) triggered = input.IsTriggered("left");
         if (now == Inputdata::Right) triggered = input.IsTriggered("right");
 
-        if (m_inputData == now && triggered && m_doubleInputTimer < kdoubleInputTime)
+        if (m_inputData == now && triggered && m_doubleInputTimer < kDoubleInputTime)
         {
             // 回避開始
             m_isDodge = true;
             // 回避時間
-            m_dodgeTimer = kdodgeTime;
+            m_dodgeTimer = kDodgeTime;
             // 回避成功時に無敵時間を付与
-            m_invincibleTimer = kinvincibleTime;
+            m_invincibleTimer = kInvincibleTime;
             // 回避方向を記憶
             m_inputData = now;
         }
@@ -216,6 +214,22 @@ void Player::Update(Input input)
         m_currentAnimIndex = animNo;
         m_currentAnimCount = 0.0f;
     }
+    //アニメーションのブレンド率を変更して滑らかな切り替えを行う
+	m_animChangeFrame++;
+	if (m_lastAnimHandle = -1)
+	{
+		//アニメーションが1つしか設定されていない場合
+		MV1SetAttachAnimBlendRate(m_modelHandle, m_cureentAnimHandle, 1.0f);
+	}
+	else
+	{
+		//currentAnimeのブレンド率を計算
+		float rate = static_cast<float>(m_animChangeFrame) / kAnimChangeFrame;
+		if (rate > 1.0f)rate = 1.0f;
+
+		MV1SetAttachAnimBlendRate(m_modelHandle, m_cureentAnimHandle, rate);
+		MV1SetAttachAnimBlendRate(m_modelHandle, m_lastAnimHandle, 1.0f - rate);
+	}
 
     //アニメーションの進行
     m_currentAnimCount += 0.5f;
@@ -261,5 +275,13 @@ void Player::Draw()
     // 当たり判定の可視化
     DrawSphere3D(m_pos.ToDxLibVector(), 200, 10, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
 
+}
+
+Vector3 Player::getCameraTarget() const
+{
+	Vector3 pos = m_pos;
+    // カメラの注視点をプレイヤーの頭あたりに設定
+	pos.y += 100.0f; 
+	return VAdd(pos.ToDxLibVector(), kPlayerToTarget.ToDxLibVector());
 }
 

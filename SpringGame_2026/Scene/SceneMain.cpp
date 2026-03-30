@@ -37,6 +37,10 @@ void SceneMain::Init()
 	// Enemy ‚ğ¶¬‚µ‚Ä‰Šú‰»
 	m_pEnemy = std::make_shared<Enemy>();
 	m_pEnemy->Init();
+	
+	m_pCamera = std::make_shared<Camera>();
+	m_pCamera->SetPlayer(m_pPlayer);
+	m_pCamera->Init();
 }
 
 void SceneMain::Update(Input input)
@@ -50,6 +54,11 @@ void SceneMain::Update(Input input)
 	{
 		m_pEnemy->Update(*m_pPlayer);
 	}
+	if (m_pCamera)
+	{
+		m_pCamera->Update();
+	}
+	
 
 }
 

@@ -10,6 +10,9 @@ public:
 	void Init();
 	void End();
 	void Update();
+
+	void SetPlayer(std::shared_ptr<Player> player) { m_pPlayer = player; }
+
 private:
 	// プレイヤーへの参照を保持
 	std::shared_ptr<Player> m_pPlayer; 

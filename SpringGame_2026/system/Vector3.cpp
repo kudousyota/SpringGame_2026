@@ -72,6 +72,18 @@ DxLib::VECTOR Vector3::ToDxLibVector() const
 	return VGet(this->x, this->y, this->z);
 }
 
+Vector3 Vector3::RotateY(float angle) const
+{
+	float c = cosf(angle);
+	float s = sinf(angle);
+
+	return Vector3(
+		x * c - z * s,
+		y,
+		x * s + z * c
+	);
+}
+
 Vector3 Vector3::operator+(const Vector3& right) const
 {
 	Vector3 ans;
@@ -109,14 +121,14 @@ Vector3 Vector3::operator/(const float& right) const
 	return ans;
 }
 
-Vector3 Vector3::operator=(const float& right) const
-{
-	Vector3 ans;
-	ans.x = right;
-	ans.y = right;
-	ans.z = right;
-	return ans;
-}
+//Vector3 Vector3::operator=(const float& right) const
+//{
+//	Vector3 ans;
+//	ans.x = right;
+//	ans.y = right;
+//	ans.z = right;
+//	return ans;
+//}
 
 Vector3 Vector3::operator+=(const Vector3& right)
 {
@@ -148,4 +160,9 @@ Vector3 Vector3::operator/=(const float& right)
 	this->y = this->y / right;
 	this->z = this->z / right;
 	return *this;
+}
+
+Vector3::operator VECTOR() const
+{
+	return VGet(this->x, this->y, this->z);
 }

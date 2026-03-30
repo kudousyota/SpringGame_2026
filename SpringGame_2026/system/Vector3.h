@@ -26,16 +26,19 @@ public:
 
 	VECTOR ToDxLibVector()const;
 
+	Vector3 RotateY(float angle) const;
+
 	//演算子オーバーロード
 	Vector3 operator+(const Vector3& right)const;
 	Vector3 operator-(const Vector3& right)const;
 	Vector3 operator*(const float& right)const;
 	Vector3 operator/(const float& right)const;
-	Vector3 operator=(const float& right)const;
+	//Vector3 operator=(const float& right)const;
 	Vector3 operator+=(const Vector3& right);
 	Vector3 operator-=(const Vector3& right);
 	Vector3 operator*=(const float& right);
 	Vector3 operator/=(const float& right);
+	operator VECTOR() const;
 
 };
 
