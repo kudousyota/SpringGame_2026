@@ -43,6 +43,11 @@ void Input::InitializeInputTable()
 Input::Input(): m_inputData{},m_lastInputData{},m_inputTable{}
 {
 	InitializeInputTable();
+	// 全イベントを false で初期化しておく（存在しないキーで at を呼ばないようにするため）
+	for (const auto& kv : m_inputTable) {
+		m_inputData[kv.first] = false;
+		m_lastInputData[kv.first] = false;
+	}
 	Load();
 
 	
