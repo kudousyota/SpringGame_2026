@@ -6,15 +6,25 @@ namespace
 {
 	//弾の速度
 	constexpr float kBulletSpeed = 5.0f;
+
+	//アニメーションの名前
+	const char* const kIdleAnimName = "MonsterArmature|Idle";
 }
 
 Enemy::Enemy() :
-	m_pos(VGet(300.0f, 30.0f, 300.0f)),
-	m_bulletPos(VGet(0, 0, 0)),
-	m_bulletDir(VGet(0, 0, 0)),
-	m_bulletStartPos(VGet(0, 0, 0)),
+	m_modelHandle(-1),
+	m_pos(VGet(0.0f, 0.0f, 0.0f)),
+	m_bulletPos(VGet(0.0f, 0.0f, 0.0f)),
+	m_bulletDir(VGet(0.0f, 0.0f, 0.0f)),
+	m_bulletStartPos(VGet(0.0f, 0.0f, 0.0f)),
 	m_hasBullet(false),
-	m_shotTimer(0)
+	m_shotTimer(0),
+	m_currentAnimCount(0.0f),
+	m_lastAnimCount(0.0f),
+	m_cureentAnimHandle(-1),
+	m_lastAnimHandle(-1),
+	m_currentAnimIndex(-1),
+	m_animChangeFrame(0)
 {
 }
 
@@ -24,11 +34,37 @@ Enemy::~Enemy()
 
 void Enemy::Init()
 {
-    // 初期位置はコンストラクタで設定済み
+	m_modelHandle = MV1LoadModel("data/Enemy.mv1");
+
+	int animNo = MV1GetAnimIndex(m_modelHandle, kIdleAnimName);
+	m_currentAnimCount = 0.0f;
+
+	m_cureentAnimHandle = MV1AttachAnim(m_modelHandle, animNo, -1, -1);
+	m_currentAnimIndex = animNo;
+
+	m_lastAnimHandle = -1;
+	m_lastAnimCount = 0.0f;
+
+	m_animChangeFrame = 0;
 }
 
 void Enemy::End()
 {
+	if (m_modelHandle != -1)
+	{
+		if (m_cureentAnimHandle != -1)
+		{
+			MV1DetachAnim(m_modelHandle, m_cureentAnimHandle);
+			m_cureentAnimHandle = -1;
+		}
+		if (m_lastAnimHandle != -1)
+		{
+			MV1DetachAnim(m_modelHandle, m_lastAnimHandle);
+			m_lastAnimHandle = -1;
+		}
+		MV1DeleteModel(m_modelHandle);
+		m_modelHandle = -1;
+	}
 }
 
 void Enemy::Update(const Player& player)
@@ -62,13 +98,35 @@ void Enemy::Update(const Player& player)
 			m_hasBullet = false;
 		}
 	}
+	//アニメーション
+    //アニメ進行
+    m_currentAnimCount += 0.5f;
+    float currentTotal = MV1GetAttachAnimTotalTime(m_modelHandle, m_cureentAnimHandle);
+    if (m_currentAnimCount >= currentTotal)
+    {
+        m_currentAnimCount -= currentTotal;
+    }
+    MV1SetAttachAnimTime(m_modelHandle, m_cureentAnimHandle, m_currentAnimCount);
+
+    //Lastアニメ進行
+    if (m_lastAnimHandle != -1)
+    {
+        m_lastAnimCount += 0.5f;
+        float lastTotal = MV1GetAttachAnimTotalTime(m_modelHandle, m_lastAnimHandle);
+        if (m_lastAnimCount >= lastTotal)
+        {
+            m_lastAnimCount -= lastTotal;
+        }
+        MV1SetAttachAnimTime(m_modelHandle, m_lastAnimHandle, m_lastAnimCount);
+    }
+
 }
 
 void Enemy::Draw()
 {
     // 見やすいサイズの球で敵を描画
-	DrawSphere3D(m_pos.ToDxLibVector(), 50.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true);
-
+	//DrawSphere3D(m_pos.ToDxLibVector(), 50.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true);
+	MV1DrawModel(m_modelHandle);
 	// 弾を描画
 	if (m_hasBullet)
 	{

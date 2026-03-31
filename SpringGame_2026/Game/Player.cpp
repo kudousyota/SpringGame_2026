@@ -8,16 +8,16 @@ namespace
 	constexpr float kspeed = 3.0f;
 	//2回入力されたとみなす時間
 	constexpr int kDoubleInputTime = 30;
-	// 回避速度
+	//回避速度
 	constexpr float kDodgeSpeed = 30.0f;
-	// 回避時間
+	//回避時間
 	constexpr float kDodgeTime = 10.0f;
-    // 回避後の無敵時間
+    //回避後の無敵時間
     constexpr float kInvincibleTime = 60.0f;
     //アニメーションの名前
     const char* const kIdleAnimName = "CharacterArmature|Idle";
     const char* const kRunAnimName = "CharacterArmature|Run";
-	// アニメーションの切り替えフレーム数
+	//アニメーションの切り替えフレーム数
     constexpr int kAnimChangeFrame = 9;
     //プレイヤー基準位置から注視点までのベクトル
     //プレイヤー位置から注視点に向かうベクトル
@@ -87,10 +87,10 @@ void Player::Update(const Input& input)
 {
     if (m_pCamera == nullptr) return;
 
-    // ダブル入力判定用タイマー
+    //ダブル入力判定用タイマー
     m_doubleInputTimer++;
 
-    // 無敵時間タイマー
+    //無敵時間タイマー
     if (m_invincibleTimer > 0.0f)
     {
         m_invincibleTimer -= 1.0f;
@@ -100,7 +100,7 @@ void Player::Update(const Input& input)
     Vector3 forward = m_pCamera->GetForward();
     Vector3 right = m_pCamera->GetRight();
 
-    // 入力方向取得（回避判定用）
+    //入力方向取得
     Inputdata now = Inputdata::None;
 
     if (input.IsPressed("up"))    now = Inputdata::Up;
@@ -110,7 +110,7 @@ void Player::Update(const Input& input)
 
     m_isInput = (now != Inputdata::None);
 
-    // 回避開始判定
+    //回避開始判定
     if (!m_isDodge && m_isInput)
     {
         bool triggered = false;
@@ -134,7 +134,7 @@ void Player::Update(const Input& input)
         }
     }
 
-    // 回避中処理
+    //回避中処理
     if (m_isDodge)
     {
         Vector3 dodgeVec(0.0f, 0.0f, 0.0f);
@@ -142,8 +142,8 @@ void Player::Update(const Input& input)
         switch (m_inputData)
         {
         case Inputdata::Up:    dodgeVec = forward; break;
-		case Inputdata::Down:  dodgeVec = forward * -1.0f; break;// 前後はカメラの向きに沿って移動
-		case Inputdata::Left:  dodgeVec = right * -1.0f; break;// 左右はカメラの向きに沿って移動
+		case Inputdata::Down:  dodgeVec = forward * -1.0f; break;//前後はカメラの向きに沿って移動
+		case Inputdata::Left:  dodgeVec = right * -1.0f; break;//左右はカメラの向きに沿って移動
         case Inputdata::Right: dodgeVec = right; break;
         default: break;
         }
@@ -163,7 +163,7 @@ void Player::Update(const Input& input)
     }
     else
     {
-        // 通常移動
+        //通常移動
         Vector3 moveVec(0.0f, 0.0f, 0.0f);
 
         if (input.IsPressed("up"))    moveVec += forward;
@@ -179,7 +179,7 @@ void Player::Update(const Input& input)
         }
     }
 
-    // アニメーション切り替え
+    //アニメーション切り替え
     bool isMoving = false;
     if (m_isDodge)
     {
@@ -214,7 +214,7 @@ void Player::Update(const Input& input)
         m_animChangeFrame = 0;
     }
 
-    // アニメブレンド
+    //アニメブレンド
     m_animChangeFrame++;
 
     if (m_lastAnimHandle == -1)
@@ -236,7 +236,7 @@ void Player::Update(const Input& input)
         }
     }
 
-    // アニメ進行
+    //アニメ進行
     m_currentAnimCount += 0.5f;
     float currentTotal = MV1GetAttachAnimTotalTime(m_modelHandle, m_cureentAnimHandle);
     if (m_currentAnimCount >= currentTotal)
