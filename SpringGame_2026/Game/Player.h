@@ -1,6 +1,7 @@
 #pragma once
 #include "../system/Vector3.h"
 class Input;
+class Camera;
 class Player
 {
 public:
@@ -9,7 +10,7 @@ public:
 
 	void Init();
 	void End();
-	void Update(Input input);
+	void Update(const Input& input);
 	void Draw();
 
 	// プレイヤーの位置と向きを取得する関数
@@ -21,6 +22,8 @@ public:
 	Vector3 GetColCenter()const;
 	float GetColRadius()const;
 
+	void setCamera(Camera* camera) { m_pCamera = camera; }
+
 private:
 	enum class Inputdata
 	{
@@ -30,6 +33,8 @@ private:
 		Left,
 		Right
 	};
+	Camera* m_pCamera;
+
 	int m_modelHandle;
 
 	Vector3 m_pos;

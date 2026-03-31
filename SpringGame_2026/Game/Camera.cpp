@@ -110,3 +110,29 @@ void Camera::Update()
 	// カメラ反映
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos.ToDxLibVector(),m_cameraTarget.ToDxLibVector());
 }
+
+Vector3 Camera::GetForward() const
+{
+	Vector3 forward = m_cameraTarget - m_cameraPos;
+	forward.y = 0.0f;
+
+	if (forward.SqMagnitude() > 0.0001f)
+	{
+		forward = forward.Normalize();
+	}
+	return forward;
+}
+
+Vector3 Camera::GetRight() const
+{
+	Vector3 forward = GetForward();
+	Vector3 up = VGet(0.0f, 1.0f, 0.0f);
+	Vector3 right = up.Cross(forward);
+
+	if (right.SqMagnitude() > 0.0001f)
+	{
+		right = right.Normalize();
+	}
+
+	return right;
+}

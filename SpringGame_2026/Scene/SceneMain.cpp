@@ -32,15 +32,19 @@ void SceneMain::Init()
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(200.0f, 1500.0f);
 
-    m_pPlayer = std::make_shared<Player>();
+	m_pPlayer = std::make_shared<Player>();
 	m_pPlayer->Init();
-	// Enemy ‚ğ¶¬‚µ‚Ä‰Šú‰»
+
 	m_pEnemy = std::make_shared<Enemy>();
 	m_pEnemy->Init();
-	
+
 	m_pCamera = std::make_shared<Camera>();
 	m_pCamera->SetPlayer(m_pPlayer);
 	m_pCamera->Init();
+
+	
+	m_pPlayer->setCamera(m_pCamera.get());
+	
 }
 
 void SceneMain::Update(Input input)

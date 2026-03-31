@@ -13,9 +13,15 @@ public:
 
 	void SetPlayer(std::shared_ptr<Player> player) { m_pPlayer = player; }
 
+	Vector3 GetForward() const;
+	Vector3 GetRight() const;
+
+	
+
 private:
 	// プレイヤーへの参照を保持
-	std::shared_ptr<Player> m_pPlayer; 
+	std::shared_ptr<Player> m_pPlayer;
+
 	// カメラの位置
 	Vector3 m_cameraTarget;
 	Vector3 m_cameraPos;
