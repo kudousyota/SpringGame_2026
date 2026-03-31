@@ -19,5 +19,9 @@ private:
 	// カメラの位置
 	Vector3 m_cameraTarget;
 	Vector3 m_cameraPos;
+
+	//カメラの角度
+	//カメラの水平回転角度
+	float m_cameraAngleX;
 };
 
