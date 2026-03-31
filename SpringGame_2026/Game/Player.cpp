@@ -9,7 +9,7 @@ namespace
 	//2回入力されたとみなす時間
 	constexpr int kDoubleInputTime = 30;
 	// 回避速度
-	constexpr float kDodgeSpeed = 12.0f;
+	constexpr float kDodgeSpeed = 30.0f;
 	// 回避時間
 	constexpr float kDodgeTime = 10.0f;
     // 回避後の無敵時間
@@ -100,9 +100,7 @@ void Player::Update(const Input& input)
     Vector3 forward = m_pCamera->GetForward();
     Vector3 right = m_pCamera->GetRight();
 
-    // -------------------------
     // 入力方向取得（回避判定用）
-    // -------------------------
     Inputdata now = Inputdata::None;
 
     if (input.IsPressed("up"))    now = Inputdata::Up;
@@ -112,9 +110,7 @@ void Player::Update(const Input& input)
 
     m_isInput = (now != Inputdata::None);
 
-    // -------------------------
     // 回避開始判定
-    // -------------------------
     if (!m_isDodge && m_isInput)
     {
         bool triggered = false;
@@ -138,9 +134,7 @@ void Player::Update(const Input& input)
         }
     }
 
-    // -------------------------
     // 回避中処理
-    // -------------------------
     if (m_isDodge)
     {
         Vector3 dodgeVec(0.0f, 0.0f, 0.0f);
@@ -158,7 +152,7 @@ void Player::Update(const Input& input)
         {
             dodgeVec = dodgeVec.Normalize();
             m_pos += dodgeVec * kDodgeSpeed;
-            m_angle = atan2f(dodgeVec.x, dodgeVec.z);
+            m_angle = atan2f(dodgeVec.x, dodgeVec.z) + DX_PI_F;
         }
 
         m_dodgeTimer -= 1.0f;
@@ -169,9 +163,7 @@ void Player::Update(const Input& input)
     }
     else
     {
-        // -------------------------
-        // 通常移動（斜め対応）
-        // -------------------------
+        // 通常移動
         Vector3 moveVec(0.0f, 0.0f, 0.0f);
 
         if (input.IsPressed("up"))    moveVec += forward;
@@ -183,13 +175,11 @@ void Player::Update(const Input& input)
         {
             moveVec = moveVec.Normalize() * kspeed;
             m_pos += moveVec;
-            m_angle = atan2f(moveVec.x, moveVec.z);
+            m_angle = atan2f(moveVec.x, moveVec.z) + DX_PI_F;
         }
     }
 
-    // -------------------------
     // アニメーション切り替え
-    // -------------------------
     bool isMoving = false;
     if (m_isDodge)
     {
@@ -224,9 +214,7 @@ void Player::Update(const Input& input)
         m_animChangeFrame = 0;
     }
 
-    // -------------------------
     // アニメブレンド
-    // -------------------------
     m_animChangeFrame++;
 
     if (m_lastAnimHandle == -1)
@@ -248,9 +236,7 @@ void Player::Update(const Input& input)
         }
     }
 
-    // -------------------------
-    // current アニメ進行
-    // -------------------------
+    // アニメ進行
     m_currentAnimCount += 0.5f;
     float currentTotal = MV1GetAttachAnimTotalTime(m_modelHandle, m_cureentAnimHandle);
     if (m_currentAnimCount >= currentTotal)
@@ -259,9 +245,7 @@ void Player::Update(const Input& input)
     }
     MV1SetAttachAnimTime(m_modelHandle, m_cureentAnimHandle, m_currentAnimCount);
 
-    // -------------------------
-    // last アニメ進行
-    // -------------------------
+    //Lastアニメ進行
     if (m_lastAnimHandle != -1)
     {
         m_lastAnimCount += 0.5f;
@@ -273,9 +257,7 @@ void Player::Update(const Input& input)
         MV1SetAttachAnimTime(m_modelHandle, m_lastAnimHandle, m_lastAnimCount);
     }
 
-    // -------------------------
     // モデル行列を毎フレーム更新
-    // -------------------------
     MATRIX rotMtx = MGetRotY(m_angle);
     MATRIX transMtx = MGetTranslate(m_pos.ToDxLibVector());
     MATRIX world = MMult(rotMtx, transMtx);

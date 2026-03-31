@@ -9,7 +9,7 @@ namespace
 
 	// 注視点からカメラまでの距離
 	constexpr float kCameraDistance = 1100.0f;
-	constexpr float kCameraHeight = 250.0f;
+	constexpr float kCameraHeight = -350.0f;
 
     // 補間(一時的に1.0fにして追従を即時にすることで動作確認しやすくする)
 	constexpr float kCameraFollow = 1.0f;
@@ -41,7 +41,7 @@ void Camera::Init()
 
 	// 初期角度はプレイヤーの向きに合わせる
 	m_cameraAngleX = playerAng;
-
+	
 	// カメラの初期位置
 	Vector3 offset;
 	offset.x = sinf(m_cameraAngleX) * kCameraDistance;
