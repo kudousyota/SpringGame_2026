@@ -18,7 +18,7 @@ public:
 	float getAngle() const { return m_angle; }
 	// カメラの注視点を取得する関数
 	Vector3 getCameraTarget()const;
-
+	//当たり判定用
 	Vector3 GetColCenter()const;
 	float GetColRadius()const;
 
@@ -63,6 +63,13 @@ private:
 	int m_currentAnimIndex;
 	//アニメーション切り替えフレーム数
 	int m_animChangeFrame;
+
+	//自分と敵との距離
+	
+	//自分の半径
+	float m_colRadius;
+	//敵の半径
+	//距離 < 自分の半径 + 敵の半径 なら当たっている
 
 };
 

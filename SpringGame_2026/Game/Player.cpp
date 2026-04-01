@@ -62,6 +62,8 @@ void Player::Init()
     m_lastAnimCount = 0.0f;
 
     m_animChangeFrame = 0;
+	//当たり判定用の半径
+	m_colRadius = 30.0f;
 }
 
 void Player::End()
@@ -289,6 +291,16 @@ void Player::Draw()
 Vector3 Player::getCameraTarget() const
 {
     return m_pos + kPlayerToTarget;
+}
+//当たり判定用の中心を返す関数
+Vector3 Player::GetColCenter() const
+{
+    return m_pos + VGet(0.0f,60.0f,0);
+}
+
+float Player::GetColRadius() const
+{
+    return m_colRadius;
 }
 
 
