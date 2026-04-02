@@ -9,6 +9,9 @@ namespace
 
 	//アニメーションの名前
 	const char* const kIdleAnimName = "MonsterArmature|Idle";
+
+	// 弾の半径（描画時と同じ値）
+	constexpr float kBulletRadius = 10.0f;
 }
 
 Enemy::Enemy() :
@@ -94,8 +97,6 @@ void Enemy::Update(const Player& player)
 		// プレイヤーの中心と半径を取得
 		Vector3 playerCenter = player.GetColCenter();
 		float playerRadius = player.GetColRadius();
-		// 弾の半径（描画時と同じ値）
-		constexpr float kBulletRadius = 10.0f;
 		// 距離の二乗で判定
 		float hitDist = playerRadius + kBulletRadius;
 		float hitDistSq = hitDist * hitDist;
