@@ -11,9 +11,9 @@ namespace
 	//回避速度
 	constexpr float kDodgeSpeed = 30.0f;
 	//回避時間
-	constexpr float kDodgeTime = 10.0f;
+	constexpr int kDodgeTime = 10;
     //回避後の無敵時間
-    constexpr float kInvincibleTime = 60.0f;
+    constexpr int kInvincibleTime = 60;
     //アニメーションの名前
     const char* const kIdleAnimName = "CharacterArmature|Idle";
     const char* const kRunAnimName = "CharacterArmature|Run";
@@ -63,7 +63,7 @@ void Player::Init()
 
     m_animChangeFrame = 0;
 	//当たり判定用の半径
-	m_colRadius = 30.0f;
+	m_colRadius = 90.0f;
 }
 
 void Player::End()
@@ -284,8 +284,7 @@ void Player::Draw()
     }
 
     // 当たり判定の可視化
-    DrawSphere3D(m_pos.ToDxLibVector(), 200, 10, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
-
+    DrawSphere3D(GetColCenter().ToDxLibVector(), m_colRadius, 10, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
 }
 
 Vector3 Player::getCameraTarget() const

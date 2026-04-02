@@ -5,7 +5,7 @@
 namespace
 {
 	//弾の速度
-	constexpr float kBulletSpeed = 5.0f;
+	constexpr float kBulletSpeed = 8.0f;
 
 	//アニメーションの名前
 	const char* const kIdleAnimName = "MonsterArmature|Idle";
@@ -90,10 +90,26 @@ void Enemy::Update(const Player& player)
 	{
 		m_bulletPos += m_bulletDir * kBulletSpeed;
 
-        // 一定距離進んだら消す（ルート計算を避けるため二乗距離で判定）
-		float distSq = (m_bulletPos - m_bulletStartPos).SqMagnitude();
+		// 衝突判定: プレイヤーとの当たり判定（球と球の衝突）
+		// プレイヤーの中心と半径を取得
+		Vector3 playerCenter = player.GetColCenter();
+		float playerRadius = player.GetColRadius();
+		// 弾の半径（描画時と同じ値）
+		constexpr float kBulletRadius = 10.0f;
+		// 距離の二乗で判定
+		float hitDist = playerRadius + kBulletRadius;
+		float hitDistSq = hitDist * hitDist;
+		float distSq = (m_bulletPos - playerCenter).SqMagnitude();
+		if (distSq <= hitDistSq)
+		{
+			// プレイヤーに当たったら弾を消す
+			m_hasBullet = false;
+		}
+
+		// 一定距離進んだら消す（ルート計算を避けるため二乗距離で判定）
 		constexpr float kMaxDist = 500.0f;
-		if (distSq > kMaxDist * kMaxDist)
+		float travelDistSq = (m_bulletPos - m_bulletStartPos).SqMagnitude();
+		if (travelDistSq > kMaxDist * kMaxDist)
 		{
 			m_hasBullet = false;
 		}
