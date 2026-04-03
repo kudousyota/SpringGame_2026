@@ -13,6 +13,9 @@ public:
 	void Update(const Input& input);
 	void Draw();
 
+	// プレイヤーが弾に当たったときの処理
+	void OnHit();
+
 	// プレイヤーの位置と向きを取得する関数
 	Vector3 getPos() const { return m_pos.ToDxLibVector(); }
 	float getAngle() const { return m_angle; }
@@ -63,9 +66,9 @@ private:
 	int m_currentAnimIndex;
 	//アニメーション切り替えフレーム数
 	int m_animChangeFrame;
+	//ヒットアニメーションのフレーム
+	int m_hitAnimFrame;
 
-	//自分と敵との距離
-	
 	//自分の半径
 	float m_colRadius;
 	//敵の半径

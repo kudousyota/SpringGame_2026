@@ -39,6 +39,10 @@ void Enemy::Init()
 {
 	m_modelHandle = MV1LoadModel("data/Enemy.mv1");
 
+	// 敵の初期位置を設定
+	m_pos = VGet(0.0f, 0.0f, 350.0f);
+	MV1SetPosition(m_modelHandle, m_pos.ToDxLibVector());
+
 	int animNo = MV1GetAnimIndex(m_modelHandle, kIdleAnimName);
 	m_currentAnimCount = 0.0f;
 
@@ -70,7 +74,7 @@ void Enemy::End()
 	}
 }
 
-void Enemy::Update(const Player& player)
+void Enemy::Update(Player& player)
 {
 	// プレイヤーの位置を取得
 	Vector3 playerPos = player.getPos();
@@ -101,10 +105,12 @@ void Enemy::Update(const Player& player)
 		float hitDist = playerRadius + kBulletRadius;
 		float hitDistSq = hitDist * hitDist;
 		float distSq = (m_bulletPos - playerCenter).SqMagnitude();
-		if (distSq <= hitDistSq)
+        if (distSq <= hitDistSq)
 		{
 			// プレイヤーに当たったら弾を消す
 			m_hasBullet = false;
+			// プレイヤー側の被弾処理を呼ぶ
+			player.OnHit();
 		}
 
 		// 一定距離進んだら消す（ルート計算を避けるため二乗距離で判定）

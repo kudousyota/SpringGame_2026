@@ -9,7 +9,7 @@ public:
 	~Enemy();
 	void Init();
 	void End();
-    void Update(const Player& player);
+    void Update(Player& player);
 	void Draw();
 private:
 	int m_modelHandle;

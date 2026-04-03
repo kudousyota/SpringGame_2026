@@ -17,12 +17,15 @@ namespace
     //アニメーションの名前
     const char* const kIdleAnimName = "CharacterArmature|Idle";
     const char* const kRunAnimName = "CharacterArmature|Run";
+    const char* const kHitAnimName = "CharacterArmature|HitReact";
 	//アニメーションの切り替えフレーム数
     constexpr int kAnimChangeFrame = 9;
     //プレイヤー基準位置から注視点までのベクトル
     //プレイヤー位置から注視点に向かうベクトル
     const Vector3 kPlayerToTarget = VGet(0.0f, 290.0f, 0.0f);
 }
+
+
 
 Player::Player() :
 	m_modelHandle(-1),
@@ -40,6 +43,7 @@ Player::Player() :
     m_currentAnimIndex(-1),
     m_animChangeFrame(0),
     m_lastAnimCount(0.0f),
+    m_hitAnimFrame (0),
     m_currentAnimCount(0.0f)
 {
 }
@@ -64,6 +68,8 @@ void Player::Init()
     m_animChangeFrame = 0;
 	//当たり判定用の半径
 	m_colRadius = 90.0f;
+
+    m_hitAnimFrame = 30;
 }
 
 void Player::End()
@@ -91,6 +97,10 @@ void Player::Update(const Input& input)
 
     //ダブル入力判定用タイマー
     m_doubleInputTimer++;
+
+    //アニメブレンド
+    m_animChangeFrame++;
+
 
     //無敵時間タイマー
     if (m_invincibleTimer > 0.0f)
@@ -121,7 +131,7 @@ void Player::Update(const Input& input)
         else if (now == Inputdata::Down)  triggered = input.IsTriggered("down");
         else if (now == Inputdata::Left)  triggered = input.IsTriggered("left");
         else if (now == Inputdata::Right) triggered = input.IsTriggered("right");
-
+		//同じ方向がトリガーされたとき、かつ前回の入力から一定時間以内なら回避開始
         if (triggered)
         {
             if (m_inputData == now && m_doubleInputTimer < kDoubleInputTime)
@@ -140,7 +150,7 @@ void Player::Update(const Input& input)
     if (m_isDodge)
     {
         Vector3 dodgeVec(0.0f, 0.0f, 0.0f);
-
+		//回避方向はカメラの向きに沿う
         switch (m_inputData)
         {
         case Inputdata::Up:    dodgeVec = forward; break;
@@ -149,14 +159,14 @@ void Player::Update(const Input& input)
         case Inputdata::Right: dodgeVec = right; break;
         default: break;
         }
-
+		//回避ベクトルの大きさがある程度以上なら移動と向きの更新
         if (dodgeVec.SqMagnitude() > 0.0001f)
         {
             dodgeVec = dodgeVec.Normalize();
             m_pos += dodgeVec * kDodgeSpeed;
             m_angle = atan2f(dodgeVec.x, dodgeVec.z) + DX_PI_F;
         }
-
+		//回避時間の減少
         m_dodgeTimer -= 1.0f;
         if (m_dodgeTimer <= 0.0f)
         {
@@ -167,12 +177,12 @@ void Player::Update(const Input& input)
     {
         //通常移動
         Vector3 moveVec(0.0f, 0.0f, 0.0f);
-
+		//移動方向はカメラの向きに沿う
         if (input.IsPressed("up"))    moveVec += forward;
         if (input.IsPressed("down"))  moveVec -= forward;
         if (input.IsPressed("left"))  moveVec -= right;
         if (input.IsPressed("right")) moveVec += right;
-
+		//移動ベクトルの大きさがある程度以上なら移動と向きの更新
         if (moveVec.SqMagnitude() > 0.0001f)
         {
             moveVec = moveVec.Normalize() * kspeed;
@@ -199,7 +209,7 @@ void Player::Update(const Input& input)
 
     const char* desiredAnim = isMoving ? kRunAnimName : kIdleAnimName;
     int animNo = MV1GetAnimIndex(m_modelHandle, desiredAnim);
-
+	//アニメーションが変わるときだけ処理
     if (animNo != m_currentAnimIndex)
     {
         if (m_lastAnimHandle != -1)
@@ -216,9 +226,7 @@ void Player::Update(const Input& input)
         m_animChangeFrame = 0;
     }
 
-    //アニメブレンド
-    m_animChangeFrame++;
-
+   
     if (m_lastAnimHandle == -1)
     {
         MV1SetAttachAnimBlendRate(m_modelHandle, m_cureentAnimHandle, 1.0f);
@@ -285,6 +293,27 @@ void Player::Draw()
 
     // 当たり判定の可視化
     DrawSphere3D(GetColCenter().ToDxLibVector(), m_colRadius, 10, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
+}
+
+void Player::OnHit()
+{
+    // Hitアニメに切り替え
+    int animNo = MV1GetAnimIndex(m_modelHandle, kHitAnimName);
+    if (animNo >= 0 && animNo != m_currentAnimIndex)
+    {
+        if (m_lastAnimHandle != -1)
+        {
+            MV1DetachAnim(m_modelHandle, m_lastAnimHandle);
+        }
+		//現在のアニメをLastにしてから新しいアニメをセット
+        m_lastAnimHandle = m_cureentAnimHandle;
+        m_lastAnimCount = m_currentAnimCount;
+		//新しいアニメをセット
+        m_cureentAnimHandle = MV1AttachAnim(m_modelHandle, animNo, -1, -1);
+        m_currentAnimIndex = animNo;
+        m_currentAnimCount = 0.0f;
+        m_animChangeFrame = 0;
+    }
 }
 
 Vector3 Player::getCameraTarget() const
