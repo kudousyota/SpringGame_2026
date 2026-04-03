@@ -12,6 +12,9 @@ namespace
 
 	// 弾の半径（描画時と同じ値）
 	constexpr float kBulletRadius = 10.0f;
+
+	//弾のサイズ
+	constexpr float kBulletSize = 50.0f;
 }
 
 Enemy::Enemy() :
@@ -153,6 +156,6 @@ void Enemy::Draw()
 	// 弾を描画
 	if (m_hasBullet)
 	{
-		DrawSphere3D(m_bulletPos.ToDxLibVector(), 10.0f, 8, GetColor(255, 255, 0), GetColor(255, 255, 0), true);
+		DrawSphere3D(m_bulletPos.ToDxLibVector(), kBulletSize, 8, GetColor(255, 255, 0), GetColor(255, 255, 0), true);
 	}
 }
