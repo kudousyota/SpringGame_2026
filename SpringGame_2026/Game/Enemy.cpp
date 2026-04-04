@@ -15,6 +15,9 @@ namespace
 
 	//弾のサイズ
 	constexpr float kBulletSize = 50.0f;
+
+	// 敵が弾を発射してから消えるまでの最大距離
+	constexpr float kBulletMaxDistance = 1000.0f;
 }
 
 Enemy::Enemy() :
@@ -43,7 +46,7 @@ void Enemy::Init()
 	m_modelHandle = MV1LoadModel("data/Enemy.mv1");
 
 	// 敵の初期位置を設定
-	m_pos = VGet(0.0f, 0.0f, 350.0f);
+	m_pos = VGet(0.0f, 500.0f, 350.0f);
 	MV1SetPosition(m_modelHandle, m_pos.ToDxLibVector());
 
 	int animNo = MV1GetAnimIndex(m_modelHandle, kIdleAnimName);
@@ -104,20 +107,29 @@ void Enemy::Update(Player& player)
 		// プレイヤーの中心と半径を取得
 		Vector3 playerCenter = player.GetColCenter();
 		float playerRadius = player.GetColRadius();
+
+		float bulletRadius = kBulletRadius;
+
 		// 距離の二乗で判定
-		float hitDist = playerRadius + kBulletRadius;
+		float hitDist = playerRadius + bulletRadius;
 		float hitDistSq = hitDist * hitDist;
 		float distSq = (m_bulletPos - playerCenter).SqMagnitude();
         if (distSq <= hitDistSq)
 		{
-			// プレイヤーに当たったら弾を消す
-			m_hasBullet = false;
-			// プレイヤー側の被弾処理を呼ぶ
-			player.OnHit();
+			
+			//無敵時間中は当たらない
+			if (!player.IsInvincible())
+			{
+				// プレイヤー側の被弾処理を呼ぶ
+				player.OnHit();
+				// プレイヤーに当たったら弾を消す
+				m_hasBullet = false;
+			}
+			
 		}
 
 		// 一定距離進んだら消す（ルート計算を避けるため二乗距離で判定）
-		constexpr float kMaxDist = 500.0f;
+		constexpr float kMaxDist = kBulletMaxDistance;
 		float travelDistSq = (m_bulletPos - m_bulletStartPos).SqMagnitude();
 		if (travelDistSq > kMaxDist * kMaxDist)
 		{

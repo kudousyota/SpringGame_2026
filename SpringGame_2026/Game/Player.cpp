@@ -23,6 +23,9 @@ namespace
     //プレイヤー基準位置から注視点までのベクトル
     //プレイヤー位置から注視点に向かうベクトル
     const Vector3 kPlayerToTarget = VGet(0.0f, 290.0f, 0.0f);
+
+    //点滅の頻度
+	const int kBlinkFrequency = 7;
 }
 
 
@@ -68,8 +71,8 @@ void Player::Init()
     m_animChangeFrame = 0;
 	//当たり判定用の半径
 	m_colRadius = 90.0f;
-
-    m_hitAnimFrame = 30;
+	//被弾アニメーションのフレーム数
+    m_hitAnimFrame = 0;
 }
 
 void Player::End()
@@ -106,7 +109,17 @@ void Player::Update(const Input& input)
     if (m_invincibleTimer > 0.0f)
     {
         m_invincibleTimer -= 1.0f;
-        if (m_invincibleTimer < 0.0f) m_invincibleTimer = 0.0f;
+		//無敵時間中は点滅させる
+        if (m_invincibleTimer < 0.0f)
+        {
+            m_invincibleTimer = 0.0f;
+        }
+    }
+
+    //被弾アニメーションのタイマー
+    if (m_hitAnimFrame > 0)
+    {
+        m_hitAnimFrame--;
     }
 
     Vector3 forward = m_pCamera->GetForward();
@@ -207,7 +220,17 @@ void Player::Update(const Input& input)
         isMoving = (checkMove.SqMagnitude() > 0.0001f);
     }
 
-    const char* desiredAnim = isMoving ? kRunAnimName : kIdleAnimName;
+    const char* desiredAnim = nullptr;
+    // 被弾中はHitアニメを最優先
+    if (m_hitAnimFrame > 0)
+    {
+        desiredAnim = kHitAnimName;
+    }
+    else
+    {
+        desiredAnim = isMoving ? kRunAnimName : kIdleAnimName;
+    }
+
     int animNo = MV1GetAnimIndex(m_modelHandle, desiredAnim);
 	//アニメーションが変わるときだけ処理
     if (animNo != m_currentAnimIndex)
@@ -280,9 +303,8 @@ void Player::Draw()
     bool shouldDrawModel = true;
     if (m_invincibleTimer > 0.0f)
     {
-        const int blinkFrequency = 5; // 点滅の頻度
         int timer = static_cast<int>(m_invincibleTimer);
-        bool show = ((timer / blinkFrequency) % 2) == 0;
+        bool show = ((timer / kBlinkFrequency) % 2) == 0;
         shouldDrawModel = show;
     }
 
@@ -297,6 +319,12 @@ void Player::Draw()
 
 void Player::OnHit()
 {
+	//無敵中は当たらない
+    if (IsInvincible())return;
+
+    //被弾アニメの継続時間をセット
+	m_hitAnimFrame = 30;
+
     // Hitアニメに切り替え
     int animNo = MV1GetAnimIndex(m_modelHandle, kHitAnimName);
     if (animNo >= 0 && animNo != m_currentAnimIndex)
@@ -329,6 +357,16 @@ Vector3 Player::GetColCenter() const
 float Player::GetColRadius() const
 {
     return m_colRadius;
+}
+
+bool Player::IsInvincible() const
+{
+    return m_invincibleTimer > 0.0f;
+}
+
+bool Player::IsHitPlaying() const
+{
+    return m_hitAnimFrame > 0;
 }
 
 

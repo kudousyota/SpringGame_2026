@@ -24,6 +24,9 @@ public:
 	//当たり判定用
 	Vector3 GetColCenter()const;
 	float GetColRadius()const;
+	//今無敵かどうか
+	bool IsInvincible()const;
+	
 
 	void setCamera(Camera* camera) { m_pCamera = camera; }
 
@@ -71,6 +74,9 @@ private:
 
 	//自分の半径
 	float m_colRadius;
+
+	//ヒットアニメーション中かどうか
+	bool IsHitPlaying() const;
 
 };
 
