@@ -3,6 +3,7 @@
 #include <vector>
 #include "../Game/Player.h"
 #include "../Game/Camera.h"
+#include "../system/Timer.h"
 
 class Input;
 class Player;
@@ -24,6 +25,7 @@ private:
 	std::shared_ptr<Player> m_pPlayer;
 	std::shared_ptr<Enemy>  m_pEnemy;
 	std::shared_ptr<Camera> m_pCamera;
+	std::shared_ptr<Timer> m_pTimer;
 
 };
 

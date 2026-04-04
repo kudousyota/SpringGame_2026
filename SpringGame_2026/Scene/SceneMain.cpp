@@ -44,6 +44,12 @@ void SceneMain::Init()
 
 	
 	m_pPlayer->setCamera(m_pCamera.get());
+
+	m_pTimer = std::make_shared<Timer>();
+	m_pTimer->Init();
+
+	// ”wŒiF‚ðÝ’è(‚±‚±‚ÅRGB‚ð•ÏX‚·‚ê‚Î”wŒiF‚ð•Ï‚¦‚ê‚éj
+	SetBackgroundColor(100, 150, 255); // ”–‚¢Â
 	
 }
 
@@ -62,13 +68,19 @@ void SceneMain::Update(Input input)
 	{
 		m_pCamera->Update();
 	}
+	if (m_pTimer)
+	{
+		m_pTimer->Update();
+	}
 	
 
 }
 
 void SceneMain::Draw()
 {
-	
+	// ‰æ–Ê‚ð”wŒiF‚ÅƒNƒŠƒA‚µ‚Ä‚©‚ç•`‰æ‚·‚é
+	ClearDrawScreen();
+
 	if (m_pPlayer)
 	{
 		m_pPlayer->Draw();
@@ -76,6 +88,10 @@ void SceneMain::Draw()
 	if (m_pEnemy)
 	{
 		m_pEnemy->Draw();
+	}
+	if (m_pTimer)
+	{
+		m_pTimer->Draw();
 	}
 	DrawGrid();
 	DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));
