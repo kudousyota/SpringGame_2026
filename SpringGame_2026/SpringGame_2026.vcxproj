@@ -141,7 +141,10 @@
     <ClCompile Include="Game\Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Game\Player.cpp" />
+    <ClCompile Include="Scene\Scene.cpp" />
+    <ClCompile Include="Scene\SceneController.cpp" />
     <ClCompile Include="Scene\SceneMain.cpp" />
+    <ClCompile Include="Scene\TitleScene.cpp" />
     <ClCompile Include="system\Vector3.cpp" />
     <ClCompile Include="system\Timer.cpp" />
   </ItemGroup>
@@ -152,7 +155,10 @@
     <ClInclude Include="Game\GameObject.h" />
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Game\Input.h" />
+    <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Scene\SceneController.h" />
     <ClInclude Include="Scene\SceneMain.h" />
+    <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="system\Vector3.h" />
     <ClInclude Include="system\Timer.h" />
   </ItemGroup>

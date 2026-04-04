@@ -4,6 +4,7 @@
 #include <memory> //シェアードポイント
 #include "Game/Input.h"
 #include "Scene/SceneMain.h"
+#include "Scene/TitleScene.h"
 //定数定義
 namespace
 {
@@ -22,7 +23,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetMainWindowText("ゲーム名");
 	//画面のサイズ変更
 	SetGraphMode(Game::kScreenWidth, Game::kScreenHeight, Game::kColorBitNum);
-	if (DxLib_Init() == -1)		// ＤＸライブラリ初期化処理
+	if (DxLib_Init() == -1) 		// ＤＸライブラリ初期化処理
 	{
 		return -1;			// エラーが起きたら直ちに終了
 	}
@@ -31,19 +32,48 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetDrawScreen(DX_SCREEN_BACK);
 	// カリングの設定
 	SetUseBackCulling(true);
-	//シーンの作成
-	std::shared_ptr<SceneMain>pScene = std::make_shared<SceneMain>();
-	pScene->Init();
+
+	// 入力とタイトルシーンを先に処理する
 	Input input;
-	
+	TitleScene title;
+	title.Init();
 
+	// タイトルが終わるまでループ
+	while (ProcessMessage() != -1 && !title.IsFinished())
+	{
+		//このフレームの開始時間を取得
+		LONGLONG start = GetNowHiPerformanceCount();
 
+		//前のフレームに描画した内容をクリアする
+		ClearDrawScreen();
+
+		input.Update();
+
+		title.Update(input);
+		title.Draw();
+
+		//escキーを押すとゲームを強制終了
+		if (CheckHitKey(KEY_INPUT_ESCAPE))
+		{
+			break;
+		}
+		//描画した内容を画面に反映する
+		ScreenFlip();
+
+		//フレームレート６０に固定
+		while (GetNowHiPerformanceCount() - start < 16667)
+		{
+		}
+	}
+
+	// タイトル終了後にメインシーンを作成
+	std::shared_ptr<SceneMain> pScene = std::make_shared<SceneMain>();
+	pScene->Init();
 
 	while (ProcessMessage() != -1)
 	{
 		//このフレームの開始時間を取得
 		LONGLONG start = GetNowHiPerformanceCount();
-
 
 		//前のフレームに描画した内容をクリアする
 		ClearDrawScreen();
@@ -52,7 +82,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		//ここにゲームの処理を書く
 
-        pScene->Update(input);
+		pScene->Update(input);
 
 		pScene->Draw();
 
@@ -67,7 +97,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//フレームレート６０に固定
 		while (GetNowHiPerformanceCount() - start < 16667)
 		{
-
 		}
 
 	}
@@ -82,5 +111,5 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	DxLib_End();				// ＤＸライブラリ使用の終了処理
 
-	return 0;				// ソフトの終了 
+	return 0;
 }
