@@ -323,9 +323,11 @@ void Player::Draw()
     {
         MV1DrawModel(m_modelHandle);
     }
-
+#ifdef _DEBUG
     // 当たり判定の可視化
     DrawSphere3D(GetColCenter().ToDxLibVector(), m_colRadius, 10, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
+#endif
+
 }
 
 void Player::OnHit()
