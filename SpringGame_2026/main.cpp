@@ -38,6 +38,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	TitleScene title;
 	title.Init();
 
+
 	// タイトルが終わるまでループ
 	while (ProcessMessage() != -1 && !title.IsFinished())
 	{
@@ -80,7 +81,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		input.Update();
 
-		//ここにゲームの処理を書く
+        //ここにゲームの処理を書く
 
 		pScene->Update(input);
 
@@ -109,7 +110,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// (デストラクタで MV1DeleteModel 等を呼ぶと DxLib_End() 後だとクラッシュする)
 	pScene.reset();
 
-	DxLib_End();				// ＤＸライブラリ使用の終了処理
+    ::DxLib_End();				// ＤＸライブラリ使用の終了処理
 
 	return 0;
 }

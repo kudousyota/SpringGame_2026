@@ -2,6 +2,7 @@
 #include "../system/Vector3.h"
 class Input;
 class Camera;
+class Timer;
 class Player
 {
 public:
@@ -10,7 +11,7 @@ public:
 
 	void Init();
 	void End();
-	void Update(const Input& input);
+	void Update(const Input& input ,const Timer& timer);
 	void Draw();
 
 	// プレイヤーが弾に当たったときの処理

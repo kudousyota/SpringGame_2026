@@ -2,6 +2,7 @@
 #include "Dxlib.h"
 #include "Input.h"
 #include "Camera.h"
+#include "../system/Timer.h"
 
 namespace
 {
@@ -94,8 +95,15 @@ void Player::End()
     }
 }
 
-void Player::Update(const Input& input)
+void Player::Update(const Input& input,const Timer& timer)
 {
+    // タイマーが0秒になったら動けなくする
+    // Timer::IsTimeUp() は bool を返すため、時間切れなら true を返す
+    if (timer.IsTimeUp())
+    {
+        return;
+    }
+
     if (m_pCamera == nullptr) return;
 
     //ダブル入力判定用タイマー

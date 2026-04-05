@@ -4,10 +4,10 @@
 namespace
 {
 	//ゲームのフレームレート
-	constexpr int kFps = 60;
+	constexpr int kFps = 30;
 
 	//制限時間
-	constexpr int kTlimeLimit = 60;
+	constexpr int kTlimeLimit = 30;
 }
 
 Timer::Timer():
@@ -21,7 +21,7 @@ Timer::~Timer()
 
 void Timer::Init()
 {
-	//ゲームタイマーを60秒に設定
+	//ゲームタイマーを設定
 	m_gameTimer = kTlimeLimit * kFps;
 }
 
@@ -50,4 +50,10 @@ void Timer::Draw()
 	{
 		DrawString(30, 50, "Time's up!", GetColor(255, 0, 0));
 	}
+}
+
+bool Timer::IsTimeUp() const
+{
+	// ゲームタイマーが0以下なら時間切れ
+	return m_gameTimer <= 0;
 }

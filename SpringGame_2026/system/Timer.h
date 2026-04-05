@@ -8,6 +8,8 @@ public:
 	void End();
 	void Update();
 	void Draw();
+
+	bool IsTimeUp() const;
 private:
 	int m_gameTimer;
 };

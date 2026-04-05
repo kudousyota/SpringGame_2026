@@ -8,6 +8,7 @@
 class Input;
 class Player;
 class Enemy;
+class Timer;
 class SceneMain
 {
 public:
@@ -15,7 +16,7 @@ public:
 	~SceneMain();
 
 	void Init();
-	void Update(Input input);
+ void Update(const Input& input);
 	void Draw();
 private:
 	void DrawGrid();

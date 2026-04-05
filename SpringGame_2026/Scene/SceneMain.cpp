@@ -53,12 +53,25 @@ void SceneMain::Init()
 	
 }
 
-void SceneMain::Update(Input input)
+void SceneMain::Update(const Input& input)
 {
 	m_frameCount++;
     if (m_pPlayer)
 	{
-		m_pPlayer->Update(input);
+     // Timerは m_pTimerを内部で保持しているため、Player::Update のシグネチャに合わせて呼び出す
+		if (m_pTimer)
+		{
+			m_pTimer->Update();
+			m_pPlayer->Update(input, *m_pTimer);
+		}
+		else
+		{
+			// タイマーが無ければ通常の更新を行う（時間切れフラグは false とみなす）
+			Timer dummy;
+			// dummy を初期化してから渡す
+			dummy.Init();
+			m_pPlayer->Update(input, dummy);
+		}
 	}
     if (m_pEnemy && m_pPlayer)
 	{
@@ -68,10 +81,7 @@ void SceneMain::Update(Input input)
 	{
 		m_pCamera->Update();
 	}
-	if (m_pTimer)
-	{
-		m_pTimer->Update();
-	}
+    // m_pTimer の更新は Player 更新時にまとめて行うためここでは行わない
 	
 
 }
