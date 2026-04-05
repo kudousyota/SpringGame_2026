@@ -14,6 +14,7 @@ public:
 private:
 	int m_modelHandle;
 	Vector3 m_pos;
+	float m_angle;
 	//弾
 	Vector3 m_bulletPos;
 	Vector3 m_bulletDir;
@@ -34,5 +35,9 @@ private:
 	int m_currentAnimIndex;
 	//アニメーション切り替えフレーム数
 	int m_animChangeFrame;
+	//被弾アニメのフレーム
+	int m_BiteAnimeFrame;
+	//攻撃中かどうか
+	bool m_isAttac;
 };
 

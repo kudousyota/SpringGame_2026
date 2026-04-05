@@ -291,8 +291,11 @@ void Player::Update(const Input& input)
     }
 
     // モデル行列を毎フレーム更新
+	// 回転行列と平行移動行列を作って掛け合わせる
     MATRIX rotMtx = MGetRotY(m_angle);
+	// プレイヤーの位置に平行移動する行列
     MATRIX transMtx = MGetTranslate(m_pos.ToDxLibVector());
+	// 回転と平行移動を掛け合わせた行列
     MATRIX world = MMult(rotMtx, transMtx);
     MV1SetMatrix(m_modelHandle, world);
 }

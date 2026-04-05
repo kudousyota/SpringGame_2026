@@ -9,6 +9,7 @@ namespace
 
 	//アニメーションの名前
 	const char* const kIdleAnimName = "MonsterArmature|Idle";
+	const char* const kBiteAnimName = "MonsterArmature|Bite_Front";
 
 	// 弾の半径（描画時と同じ値）
 	constexpr float kBulletRadius = 10.0f;
@@ -33,7 +34,10 @@ Enemy::Enemy() :
 	m_cureentAnimHandle(-1),
 	m_lastAnimHandle(-1),
 	m_currentAnimIndex(-1),
-	m_animChangeFrame(0)
+	m_animChangeFrame(0),
+	m_angle(0.0f),
+	m_BiteAnimeFrame(0),
+	m_isAttac(false)
 {
 }
 
@@ -89,13 +93,33 @@ void Enemy::Update(Player& player)
 	m_shotTimer++;
 
 	// 弾が無く、一定時間たったら発射
-	if (!m_hasBullet && m_shotTimer >= 60)
+	if (!m_hasBullet && !m_isAttac && m_shotTimer >= 60)
 	{
 		m_hasBullet = true;
 		m_bulletPos = m_pos;
 		m_bulletStartPos = m_pos;
 		m_bulletDir = (playerPos - m_pos).Normalize();
 		m_shotTimer = 0;
+
+		m_isAttac = true;
+
+		// 攻撃アニメーションを開始
+		// Biteアニメに切り替え
+		int animNo = MV1GetAnimIndex(m_modelHandle, kBiteAnimName);
+		if (animNo >= 0 && animNo != m_currentAnimIndex)
+		{
+			// 今のアニメを外す
+			if (m_cureentAnimHandle != -1)
+			{
+				MV1DetachAnim(m_modelHandle, m_cureentAnimHandle);
+			}
+
+			// Biteアニメをセット
+			m_cureentAnimHandle = MV1AttachAnim(m_modelHandle, animNo, -1, -1);
+			m_currentAnimIndex = animNo;
+			m_currentAnimCount = 0.0f;
+			m_animChangeFrame = 0;
+		}
 	}
 
 	// 弾を進める
@@ -128,42 +152,71 @@ void Enemy::Update(Player& player)
 			
 		}
 
-		// 一定距離進んだら消す（ルート計算を避けるため二乗距離で判定）
+		// 一定距離進んだら消すルート計算を避けるため二乗距離で判定
 		constexpr float kMaxDist = kBulletMaxDistance;
 		float travelDistSq = (m_bulletPos - m_bulletStartPos).SqMagnitude();
 		if (travelDistSq > kMaxDist * kMaxDist)
 		{
 			m_hasBullet = false;
 		}
+        // アニメ切り替えは発射時に行う。ここでは継続時間の管理のみ
 	}
-	//アニメーション
-    //アニメ進行
-    m_currentAnimCount += 0.5f;
-    float currentTotal = MV1GetAttachAnimTotalTime(m_modelHandle, m_cureentAnimHandle);
-    if (m_currentAnimCount >= currentTotal)
-    {
-        m_currentAnimCount -= currentTotal;
-    }
-    MV1SetAttachAnimTime(m_modelHandle, m_cureentAnimHandle, m_currentAnimCount);
+	// アニメーション
+	// アニメ進行
+	m_currentAnimCount += 0.5f;
+	float currentTotal = MV1GetAttachAnimTotalTime(m_modelHandle, m_cureentAnimHandle);
 
-    //Lastアニメ進行
-    if (m_lastAnimHandle != -1)
-    {
-        m_lastAnimCount += 0.5f;
-        float lastTotal = MV1GetAttachAnimTotalTime(m_modelHandle, m_lastAnimHandle);
-        if (m_lastAnimCount >= lastTotal)
-        {
-            m_lastAnimCount -= lastTotal;
-        }
-        MV1SetAttachAnimTime(m_modelHandle, m_lastAnimHandle, m_lastAnimCount);
-    }
+	// Bite中はループさせない
+	if (m_currentAnimIndex == MV1GetAnimIndex(m_modelHandle, kBiteAnimName))
+	{
+		if (m_currentAnimCount >= currentTotal)
+		{
+			m_currentAnimCount = currentTotal;
+		}
+	}
+	else
+	{
+		// Idleなどはループ
+		if (m_currentAnimCount >= currentTotal)
+		{
+			m_currentAnimCount -= currentTotal;
+		}
+	}
 
+	MV1SetAttachAnimTime(m_modelHandle, m_cureentAnimHandle, m_currentAnimCount);
+
+
+	// Biteアニメが最後まで再生されたら Idle に戻す
+	if (m_isAttac && m_currentAnimIndex == MV1GetAnimIndex(m_modelHandle, kBiteAnimName))
+	{
+		float biteTotal = MV1GetAttachAnimTotalTime(m_modelHandle, m_cureentAnimHandle);
+
+		if (m_currentAnimCount >= biteTotal)
+		{
+			int idleAnimNo = MV1GetAnimIndex(m_modelHandle, kIdleAnimName);
+			if (idleAnimNo >= 0 && idleAnimNo != m_currentAnimIndex)
+			{
+				// 今のBiteアニメを外す
+				if (m_cureentAnimHandle != -1)
+				{
+					MV1DetachAnim(m_modelHandle, m_cureentAnimHandle);
+				}
+
+				// Idleアニメをセット
+				m_cureentAnimHandle = MV1AttachAnim(m_modelHandle, idleAnimNo, -1, -1);
+				m_currentAnimIndex = idleAnimNo;
+				m_currentAnimCount = 0.0f;
+				m_animChangeFrame = 0;
+			}
+
+			m_isAttac = false;
+		}
+	}
 }
 
 void Enemy::Draw()
 {
-    // 見やすいサイズの球で敵を描画
-	//DrawSphere3D(m_pos.ToDxLibVector(), 50.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true);
+	// 敵のモデルを描画
 	MV1DrawModel(m_modelHandle);
 	// 弾を描画
 	if (m_hasBullet)
