@@ -2,8 +2,8 @@
 #include "Dxlib.h"
 
 Stage::Stage():
-	m_stageMin(VGet(-1000.0f, 0.0f, -1000.0f)),
-	m_stageMax(VGet(1000.0f, 0.0f, 1000.0f))
+	m_stageMin(VGet(-900.0f, 0.0f, -500.0f)),
+	m_stageMax(VGet(900.0f, 0.0f, 500.0f))
 {
 }
 
@@ -27,14 +27,13 @@ void Stage::Draw()
 {
 }
 
-void Stage::CanMove(const Vector3& pos, float radius)
+bool Stage::CanMove(const Vector3& pos, float radius)const
 {
-	if (pos.x - radius < m_stageMin.x)
-	{
-		pos.x = m_stageMin.x + radius;
-	}
-	else if(pos.x + radius > m_stageMax.x)
-	{
-		pos.x = m_stageMax.x - radius;
-	}
+	//プレイヤーの移動可能な範囲内にいるかどうかを判定する
+    if (pos.x - radius < m_stageMin.x) return false;
+    if (pos.x + radius > m_stageMax.x) return false;
+    if (pos.z - radius < m_stageMin.z) return false;
+    if (pos.z + radius > m_stageMax.z) return false;
+
+    return true;
 }

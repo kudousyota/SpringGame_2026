@@ -3,6 +3,7 @@
 #include "../Game/Player.h"
 #include "../Game/Enemy.h"
 #include "../Game/Input.h"
+#include "../Game/Stage.h"
 
 SceneMain::SceneMain():
 m_frameCount(0)
@@ -22,6 +23,10 @@ SceneMain::~SceneMain()
 	{
 		m_pEnemy->End();
 	}
+    if (m_pStage)
+	{
+		m_pStage->End();
+	}
 }
 void SceneMain::Init()
 {
@@ -34,18 +39,28 @@ void SceneMain::Init()
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(200.0f, 2000.0f);
 
+   // ステージを作成して初期化
+	m_pStage = std::make_shared<Stage>();
+	m_pStage->Init();
+
+	// プレイヤーと敵を作成
 	m_pPlayer = std::make_shared<Player>();
 	m_pPlayer->Init();
 
 	m_pEnemy = std::make_shared<Enemy>();
 	m_pEnemy->Init();
 
+	// カメラを作成しプレイヤーをセット
 	m_pCamera = std::make_shared<Camera>();
 	m_pCamera->SetPlayer(m_pPlayer);
 	m_pCamera->Init();
 
-	
+	// プレイヤーにカメラとステージを渡す
 	m_pPlayer->setCamera(m_pCamera.get());
+	m_pPlayer->setStage(m_pStage.get());
+
+	
+
 
 	m_pTimer = std::make_shared<Timer>();
 	m_pTimer->Init();

@@ -3,6 +3,7 @@
 class Input;
 class Camera;
 class Timer;
+class Stage;
 class Player
 {
 public:
@@ -18,10 +19,10 @@ public:
 	void OnHit();
 
 	// プレイヤーの位置と向きを取得する関数
-	Vector3 getPos() const { return m_pos.ToDxLibVector(); }
-	float getAngle() const { return m_angle; }
+	Vector3 GetPos() const { return m_pos; }
+	float GetAngle() const { return m_angle; }
 	// カメラの注視点を取得する関数
-	Vector3 getCameraTarget()const;
+	Vector3 GetCameraTarget()const;
 	//当たり判定用
 	Vector3 GetColCenter()const;
 	float GetColRadius()const;
@@ -29,7 +30,8 @@ public:
 	bool IsInvincible()const;
 	
 
-	void setCamera(Camera* camera) { m_pCamera = camera; }
+  void setCamera(Camera* camera) { m_pCamera = camera; }
+	void setStage(Stage* stage) { m_pStage = stage; }
 
 private:
 	enum class Inputdata
@@ -40,7 +42,10 @@ private:
 		Left,
 		Right
 	};
+	// カメラへの参照
 	Camera* m_pCamera;
+	// ステージへの参照
+	Stage* m_pStage;
 
 	int m_modelHandle;
 
@@ -78,6 +83,6 @@ private:
 
 	//ヒットアニメーション中かどうか
 	bool IsHitPlaying() const;
-
+	
 };
 

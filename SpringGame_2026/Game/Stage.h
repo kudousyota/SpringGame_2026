@@ -13,7 +13,7 @@ public:
 	void Draw();
 
 	//プレイヤーがその位置に進めるかどうかを判定する関数
-	void CanMove(const Vector3& pos ,float radius);
+	bool CanMove(const Vector3& pos ,float radius)const;
 private:
 	//移動可能な範囲
 	Vector3 m_stageMin;

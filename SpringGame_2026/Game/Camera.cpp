@@ -37,8 +37,8 @@ Camera::~Camera()
 
 void Camera::Init()
 {
-	Vector3 cameraTarget = m_pPlayer->getCameraTarget();
-	float playerAng = m_pPlayer->getAngle();
+	Vector3 cameraTarget = m_pPlayer->GetCameraTarget();
+	float playerAng = m_pPlayer->GetAngle();
 
 	// 初期角度はプレイヤーの向きに合わせる
 	m_cameraAngleX = playerAng;
@@ -93,7 +93,7 @@ void Camera::Update()
 	if (m_cameraAngleX < -DX_PI_F) m_cameraAngleX += DX_TWO_PI_F;
 
 	// プレイヤー追従先
-	Vector3 cameraTarget = m_pPlayer->getCameraTarget();
+	Vector3 cameraTarget = m_pPlayer->GetCameraTarget();
 
 	// カメラの位置
 	Vector3 offset;

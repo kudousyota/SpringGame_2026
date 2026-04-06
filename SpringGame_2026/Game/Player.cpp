@@ -3,6 +3,7 @@
 #include "Input.h"
 #include "Camera.h"
 #include "../system/Timer.h"
+#include "Stage.h"
 
 namespace
 {
@@ -32,6 +33,8 @@ namespace
 
 
 Player::Player() :
+    m_pCamera(nullptr),
+	m_pStage(nullptr),
 	m_modelHandle(-1),
 	m_angle(0.0f),
     m_isDoubleInput(false),
@@ -48,6 +51,7 @@ Player::Player() :
     m_animChangeFrame(0),
     m_lastAnimCount(0.0f),
     m_hitAnimFrame (0),
+	m_colRadius(0.0f),
     m_currentAnimCount(0.0f)
 {
 }
@@ -95,10 +99,9 @@ void Player::End()
     }
 }
 
-void Player::Update(const Input& input,const Timer& timer)
+void Player::Update(const Input& input, const Timer& timer)
 {
     // タイマーが0秒になったら動けなくする
-    // Timer::IsTimeUp() は bool を返すため、時間切れなら true を返す
     if (timer.IsTimeUp())
     {
         return;
@@ -106,25 +109,23 @@ void Player::Update(const Input& input,const Timer& timer)
 
     if (m_pCamera == nullptr) return;
 
-    //ダブル入力判定用タイマー
+    // ダブル入力判定用タイマー
     m_doubleInputTimer++;
 
-    //アニメブレンド
+    // アニメブレンド
     m_animChangeFrame++;
 
-
-    //無敵時間タイマー
+    // 無敵時間タイマー
     if (m_invincibleTimer > 0.0f)
     {
         m_invincibleTimer -= 1.0f;
-		//無敵時間中は点滅させる
         if (m_invincibleTimer < 0.0f)
         {
             m_invincibleTimer = 0.0f;
         }
     }
 
-    //被弾アニメーションのタイマー
+    // 被弾アニメーションのタイマー
     if (m_hitAnimFrame > 0)
     {
         m_hitAnimFrame--;
@@ -133,26 +134,27 @@ void Player::Update(const Input& input,const Timer& timer)
     Vector3 forward = m_pCamera->GetForward();
     Vector3 right = m_pCamera->GetRight();
 
-    //入力方向取得
+    // 入力方向取得
     Inputdata now = Inputdata::None;
 
-    if (input.IsPressed("up"))    now = Inputdata::Up;
+    if (input.IsPressed("up"))         now = Inputdata::Up;
     else if (input.IsPressed("down"))  now = Inputdata::Down;
     else if (input.IsPressed("left"))  now = Inputdata::Left;
     else if (input.IsPressed("right")) now = Inputdata::Right;
 
     m_isInput = (now != Inputdata::None);
 
-    //回避開始判定
+    // 回避開始判定
     if (!m_isDodge && m_isInput)
     {
         bool triggered = false;
-
-        if (now == Inputdata::Up)    triggered = input.IsTriggered("up");
+		// 現在の入力が新たに押されたものか判定
+        if (now == Inputdata::Up)         triggered = input.IsTriggered("up");
         else if (now == Inputdata::Down)  triggered = input.IsTriggered("down");
         else if (now == Inputdata::Left)  triggered = input.IsTriggered("left");
         else if (now == Inputdata::Right) triggered = input.IsTriggered("right");
-		//同じ方向がトリガーされたとき、かつ前回の入力から一定時間以内なら回避開始
+
+        // 同じ方向が短時間で2回押されたら回避
         if (triggered)
         {
             if (m_inputData == now && m_doubleInputTimer < kDoubleInputTime)
@@ -167,27 +169,36 @@ void Player::Update(const Input& input,const Timer& timer)
         }
     }
 
-    //回避中処理
+    // 移動処理
+    bool isMoving = false;
+
     if (m_isDodge)
     {
         Vector3 dodgeVec(0.0f, 0.0f, 0.0f);
-		//回避方向はカメラの向きに沿う
+
         switch (m_inputData)
         {
         case Inputdata::Up:    dodgeVec = forward; break;
-		case Inputdata::Down:  dodgeVec = forward * -1.0f; break;//前後はカメラの向きに沿って移動
-		case Inputdata::Left:  dodgeVec = right * -1.0f; break;//左右はカメラの向きに沿って移動
+        case Inputdata::Down:  dodgeVec = forward * -1.0f; break;
+        case Inputdata::Left:  dodgeVec = right * -1.0f; break;
         case Inputdata::Right: dodgeVec = right; break;
         default: break;
         }
-		//回避ベクトルの大きさがある程度以上なら移動と向きの更新
+		// 回避ベクトルの正規化と移動
         if (dodgeVec.SqMagnitude() > 0.0001f)
         {
             dodgeVec = dodgeVec.Normalize();
-            m_pos += dodgeVec * kDodgeSpeed;
+            Vector3 nextPos = m_pos + dodgeVec * kDodgeSpeed;
+
+            if (m_pStage == nullptr || m_pStage->CanMove(nextPos, m_colRadius))
+            {
+                m_pos = nextPos;
+            }
+
             m_angle = atan2f(dodgeVec.x, dodgeVec.z) + DX_PI_F;
+            isMoving = true;
         }
-		//回避時間の減少
+
         m_dodgeTimer -= 1.0f;
         if (m_dodgeTimer <= 0.0f)
         {
@@ -196,39 +207,44 @@ void Player::Update(const Input& input,const Timer& timer)
     }
     else
     {
-        //通常移動
         Vector3 moveVec(0.0f, 0.0f, 0.0f);
-		//移動方向はカメラの向きに沿う
-        if (input.IsPressed("up"))    moveVec += forward;
-        if (input.IsPressed("down"))  moveVec -= forward;
-        if (input.IsPressed("left"))  moveVec -= right;
-        if (input.IsPressed("right")) moveVec += right;
-		//移動ベクトルの大きさがある程度以上なら移動と向きの更新
+
+        if (input.IsPressed("up"))
+        {
+            moveVec += forward;
+        }
+        if (input.IsPressed("down"))
+        {
+            moveVec -= forward;
+        }
+        if (input.IsPressed("left"))
+        {
+            moveVec -= right;
+        }
+        if (input.IsPressed("right"))
+        {
+            moveVec += right;
+        }
+   
+
         if (moveVec.SqMagnitude() > 0.0001f)
         {
-            moveVec = moveVec.Normalize() * kspeed;
-            m_pos += moveVec;
+            moveVec = moveVec.Normalize();
+            Vector3 nextPos = m_pos + moveVec * kspeed;
+			// ステージの移動可能範囲内か判定してから移動
+            if (m_pStage == nullptr || m_pStage->CanMove(nextPos, m_colRadius))
+            {
+                m_pos = nextPos;
+            }
+
             m_angle = atan2f(moveVec.x, moveVec.z) + DX_PI_F;
+            isMoving = true;
         }
     }
 
-    //アニメーション切り替え
-    bool isMoving = false;
-    if (m_isDodge)
-    {
-        isMoving = true;
-    }
-    else
-    {
-        Vector3 checkMove(0.0f, 0.0f, 0.0f);
-        if (input.IsPressed("up"))    checkMove += forward;
-        if (input.IsPressed("down"))  checkMove -= forward;
-        if (input.IsPressed("left"))  checkMove -= right;
-        if (input.IsPressed("right")) checkMove += right;
-        isMoving = (checkMove.SqMagnitude() > 0.0001f);
-    }
-
+    // アニメーション切り替え
     const char* desiredAnim = nullptr;
+
     // 被弾中はHitアニメを最優先
     if (m_hitAnimFrame > 0)
     {
@@ -240,7 +256,8 @@ void Player::Update(const Input& input,const Timer& timer)
     }
 
     int animNo = MV1GetAnimIndex(m_modelHandle, desiredAnim);
-	//アニメーションが変わるときだけ処理
+
+    // アニメーションが変わるときだけ処理
     if (animNo != m_currentAnimIndex)
     {
         if (m_lastAnimHandle != -1)
@@ -257,7 +274,6 @@ void Player::Update(const Input& input,const Timer& timer)
         m_animChangeFrame = 0;
     }
 
-   
     if (m_lastAnimHandle == -1)
     {
         MV1SetAttachAnimBlendRate(m_modelHandle, m_cureentAnimHandle, 1.0f);
@@ -277,7 +293,7 @@ void Player::Update(const Input& input,const Timer& timer)
         }
     }
 
-    //アニメ進行
+    // アニメ進行
     m_currentAnimCount += 0.5f;
     float currentTotal = MV1GetAttachAnimTotalTime(m_modelHandle, m_cureentAnimHandle);
     if (m_currentAnimCount >= currentTotal)
@@ -286,7 +302,7 @@ void Player::Update(const Input& input,const Timer& timer)
     }
     MV1SetAttachAnimTime(m_modelHandle, m_cureentAnimHandle, m_currentAnimCount);
 
-    //Lastアニメ進行
+    // Lastアニメ進行
     if (m_lastAnimHandle != -1)
     {
         m_lastAnimCount += 0.5f;
@@ -299,11 +315,8 @@ void Player::Update(const Input& input,const Timer& timer)
     }
 
     // モデル行列を毎フレーム更新
-	// 回転行列と平行移動行列を作って掛け合わせる
     MATRIX rotMtx = MGetRotY(m_angle);
-	// プレイヤーの位置に平行移動する行列
     MATRIX transMtx = MGetTranslate(m_pos.ToDxLibVector());
-	// 回転と平行移動を掛け合わせた行列
     MATRIX world = MMult(rotMtx, transMtx);
     MV1SetMatrix(m_modelHandle, world);
 }
@@ -357,7 +370,7 @@ void Player::OnHit()
     }
 }
 
-Vector3 Player::getCameraTarget() const
+Vector3 Player::GetCameraTarget() const
 {
     return m_pos + kPlayerToTarget;
 }
