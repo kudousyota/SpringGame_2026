@@ -5,6 +5,8 @@
 #include "Game/Input.h"
 #include "Scene/SceneMain.h"
 #include "Scene/TitleScene.h"
+#include "Scene/SceneController.h"
+#include "Scene/ResultScene.h"
 //定数定義
 namespace
 {
@@ -71,6 +73,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	std::shared_ptr<SceneMain> pScene = std::make_shared<SceneMain>();
 	pScene->Init();
 
+    bool timeUpTriggered = false;
 	while (ProcessMessage() != -1)
 	{
 		//このフレームの開始時間を取得
@@ -87,6 +90,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		pScene->Draw();
 
+        // タイマーが切れたらリザルトシーンへ遷移
+		if (pScene->IsTimeUp())
+		{
+			timeUpTriggered = true;
+			break;
+		}
+
 		//escキーを押すとゲームを強制終了
 		if (CheckHitKey(KEY_INPUT_ESCAPE))
 		{
@@ -102,6 +112,30 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	}
 	
+    // タイムアップならリザルトシーンへ移行
+	if (timeUpTriggered)
+	{
+		SceneController controller;
+		ResultScene result(controller);
+		// ResultScene のループ
+		while (ProcessMessage() != -1 && !result.IsFinished())
+		{
+			LONGLONG start = GetNowHiPerformanceCount();
+			ClearDrawScreen();
+			input.Update();
+			result.Update(input);
+			result.Draw();
+			if (CheckHitKey(KEY_INPUT_ESCAPE))
+			{
+				break;
+			}
+			ScreenFlip();
+			while (GetNowHiPerformanceCount() - start < 16667)
+			{
+			}
+		}
+	}
+
 	//メモリの解放
 
 	

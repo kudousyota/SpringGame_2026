@@ -16,8 +16,9 @@ public:
 	~SceneMain();
 
 	void Init();
- void Update(const Input& input);
+	void Update(const Input& input);
 	void Draw();
+    bool IsTimeUp() const;
 private:
 	void DrawGrid();
 

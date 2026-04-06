@@ -141,6 +141,7 @@
     <ClCompile Include="Game\Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Game\Player.cpp" />
+    <ClCompile Include="Scene\ResultScene.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneController.cpp" />
     <ClCompile Include="Scene\SceneMain.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="Game\GameObject.h" />
     <ClInclude Include="Game\Player.h" />
     <ClInclude Include="Game\Input.h" />
+    <ClInclude Include="Scene\ResultScene.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneController.h" />
     <ClInclude Include="Scene\SceneMain.h" />

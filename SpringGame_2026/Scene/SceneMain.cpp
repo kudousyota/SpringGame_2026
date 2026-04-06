@@ -9,6 +9,8 @@ m_frameCount(0)
 {
 }
 
+
+
 SceneMain::~SceneMain()
 {
 	// PlayerとEnemy の終了処理を呼び出す
@@ -58,7 +60,7 @@ void SceneMain::Update(const Input& input)
 	m_frameCount++;
     if (m_pPlayer)
 	{
-     // Timerは m_pTimerを内部で保持しているため、Player::Update のシグネチャに合わせて呼び出す
+     // Timerは m_pTimerを内部で保持しているため、Player::Updateのシグネチャに合わせて呼び出す
 		if (m_pTimer)
 		{
 			m_pTimer->Update();
@@ -66,7 +68,7 @@ void SceneMain::Update(const Input& input)
 		}
 		else
 		{
-			// タイマーが無ければ通常の更新を行う（時間切れフラグは false とみなす）
+			// タイマーが無ければ通常の更新を行う（時間切れフラグはfalseとみなす）
 			Timer dummy;
 			// dummy を初期化してから渡す
 			dummy.Init();
@@ -81,7 +83,7 @@ void SceneMain::Update(const Input& input)
 	{
 		m_pCamera->Update();
 	}
-    // m_pTimer の更新は Player 更新時にまとめて行うためここでは行わない
+    // m_pTimerの更新はPlayer更新時にまとめて行うためここでは行わない
 	
 
 }
@@ -131,4 +133,13 @@ void SceneMain::DrawGrid()
 		endPos = VGet(static_cast<float>(x), 0.0f, 300.0f);
 		DrawLine3D(startPos, endPos, 0x0000ff);
 	}
+}
+
+bool SceneMain::IsTimeUp() const
+{
+	if (m_pTimer)
+	{
+		return m_pTimer->IsTimeUp();
+	}
+	return false;
 }
