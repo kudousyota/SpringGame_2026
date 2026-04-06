@@ -146,6 +146,7 @@
     <ClCompile Include="Scene\SceneController.cpp" />
     <ClCompile Include="Scene\SceneMain.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
+    <ClCompile Include="Game\Stage.cpp" />
     <ClCompile Include="system\Vector3.cpp" />
     <ClCompile Include="system\Timer.cpp" />
   </ItemGroup>
@@ -161,6 +162,7 @@
     <ClInclude Include="Scene\SceneController.h" />
     <ClInclude Include="Scene\SceneMain.h" />
     <ClInclude Include="Scene\TitleScene.h" />
+    <ClInclude Include="Game\Stage.h" />
     <ClInclude Include="system\Vector3.h" />
     <ClInclude Include="system\Timer.h" />
   </ItemGroup>
