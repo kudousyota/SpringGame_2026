@@ -1,17 +1,18 @@
 #include "Enemy.h"
 #include "Player.h"
 #include "Dxlib.h"
+#include <cmath>
 
 namespace
 {
 	//弾の速度
-	constexpr float kBulletSpeed = 8.0f;
+	constexpr float kBulletSpeed = 10.0f;
 
 	//アニメーションの名前
 	const char* const kIdleAnimName = "MonsterArmature|Idle";
 	const char* const kBiteAnimName = "MonsterArmature|Bite_Front";
 
-	// 弾の半径（描画時と同じ値）
+	// 弾の半径(描画時と同じ値)
 	constexpr float kBulletRadius = 10.0f;
 
 	//弾のサイズ
@@ -88,6 +89,27 @@ void Enemy::Update(Player& player)
 {
 	// プレイヤーの位置を取得
 	Vector3 playerPos = player.GetPos();
+
+	// 敵の向きをプレイヤーに向ける
+	Vector3 toPlayer = playerPos - m_pos;
+
+	//Y軸は回転させない
+	toPlayer.y = 0.0f;
+
+	//回転
+	if (toPlayer.SqMagnitude() > 0.0001f)
+	{
+		// 敵の向きをプレイヤーに向ける
+		toPlayer = toPlayer.Normalize();
+
+		m_angle = atan2f(toPlayer.x, toPlayer.z) + DX_PI_F;
+
+		// モデル行列を毎フレーム更新して回転と位置を反映する
+		MATRIX rotMtx = MGetRotY(m_angle);
+		MATRIX transMtx = MGetTranslate(m_pos.ToDxLibVector());
+		MATRIX world = MMult(rotMtx, transMtx);
+		MV1SetMatrix(m_modelHandle, world);
+	}
 
 	// クールタイムを更新
 	m_shotTimer++;

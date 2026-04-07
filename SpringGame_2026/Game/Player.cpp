@@ -136,7 +136,6 @@ void Player::Update(const Input& input, const Timer& timer)
 
     // 入力方向取得
     Inputdata now = Inputdata::None;
-
     if (input.IsPressed("up"))         now = Inputdata::Up;
     else if (input.IsPressed("down"))  now = Inputdata::Down;
     else if (input.IsPressed("left"))  now = Inputdata::Left;
@@ -194,7 +193,7 @@ void Player::Update(const Input& input, const Timer& timer)
             {
                 m_pos = nextPos;
             }
-
+			// 回避方向に向く
             m_angle = atan2f(dodgeVec.x, dodgeVec.z) + DX_PI_F;
             isMoving = true;
         }
@@ -273,7 +272,7 @@ void Player::Update(const Input& input, const Timer& timer)
         m_currentAnimCount = 0.0f;
         m_animChangeFrame = 0;
     }
-
+	// アニメーションのブレンド
     if (m_lastAnimHandle == -1)
     {
         MV1SetAttachAnimBlendRate(m_modelHandle, m_cureentAnimHandle, 1.0f);

@@ -62,8 +62,9 @@ void SceneMain::Init()
 	m_pTimer = std::make_shared<Timer>();
 	m_pTimer->Init();
 
-	// ”wŒiF‚ğİ’è(‚±‚±‚ÅRGB‚ğ•ÏX‚·‚ê‚Î”wŒiF‚ğ•Ï‚¦‚ê‚éj
-	SetBackgroundColor(100, 150, 255); // ”–‚¢Â
+	// ”wŒiF‚ğİ’è(‚±‚±‚ÅRGB‚ğ•ÏX‚·‚ê‚Î”wŒiF‚ğ•Ï‚¦‚ê‚é)
+	// ”–‚¢Â
+	SetBackgroundColor(100, 150, 255); 
 	
 }
 
