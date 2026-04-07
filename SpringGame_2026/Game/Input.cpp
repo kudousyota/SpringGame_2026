@@ -19,16 +19,16 @@ namespace
 void Input::InitializeInputTable()
 {
 	m_inputTable["ok"] = { { PeripheralType::keyboard,KEY_INPUT_RETURN},
-					  { PeripheralType::pad1,PAD_INPUT_L } };	// PADのSELECTボタン
+                      { PeripheralType::pad1,PAD_INPUT_A } };	// PADのAボタン
 	m_inputTable["pause"] = { { PeripheralType::keyboard,KEY_INPUT_P},
-						  { PeripheralType::pad1,PAD_INPUT_R } };	// PADのSTARTボタン
+                       { PeripheralType::pad1,PAD_INPUT_START } };	// PADのSTARTボタン
 
-	m_inputTable["shot"] = { { PeripheralType::keyboard,KEY_INPUT_Z},
-						  { PeripheralType::pad1,PAD_INPUT_C } };	// PADのXボタン
-	m_inputTable["slow"] = { { PeripheralType::keyboard,KEY_INPUT_LSHIFT},
-						  { PeripheralType::pad1,PAD_INPUT_A } };	// PADのAボタン
-	m_inputTable["bomb"] = { { PeripheralType::keyboard,KEY_INPUT_X},
-						  { PeripheralType::pad1,PAD_INPUT_X } };	// PADのYボタン
+	//m_inputTable["shot"] = { { PeripheralType::keyboard,KEY_INPUT_Z},
+	//					  { PeripheralType::pad1,PAD_INPUT_C } };	// PADのXボタン
+	//m_inputTable["slow"] = { { PeripheralType::keyboard,KEY_INPUT_LSHIFT},
+	//					  { PeripheralType::pad1,PAD_INPUT_A } };	// PADのAボタン
+	//m_inputTable["bomb"] = { { PeripheralType::keyboard,KEY_INPUT_X},
+	//					  { PeripheralType::pad1,PAD_INPUT_X } };	// PADのYボタン
 
 	m_inputTable["up"] = { { PeripheralType::keyboard,KEY_INPUT_UP},
 						{ PeripheralType::pad1,PAD_INPUT_UP } };

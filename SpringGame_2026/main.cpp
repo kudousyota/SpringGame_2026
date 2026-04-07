@@ -35,116 +35,95 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// カリングの設定
 	SetUseBackCulling(true);
 
-	// 入力とタイトルシーンを先に処理する
+    // 入力はアプリ全体で一つ用意しておく
 	Input input;
-	TitleScene title;
-	title.Init();
 
+	bool running = true;
 
-	// タイトルが終わるまでループ
-	while (ProcessMessage() != -1 && !title.IsFinished())
+	while (running && ProcessMessage() != -1)
 	{
-		//このフレームの開始時間を取得
-		LONGLONG start = GetNowHiPerformanceCount();
-
-		//前のフレームに描画した内容をクリアする
-		ClearDrawScreen();
-
-		input.Update();
-
-		title.Update(input);
-		title.Draw();
-
-		//escキーを押すとゲームを強制終了
-		if (CheckHitKey(KEY_INPUT_ESCAPE))
-		{
-			break;
-		}
-		//描画した内容を画面に反映する
-		ScreenFlip();
-
-		//フレームレート６０に固定
-		while (GetNowHiPerformanceCount() - start < 16667)
-		{
-		}
-	}
-
-	// タイトル終了後にメインシーンを作成
-	std::shared_ptr<SceneMain> pScene = std::make_shared<SceneMain>();
-	pScene->Init();
-
-    bool timeUpTriggered = false;
-	while (ProcessMessage() != -1)
-	{
-		//このフレームの開始時間を取得
-		LONGLONG start = GetNowHiPerformanceCount();
-
-		//前のフレームに描画した内容をクリアする
-		ClearDrawScreen();
-
-		input.Update();
-
-        //ここにゲームの処理を書く
-
-		pScene->Update(input);
-
-		pScene->Draw();
-
-        // タイマーが切れたらリザルトシーンへ遷移
-		if (pScene->IsTimeUp())
-		{
-			timeUpTriggered = true;
-			break;
-		}
-
-		//escキーを押すとゲームを強制終了
-		if (CheckHitKey(KEY_INPUT_ESCAPE))
-		{
-			break;
-		}
-		//描画した内容を画面に反映する
-		ScreenFlip();
-
-		//フレームレート６０に固定
-		while (GetNowHiPerformanceCount() - start < 16667)
-		{
-		}
-
-	}
-	
-    // タイムアップならリザルトシーンへ移行
-	if (timeUpTriggered)
-	{
-		SceneController controller;
-		ResultScene result(controller);
-		// ResultScene のループ
-		while (ProcessMessage() != -1 && !result.IsFinished())
+		// タイトルを表示
+		TitleScene title;
+		title.Init();
+		while (running && ProcessMessage() != -1 && !title.IsFinished())
 		{
 			LONGLONG start = GetNowHiPerformanceCount();
 			ClearDrawScreen();
 			input.Update();
-			result.Update(input);
-			result.Draw();
+			title.Update(input);
+			title.Draw();
 			if (CheckHitKey(KEY_INPUT_ESCAPE))
 			{
+				running = false;
 				break;
 			}
 			ScreenFlip();
-			while (GetNowHiPerformanceCount() - start < 16667)
+			while (GetNowHiPerformanceCount() - start < 16667) {}
+		}
+
+		if (!running) break;
+
+		// メインシーンを作成して実行
+		std::shared_ptr<SceneMain> pScene = std::make_shared<SceneMain>();
+		pScene->Init();
+		bool timeUpTriggered = false;
+
+		while (running && ProcessMessage() != -1)
+		{
+			LONGLONG start = GetNowHiPerformanceCount();
+			ClearDrawScreen();
+			input.Update();
+			pScene->Update(input);
+			pScene->Draw();
+			if (pScene->IsTimeUp())
 			{
+				timeUpTriggered = true;
+				break;
 			}
+			if (CheckHitKey(KEY_INPUT_ESCAPE))
+			{
+				running = false;
+				break;
+			}
+			ScreenFlip();
+			while (GetNowHiPerformanceCount() - start < 16667) {}
+		}
+
+		// メインシーン解放
+		pScene.reset();
+
+		if (!running) break;
+
+		// タイムアップならリザルトを表示してからタイトルに戻る
+		if (timeUpTriggered)
+		{
+			SceneController controller;
+			ResultScene result(controller);
+			while (running && ProcessMessage() != -1 && !result.IsFinished())
+			{
+				LONGLONG start = GetNowHiPerformanceCount();
+				ClearDrawScreen();
+				input.Update();
+				result.Update(input);
+				result.Draw();
+				if (CheckHitKey(KEY_INPUT_ESCAPE))
+				{
+					running = false;
+					break;
+				}
+				ScreenFlip();
+				while (GetNowHiPerformanceCount() - start < 16667) {}
+			}
+			// リザルト終了後はループを継続してタイトルに戻る
+		}
+		else
+		{
+			// タイムアップでなく通常終了（ESCなど）の場合は終了
+			break;
 		}
 	}
 
-	//メモリの解放
-
-	
-	//shared_ptrはメモリの開放を自動でやってくれる
-	// DxLib_End() を呼ぶ前に Dx ライブラリを使う可能性のあるオブジェクトを破棄する
-	// (デストラクタで MV1DeleteModel 等を呼ぶと DxLib_End() 後だとクラッシュする)
-	pScene.reset();
-
-    ::DxLib_End();				// ＤＸライブラリ使用の終了処理
+	DxLib_End();				// ＤＸライブラリ使用の終了処理
 
 	return 0;
 }
