@@ -51,7 +51,7 @@ void Enemy::Init()
 	m_modelHandle = MV1LoadModel("data/Enemy.mv1");
 
 	// 敵の初期位置を設定
-	m_pos = VGet(0.0f, 500.0f, 350.0f);
+	m_pos = VGet(0.0f, 350.0f, 350.0f);
 	MV1SetPosition(m_modelHandle, m_pos.ToDxLibVector());
 
 	int animNo = MV1GetAnimIndex(m_modelHandle, kIdleAnimName);
