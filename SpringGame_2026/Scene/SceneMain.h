@@ -27,7 +27,7 @@ private:
 private:
 	int m_frameCount;
 	std::shared_ptr<Player> m_pPlayer;
-	std::shared_ptr<Enemy>  m_pEnemy;
+	std::vector<std::shared_ptr<Enemy>>m_pEnemy;
 	std::shared_ptr<Camera> m_pCamera;
 	std::shared_ptr<Timer> m_pTimer;
     std::shared_ptr<Stage> m_pStage;

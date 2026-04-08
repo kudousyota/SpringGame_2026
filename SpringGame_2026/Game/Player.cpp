@@ -7,7 +7,8 @@
 
 namespace
 {
-	constexpr float kspeed = 3.0f;
+	//移動速度
+	constexpr float kspeed = 5.0f;
 	//2回入力されたとみなす時間
 	constexpr int kDoubleInputTime = 30;
 	//回避速度
@@ -75,7 +76,7 @@ void Player::Init()
 
     m_animChangeFrame = 0;
 	//当たり判定用の半径
-	m_colRadius = 90.0f;
+	m_colRadius = 100.0f;
 	//被弾アニメーションのフレーム数
     m_hitAnimFrame = 0;
 }
@@ -376,7 +377,7 @@ Vector3 Player::GetCameraTarget() const
 //当たり判定用の中心を返す関数
 Vector3 Player::GetColCenter() const
 {
-    return m_pos + VGet(0.0f,60.0f,0);
+    return m_pos + VGet(0.0f,80.0f,0);
 }
 
 float Player::GetColRadius() const

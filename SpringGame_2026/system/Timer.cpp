@@ -1,15 +1,6 @@
 #include "Timer.h"
 #include "DxLib.h"
 
-namespace
-{
-	//ゲームのフレームレート
-	constexpr int kFps = 30;
-
-	//制限時間
-	constexpr int kTlimeLimit = 30;
-}
-
 Timer::Timer():
 	m_gameTimer(0)
 {
@@ -22,7 +13,7 @@ Timer::~Timer()
 void Timer::Init()
 {
 	//ゲームタイマーを設定
-	m_gameTimer = kTlimeLimit * kFps;
+    m_gameTimer = kTimeLimit * kFps;
 }
 
 void Timer::End()
@@ -56,4 +47,9 @@ bool Timer::IsTimeUp() const
 {
 	// ゲームタイマーが0以下なら時間切れ
 	return m_gameTimer <= 0;
+}
+
+void Timer::SetTimer(int timer)
+{
+	m_gameTimer = timer;
 }

@@ -19,9 +19,16 @@ SceneMain::~SceneMain()
 	{
 		m_pPlayer->End();
 	}
-	if (m_pEnemy)
+   if (!m_pEnemy.empty())
 	{
-		m_pEnemy->End();
+		for (auto& enemy : m_pEnemy)
+		{
+			if (enemy)
+			{
+				enemy->End();
+			}
+		}
+		m_pEnemy.clear();
 	}
     if (m_pStage)
 	{
@@ -43,12 +50,38 @@ void SceneMain::Init()
 	m_pStage = std::make_shared<Stage>();
 	m_pStage->Init();
 
-	// プレイヤーと敵を作成
+    // プレイヤーと敵を作成
 	m_pPlayer = std::make_shared<Player>();
 	m_pPlayer->Init();
 
-	m_pEnemy = std::make_shared<Enemy>();
-	m_pEnemy->Init();
+	// 複数の敵をvectorで管理する
+	// 例として3体作成して初期位置をそれぞれずらす
+	// 既存の敵をクリア
+	m_pEnemy.clear();
+	auto enemy = std::make_shared<Enemy>();
+	enemy->Init();
+	// 位置を設定
+	Vector3 pos = VGet(-200.0f, 150.0f, 450.0f);
+	enemy->SetPos(pos);
+	m_pEnemy.push_back(enemy);
+	// 2体目
+	auto enemyTwo = std::make_shared<Enemy>();
+	enemyTwo->Init();
+    // 2体目は攻撃が速め
+	enemyTwo->SetAttackCoolTime(45);
+	enemyTwo->SetBulletSpeed(12.0f);
+	Vector3 posTwo = VGet(-700.0f, 150.0f, -350.0f);
+	enemyTwo->SetPos(posTwo);
+	m_pEnemy.push_back(enemyTwo);
+	// 3体目
+	auto enemyThree = std::make_shared<Enemy>();
+	enemyThree->Init();
+    // 3体目は攻撃が遅め
+	enemyThree->SetAttackCoolTime(80);
+	enemyThree->SetBulletSpeed(8.0f);
+	Vector3 posThree = VGet(700.0f, 150.0f, -350.0f);
+	enemyThree->SetPos(posThree);
+	m_pEnemy.push_back(enemyThree);
 
 	// カメラを作成しプレイヤーをセット
 	m_pCamera = std::make_shared<Camera>();
@@ -73,7 +106,7 @@ void SceneMain::Update(const Input& input)
 	m_frameCount++;
     if (m_pPlayer)
 	{
-     // Timerは m_pTimerを内部で保持しているため、Player::Updateのシグネチャに合わせて呼び出す
+		// Timerはm_pTimerを内部で保持しているため、PlayerのUpdateのシグネチャに合わせて呼び出す
 		if (m_pTimer)
 		{
 			m_pTimer->Update();
@@ -88,9 +121,16 @@ void SceneMain::Update(const Input& input)
 			m_pPlayer->Update(input, dummy);
 		}
 	}
-    if (m_pEnemy && m_pPlayer)
+
+    if (!m_pEnemy.empty() && m_pPlayer)
 	{
-		m_pEnemy->Update(*m_pPlayer);
+		for (auto& enemy : m_pEnemy)
+		{
+			if (enemy)
+			{
+				enemy->Update(*m_pPlayer, *m_pTimer);
+			}
+		}
 	}
 	if (m_pCamera)
 	{
@@ -106,13 +146,19 @@ void SceneMain::Draw()
 	// 画面を背景色でクリアしてから描画する
 	ClearDrawScreen();
 
-	if (m_pPlayer)
+    if (m_pPlayer)
 	{
 		m_pPlayer->Draw();
 	}
-	if (m_pEnemy)
+	if (!m_pEnemy.empty())
 	{
-		m_pEnemy->Draw();
+		for (auto& enemy : m_pEnemy)
+		{
+			if (enemy)
+			{
+				enemy->Draw();
+			}
+		}
 	}
 	if (m_pTimer)
 	{

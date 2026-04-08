@@ -1,12 +1,13 @@
 #include "Enemy.h"
 #include "Player.h"
+#include "../system/Timer.h"
 #include "Dxlib.h"
 #include <cmath>
 
 namespace
 {
 	//弾の速度
-	constexpr float kBulletSpeed = 10.0f;
+	constexpr float kBulletSpeed = 15.0f;
 
 	//アニメーションの名前
 	const char* const kIdleAnimName = "MonsterArmature|Idle";
@@ -19,7 +20,24 @@ namespace
 	constexpr float kBulletSize = 50.0f;
 
 	// 敵が弾を発射してから消えるまでの最大距離
-	constexpr float kBulletMaxDistance = 1000.0f;
+	constexpr float kBulletMaxDistance = 1500.0f;
+
+	// 攻撃頻度の初期値(フレーム数)
+	constexpr int kDefaultAttackCoolTime = 60; // 1秒
+}
+
+void Enemy::SetPos(const Vector3& pos)
+{
+	m_pos = pos;
+	if (m_modelHandle != -1)
+	{
+		MV1SetPosition(m_modelHandle, m_pos.ToDxLibVector());
+		// Update matrix as well to keep correct rotation/translation
+		MATRIX rotMtx = MGetRotY(m_angle);
+		MATRIX transMtx = MGetTranslate(m_pos.ToDxLibVector());
+		MATRIX world = MMult(rotMtx, transMtx);
+		MV1SetMatrix(m_modelHandle, world);
+	}
 }
 
 Enemy::Enemy() :
@@ -38,6 +56,8 @@ Enemy::Enemy() :
 	m_animChangeFrame(0),
 	m_angle(0.0f),
 	m_BiteAnimeFrame(0),
+	m_bulletSpeed(0.0f),
+	m_attackCoolTime(0),
 	m_isAttac(false)
 {
 }
@@ -64,6 +84,17 @@ void Enemy::Init()
 	m_lastAnimCount = 0.0f;
 
 	m_animChangeFrame = 0;
+
+	// デフォルト値の設定
+	if (m_bulletSpeed <= 0.0f)
+	{
+		m_bulletSpeed = kBulletSpeed;
+	}
+	// デフォルトの攻撃頻度を設定
+	if (m_attackCoolTime <= 0)
+	{
+		m_attackCoolTime = kDefaultAttackCoolTime; // デフォルト1秒
+	}
 }
 
 void Enemy::End()
@@ -85,7 +116,7 @@ void Enemy::End()
 	}
 }
 
-void Enemy::Update(Player& player)
+void Enemy::Update(Player& player, const Timer& timer)
 {
 	// プレイヤーの位置を取得
 	Vector3 playerPos = player.GetPos();
@@ -111,16 +142,54 @@ void Enemy::Update(Player& player)
 		MV1SetMatrix(m_modelHandle, world);
 	}
 
-	// クールタイムを更新
+    // クールタイムを更新
 	m_shotTimer++;
 
-	// 弾が無く、一定時間たったら発射
-	if (!m_hasBullet && !m_isAttac && m_shotTimer >= 60)
+	// 残り時間に応じて攻撃頻度をスケールする
+	// Timerの残りフレーム数を取得
+	int remaining = timer.GetRemainingFrames();
+	int initial = Timer::GetInitialFrames();
+	// 残り時間が少ないほど攻撃間隔を短くする
+	int scaledCool = m_attackCoolTime;
+	if (initial > 0)
 	{
+		//時間が減るほどscaledCoolが小さくなるようにする。残り時間が初期の半分のときに攻撃間隔が75%になるように
+		//timerは0.25f ~ 1.0fの範囲になるようにする
+		//例えば残り時間が初期の半分のとき、timerは0.625fになる。残り時間が初期の25%のとき、timerは0.4375fになる。
+		float timeRatio = static_cast<float>(remaining) / static_cast<float>(initial);
+
+		if (timeRatio < 0.0f) timeRatio = 0.0f;
+		if (timeRatio > 1.0f) timeRatio = 1.0f;
+
+		// 時間が減るほど攻撃間隔を短くする
+		float multiplier = 0.25f + 0.75f * timeRatio;
+
+		scaledCool = static_cast<int>(m_attackCoolTime * multiplier);
+		if (scaledCool < 1) scaledCool = 1;
+	}
+
+	// 一定時間たったら発射
+	if (!m_hasBullet && !m_isAttac && m_shotTimer >= scaledCool)
+	{
+		// 弾を敵の前方に少しオフセットしてスポーンし、方向ベクトルがゼロにならないようにする
+		m_bulletDir = playerPos - m_pos;
+		// Y軸方向の差は弾を水平に飛ばすため無視
+		m_bulletDir.y = 0.0f;
+		// 方向ベクトルがほとんどゼロなら前方ベクトルを代入
+		if (m_bulletDir.SqMagnitude() <= 0.000001f)
+		{
+			m_bulletDir = VGet(0.0f, 0.0f, 1.0f);
+		}
+		else
+		{
+			m_bulletDir = m_bulletDir.Normalize();
+		}
+
+		// 弾を敵の中心ではなく少し前方に出す
+		constexpr float kSpawnOffset = kBulletRadius + 30.0f;
+		m_bulletPos = m_pos + (m_bulletDir * kSpawnOffset);
+		m_bulletStartPos = m_bulletPos;
 		m_hasBullet = true;
-		m_bulletPos = m_pos;
-		m_bulletStartPos = m_pos;
-		m_bulletDir = (playerPos - m_pos).Normalize();
 		m_shotTimer = 0;
 
 		m_isAttac = true;
@@ -145,11 +214,13 @@ void Enemy::Update(Player& player)
 	}
 
 	// 弾を進める
-	if (m_hasBullet)
+    if (m_hasBullet)
 	{
-		m_bulletPos += m_bulletDir * kBulletSpeed;
+		// 弾の速度を設定値から取得。0以下ならデフォルト値を使用
+		float bulletspeed = (m_bulletSpeed > 0.0f) ? m_bulletSpeed : kBulletSpeed;
+		m_bulletPos += m_bulletDir * bulletspeed;
 
-		// 衝突判定: プレイヤーとの当たり判定（球と球の衝突）
+		// プレイヤーとの当たり判定
 		// プレイヤーの中心と半径を取得
 		Vector3 playerCenter = player.GetColCenter();
 		float playerRadius = player.GetColRadius();

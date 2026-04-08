@@ -2,8 +2,8 @@
 #include "Dxlib.h"
 
 Stage::Stage():
-	m_stageMin(VGet(-900.0f, 0.0f, -500.0f)),
-	m_stageMax(VGet(900.0f, 0.0f, 500.0f))
+	m_stageMin(VGet(-1200.0f, 0.0f, -700.0f)),
+	m_stageMax(VGet(1200.0f, 0.0f, 700.0f))
 {
 }
 

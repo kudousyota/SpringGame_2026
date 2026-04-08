@@ -1,7 +1,7 @@
 #pragma once
 #include "../system/Vector3.h"
 class Player;
-
+class Timer;
 class Enemy
 {
 public:
@@ -9,8 +9,14 @@ public:
 	~Enemy();
 	void Init();
 	void End();
-    void Update(Player& player);
+    void Update(Player& player, const Timer& timer);
 	void Draw();
+
+	// 敵の位置を外部から設定する
+	void SetPos(const Vector3& pos);
+
+	
+
 private:
 	int m_modelHandle;
 	Vector3 m_pos;
@@ -35,9 +41,19 @@ private:
 	int m_currentAnimIndex;
 	//アニメーション切り替えフレーム数
 	int m_animChangeFrame;
-	//被弾アニメのフレーム
+	//攻撃アニメのフレーム
 	int m_BiteAnimeFrame;
 	//攻撃中かどうか
 	bool m_isAttac;
+	//弾のスピード
+	float m_bulletSpeed;
+	//攻撃頻度
+	int m_attackCoolTime;
+
+public:
+	// 攻撃頻度(初期クールタイム)をフレームで設定
+	void SetAttackCoolTime(int frames) { m_attackCoolTime = frames; }
+	// 弾の速度を設定
+	void SetBulletSpeed(float speed) { m_bulletSpeed = speed; }
 };
 
