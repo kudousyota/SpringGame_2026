@@ -16,10 +16,8 @@ public:
 	// 残りフレーム数を取得
 	int GetRemainingFrames() const { return m_gameTimer; }
 
-	// 初期のフレーム数（秒数 * FPS）を取得
-	static constexpr int kFps = 60;
-	static constexpr int kTimeLimit = 60; // 秒
-	static int GetInitialFrames() { return kTimeLimit * kFps; }
+	
+	static int GetInitialFrames();
 
 	
 private:

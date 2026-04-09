@@ -29,6 +29,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	{
 		return -1;			// エラーが起きたら直ちに終了
 	}
+	//フォントの読み込み
+	AddFontResourceEx("data/x10y12pxDonguriDuel.ttf",FR_PRIVATE,NULL);
 
 	//描画対象をバックバッファに変更
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -99,6 +101,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			SceneController controller;
 			ResultScene result(controller);
+			result.Init();
 			while (running && ProcessMessage() != -1 && !result.IsFinished())
 			{
 				LONGLONG start = GetNowHiPerformanceCount();

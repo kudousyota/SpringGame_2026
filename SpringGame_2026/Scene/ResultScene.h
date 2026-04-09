@@ -7,6 +7,7 @@ class ResultScene :public Scene
 public:
 	ResultScene(SceneController& controller);
 	~ResultScene();
+	void Init();
 	void Update(Input& input)override;
 	void Draw()override;
 

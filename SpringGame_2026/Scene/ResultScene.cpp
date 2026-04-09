@@ -54,7 +54,19 @@ void ResultScene::FadeOutUpdate(Input&)
 }
 void ResultScene::NormalDraw()
 {
-
+	DrawStringToHandle(320, 240, "Result Scene", GetColor(0, 0, 0), m_fontHandle);
+	const int white = GetColor(255, 255, 255);
+	const int Cyan = GetColor(0, 255, 255);
+	const int Color = GetColor(224, 255, 255);
+	//点滅頻度
+	const int intervar = 650;
+	int now = GetNowCount();
+	bool visible = (now / intervar) % 2;
+	if (visible)
+	{
+		//操作説明表示
+		DrawStringToHandle(470, 580, "Press A to Title", white, m_fontHandle);
+	}
 }
 
 void ResultScene::FadeDraw()
@@ -86,26 +98,20 @@ ResultScene::~ResultScene()
 	//何もしない
 }
 
+void ResultScene::Init()
+	
+{
+	// フォントの読み込み
+	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
+}
+
 void ResultScene::Update(Input& input)
 {
 	(this->*m_update)(input);
 }
 void ResultScene::Draw()
 {
-	const int white = GetColor(255, 255, 255);
-	const int Cyan = GetColor(0, 255, 255);
-	const int Color = GetColor(224, 255, 255);
+	
     (this->*m_draw)();
-	DrawString(320, 240, "Result Scene", GetColor(0,0,0));
-
-	//点滅頻度
-	const int intervar = 650;
-	int now = GetNowCount();
-	bool visible = (now / intervar) % 2;
-	if (visible)
-	{
-		//操作説明表示
-        DrawString(470, 580, "Press A to Title", Color);
-	}
 
 }

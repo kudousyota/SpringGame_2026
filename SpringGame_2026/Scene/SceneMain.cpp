@@ -34,9 +34,13 @@ SceneMain::~SceneMain()
 	{
 		m_pStage->End();
 	}
+
+	
 }
 void SceneMain::Init()
 {
+	
+
 	// Zバッファの設定
 	SetUseZBuffer3D(true);	// Zバッファを使います
 	SetWriteZBuffer3D(true);	// 描画する物体はZバッファにも距離を書き込む

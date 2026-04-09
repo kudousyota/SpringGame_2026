@@ -1,6 +1,11 @@
 #include "Timer.h"
 #include "DxLib.h"
-
+namespace
+{
+	// 初期のフレーム数（秒数 * FPS）を取得
+	static constexpr int kFps = 60;
+	static constexpr int kTimeLimit = 10; // 秒
+}
 Timer::Timer():
 	m_gameTimer(0)
 {
@@ -52,4 +57,9 @@ bool Timer::IsTimeUp() const
 void Timer::SetTimer(int timer)
 {
 	m_gameTimer = timer;
+}
+
+int Timer::GetInitialFrames()
+{
+	return kTimeLimit * kFps;
 }

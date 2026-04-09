@@ -20,8 +20,12 @@ private:
 	void FadeDraw();	// フェードDraw
 	using DrawFunc_t = void(TitleScene::*)();
 	DrawFunc_t m_draw;	// Drawメンバ関数を代入できるメンバ関数ポインタ
-
+	
+	// タイトルシーンが終了したかどうか
 	bool m_finished;
+	
+	//フォントハンドル
+	int m_fontHandle;
 
 public:
 	TitleScene();

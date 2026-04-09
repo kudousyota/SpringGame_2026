@@ -41,7 +41,7 @@ void TitleScene::NormalDraw()
     const int cx = Game::kScreenWidth / 2;
 	const int cy = Game::kScreenHeight / 2;
 
-	DrawString(cx, cy , "Title Scene", GetColor(0, 0, 0));
+	DrawStringToHandle(cx, cy , "Title Scene", GetColor(0, 0, 0),m_fontHandle);
 
 }
 
@@ -55,7 +55,8 @@ void TitleScene::FadeDraw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);	// ブレンドしない
 }
 
-TitleScene::TitleScene()
+TitleScene::TitleScene():
+	m_fontHandle(-1)
 {
 	
 	m_update = &TitleScene::FadeInUpdate;
@@ -66,7 +67,9 @@ TitleScene::TitleScene()
 
 void TitleScene::Init()
 {
-	SetBackgroundColor(255, 255, 255);
+	SetBackgroundColor(100, 150, 255);
+	//フォントの読み込み
+	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
 }
 
 void TitleScene::Update(Input& input)
