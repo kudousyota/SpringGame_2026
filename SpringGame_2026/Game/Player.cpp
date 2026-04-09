@@ -16,7 +16,7 @@ namespace
 	//回避時間
 	constexpr int kDodgeTime = 10;
     //回避後の無敵時間
-    constexpr int kInvincibleTime = 60;
+    constexpr int kInvincibleTime = 90;
     //アニメーションの名前
     const char* const kIdleAnimName = "CharacterArmature|Idle";
     const char* const kRunAnimName = "CharacterArmature|Run";
@@ -323,19 +323,7 @@ void Player::Update(const Input& input, const Timer& timer)
 
 void Player::Draw()
 {
-    // 無敵時間中は点滅表示、それ以外は通常描画
-    bool shouldDrawModel = true;
-    if (m_invincibleTimer > 0.0f)
-    {
-        int timer = static_cast<int>(m_invincibleTimer);
-        bool show = ((timer / kBlinkFrequency) % 2) == 0;
-        shouldDrawModel = show;
-    }
-
-    if (shouldDrawModel && m_modelHandle != -1)
-    {
-        MV1DrawModel(m_modelHandle);
-    }
+    MV1DrawModel(m_modelHandle);
 #ifdef _DEBUG
     // 当たり判定の可視化
     DrawSphere3D(GetColCenter().ToDxLibVector(), m_colRadius, 10, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
