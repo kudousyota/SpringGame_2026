@@ -28,31 +28,32 @@ namespace
     const Vector3 kPlayerToTarget = VGet(0.0f, 290.0f, 0.0f);
 
     //点滅の頻度
-	const int kBlinkFrequency = 7;
+	const int kBlinkFrequency = 5;
 }
 
 
 
 Player::Player() :
     m_pCamera(nullptr),
-	m_pStage(nullptr),
-	m_modelHandle(-1),
-	m_angle(0.0f),
+    m_pStage(nullptr),
+    m_modelHandle(-1),
+    m_angle(0.0f),
     m_isDoubleInput(false),
     m_doubleInputTimer(0.0f),
     m_inputData(Inputdata::None),
     m_isInput(false),
     m_isDodge(false),
     m_dodgeTimer(0.0f),
-	m_invincibleTimer(0.0f),
+    m_invincibleTimer(0.0f),
     m_pos(VGet(0, 0, 0)),
     m_cureentAnimHandle(-1),
     m_lastAnimHandle(-1),
     m_currentAnimIndex(-1),
     m_animChangeFrame(0),
     m_lastAnimCount(0.0f),
-    m_hitAnimFrame (0),
-	m_colRadius(0.0f),
+    m_hitAnimFrame(0),
+    m_colRadius(0.0f),
+    m_isHit(false),
     m_currentAnimCount(0.0f)
 {
 }
@@ -323,7 +324,22 @@ void Player::Update(const Input& input, const Timer& timer)
 
 void Player::Draw()
 {
-    MV1DrawModel(m_modelHandle);
+	//被弾したら点滅
+    if(m_hitAnimFrame > 0)
+    {
+        //点滅の頻度で描画するかしないかを切り替える
+        if ((m_hitAnimFrame / kBlinkFrequency) % 2 == 0)
+        {
+            MV1DrawModel(m_modelHandle);
+        }
+    }
+    else
+    {
+        //被弾していないときは通常通り描画
+        MV1DrawModel(m_modelHandle);
+    }
+
+    
 #ifdef _DEBUG
     // 当たり判定の可視化
     DrawSphere3D(GetColCenter().ToDxLibVector(), m_colRadius, 10, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
@@ -356,6 +372,7 @@ void Player::OnHit()
         m_currentAnimCount = 0.0f;
         m_animChangeFrame = 0;
     }
+	
 }
 
 Vector3 Player::GetCameraTarget() const

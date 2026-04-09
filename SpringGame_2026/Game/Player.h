@@ -81,6 +81,9 @@ private:
 	//自分の半径
 	float m_colRadius;
 
+	//今被弾中かどうか
+	bool m_isHit;
+
 	//ヒットアニメーション中かどうか
 	bool IsHitPlaying() const;
 	
