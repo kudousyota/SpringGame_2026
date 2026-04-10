@@ -227,22 +227,29 @@ void Enemy::Update(Player& player, const Timer& timer)
 
 		float bulletRadius = kBulletRadius;
 
-		// 距離の二乗で判定
-		float hitDist = playerRadius + bulletRadius;
-		float hitDistSq = hitDist * hitDist;
+		// 距離計算
 		float distSq = (m_bulletPos - playerCenter).SqMagnitude();
-        if (distSq <= hitDistSq)
+		float justDistSq = distSq;
+
+		// 半径
+		float hitDist = playerRadius + bulletRadius;
+		float justDist = player.GetJustColRadius() + bulletRadius;
+
+		// ジャスト判定
+		if (player.IsDodging() && player.IsInJustWindow() &&
+			justDistSq <= justDist * justDist)
 		{
-			
-			//無敵時間中は当たらない
+			player.OnJustDodge();
+			m_hasBullet = false;
+		}
+		// 通常ヒット
+		else if (distSq <= hitDist * hitDist)
+		{
 			if (!player.IsInvincible())
 			{
-				// プレイヤー側の被弾処理を呼ぶ
 				player.OnHit();
-				// プレイヤーに当たったら弾を消す
 				m_hasBullet = false;
 			}
-			
 		}
 
 		// 一定距離進んだら消すルート計算を避けるため二乗距離で判定

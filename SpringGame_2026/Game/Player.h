@@ -28,7 +28,16 @@ public:
 	float GetColRadius()const;
 	//今無敵かどうか
 	bool IsInvincible()const;
-	
+	// ジャスト回避が発生したときの処理
+	void OnJustDodge();
+	// ジャスト回避の回数を取得
+	int GetJustCount() const { return m_justCount; }
+	// 回避中かどうか取得
+	bool IsDodging()const;
+	// ジャスト回避が成立するウィンドウにいるか
+	bool IsInJustWindow() const;
+	// ジャスト回避用の当たり判定半径を取得
+	float GetJustColRadius() const;
 
   void setCamera(Camera* camera) { m_pCamera = camera; }
 	void setStage(Stage* stage) { m_pStage = stage; }
@@ -80,7 +89,13 @@ private:
 
 	//自分の半径
 	float m_colRadius;
-
+	//ジャスト回避用の半径
+	float m_justColRadius;
+	//ジャスト回避のフレーム
+	float m_justFrame;
+	//ジャスト回避できた回数
+	int m_justCount;
+	
 	//今被弾中かどうか
 	bool m_isHit;
 

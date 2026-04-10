@@ -29,8 +29,8 @@ namespace
 
     //点滅の頻度
 	const int kBlinkFrequency = 5;
-}
 
+}
 
 
 Player::Player() :
@@ -53,6 +53,9 @@ Player::Player() :
     m_lastAnimCount(0.0f),
     m_hitAnimFrame(0),
     m_colRadius(0.0f),
+    m_justColRadius(0.0f),
+    m_justFrame(0.0f),
+    m_justCount(0),
     m_isHit(false),
     m_currentAnimCount(0.0f)
 {
@@ -78,7 +81,14 @@ void Player::Init()
     m_animChangeFrame = 0;
 	//当たり判定用の半径
 	m_colRadius = 100.0f;
-	//被弾アニメーションのフレーム数
+    //ジャスト回避が成立するフレーム(回避中の最初の数フレームを想定)
+    m_justFrame = 6.0f;
+    //ジャストカウント初期化
+    m_justCount = 0;
+	//ジャスト回避の半径(当たり判定より少しでかくする)
+    m_justColRadius = 130.0f;
+
+    //被弾アニメーションのフレーム数
     m_hitAnimFrame = 0;
 }
 
@@ -324,6 +334,9 @@ void Player::Update(const Input& input, const Timer& timer)
 
 void Player::Draw()
 {
+	//ジャスト回避回数の表示
+	DrawFormatString(10, 10, GetColor(255, 255, 255), "Just Dodge Count: %d", m_justCount);
+
 	//被弾したら点滅
     if(m_hitAnimFrame > 0)
     {
@@ -343,6 +356,10 @@ void Player::Draw()
 #ifdef _DEBUG
     // 当たり判定の可視化
     DrawSphere3D(GetColCenter().ToDxLibVector(), m_colRadius, 10, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
+
+	//ジャスト回避用の当たり判定の可視化
+  DrawSphere3D(GetColCenter().ToDxLibVector(), m_justColRadius, 10, GetColor(0, 255, 0), GetColor(0, 255, 0), false);
+
 #endif
 
 }
@@ -354,6 +371,8 @@ void Player::OnHit()
 
     //被弾アニメの継続時間をセット
 	m_hitAnimFrame = 30;
+    // フラグを立てる
+    m_isHit = true;
 
     // Hitアニメに切り替え
     int animNo = MV1GetAnimIndex(m_modelHandle, kHitAnimName);
@@ -398,6 +417,31 @@ bool Player::IsInvincible() const
 bool Player::IsHitPlaying() const
 {
     return m_hitAnimFrame > 0;
+}
+
+void Player::OnJustDodge()
+{
+    m_justCount++;
+    // 発動時は短時間無敵にする
+    m_invincibleTimer = 30.0f;
+
+}
+
+bool Player::IsDodging()const
+{
+    return m_isDodge;
+}
+
+bool Player::IsInJustWindow() const
+{
+    // ジャスト回避は回避開始から数フレームだけ成立する
+    if (!m_isDodge) return false;
+    return m_dodgeTimer > (kDodgeTime - m_justFrame);
+}
+
+float Player::GetJustColRadius() const
+{
+    return m_justColRadius;
 }
 
 
