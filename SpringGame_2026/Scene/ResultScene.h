@@ -39,7 +39,7 @@ private:
 	//Updateメンバ関数を代入
 	UpdateFunc_t m_update;
 
-	void NormalDraw();	// 通常Draw
+   void NormalDraw();	// 通常Draw
 	void FadeDraw();	// フェードDraw
 	using DrawFunc_t = void(ResultScene::*)();
 	DrawFunc_t m_draw;	// Drawメンバ関数を代入できるメンバ関数ポインタ

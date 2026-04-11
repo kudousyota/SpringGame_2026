@@ -30,8 +30,8 @@ public:
 	bool IsInvincible()const;
 	// ジャスト回避が発生したときの処理
 	void OnJustDodge();
-	// ジャスト回避の回数を取得
-	int GetJustCount() const { return m_justCount; }
+    // ジャスト回避の回数を取得
+	static int GetJustCount();
 	// 回避中かどうか取得
 	bool IsDodging()const;
 	// ジャスト回避が成立するウィンドウにいるか
@@ -91,10 +91,10 @@ private:
 	float m_colRadius;
 	//ジャスト回避用の半径
 	float m_justColRadius;
-	//ジャスト回避のフレーム
+    //ジャスト回避のフレーム
 	float m_justFrame;
-	//ジャスト回避できた回数
-	int m_justCount;
+	//ジャスト回避できた回数(全体で管理する静的カウンタ)
+	static int s_justCount;
 	
 	//今被弾中かどうか
 	bool m_isHit;

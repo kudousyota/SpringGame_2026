@@ -6,6 +6,7 @@
 #include "TitleScene.h"
 #include "SceneController.h"
 #include "../Game.h"
+#include "../Game/Player.h"
 
 constexpr int fade_interval = 60;
 
@@ -34,6 +35,8 @@ void ResultScene::FadeInUpdate(Input& input)
 void ResultScene::NormalUpdate(Input& input)
 {
 	
+	m_finalScore = Player::GetJustCount();
+
 	if (input.IsTriggered("ok"))
 	{
 		m_update = &ResultScene::FadeOutUpdate;
@@ -58,6 +61,8 @@ void ResultScene::NormalDraw()
 	const int white = GetColor(255, 255, 255);
 	const int Cyan = GetColor(0, 255, 255);
 	const int Color = GetColor(224, 255, 255);
+
+	DrawFormatString2ToHandle(470, 400, Color, Cyan, m_fontHandle, "回避した回数: %d", m_finalScore);
 	//点滅頻度
 	const int intervar = 650;
 	int now = GetNowCount();
@@ -103,6 +108,7 @@ void ResultScene::Init()
 {
 	// フォントの読み込み
 	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
+
 }
 
 void ResultScene::Update(Input& input)

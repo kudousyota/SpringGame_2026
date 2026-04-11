@@ -55,7 +55,8 @@ Player::Player() :
     m_colRadius(0.0f),
     m_justColRadius(0.0f),
     m_justFrame(0.0f),
-    m_justCount(0),
+    // m_justCount is now a static counter
+
     m_isHit(false),
     m_currentAnimCount(0.0f)
 {
@@ -83,8 +84,8 @@ void Player::Init()
 	m_colRadius = 100.0f;
     //ジャスト回避が成立するフレーム(回避中の最初の数フレームを想定)
     m_justFrame = 6.0f;
-    //ジャストカウント初期化
-    m_justCount = 0;
+    //ジャストカウントは静的カウンタで管理
+    s_justCount = 0;
 	//ジャスト回避の半径(当たり判定より少しでかくする)
     m_justColRadius = 130.0f;
 
@@ -335,7 +336,7 @@ void Player::Update(const Input& input, const Timer& timer)
 void Player::Draw()
 {
 	//ジャスト回避回数の表示
-	DrawFormatString(10, 10, GetColor(255, 255, 255), "Just Dodge Count: %d", m_justCount);
+    DrawFormatString(10, 10, GetColor(255, 255, 255), "Just Dodge Count: %d", Player::GetJustCount());
 
 	//被弾したら点滅
     if(m_hitAnimFrame > 0)
@@ -421,10 +422,18 @@ bool Player::IsHitPlaying() const
 
 void Player::OnJustDodge()
 {
-    m_justCount++;
+    s_justCount++;
     // 発動時は短時間無敵にする
     m_invincibleTimer = 30.0f;
 
+}
+
+// static member definition
+int Player::s_justCount = 0;
+
+int Player::GetJustCount()
+{
+    return s_justCount;
 }
 
 bool Player::IsDodging()const
