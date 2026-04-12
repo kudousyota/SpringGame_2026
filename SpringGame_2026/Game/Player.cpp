@@ -56,9 +56,9 @@ Player::Player() :
     m_justColRadius(0.0f),
     m_justFrame(0.0f),
     // m_justCount is now a static counter
-
     m_isHit(false),
-    m_currentAnimCount(0.0f)
+    m_currentAnimCount(0.0f),
+    m_framesSinceJustWindow(100000)
 {
 }
 Player::~Player()
@@ -86,6 +86,8 @@ void Player::Init()
     m_justFrame = 6.0f;
     //ジャストカウントは静的カウンタで管理
     s_justCount = 0;
+    // 初期値: 何フレーム経過しているかは大きな値にしておく（最近触れていない）
+    m_framesSinceJustWindow = 100000;
 	//ジャスト回避の半径(当たり判定より少しでかくする)
     m_justColRadius = 130.0f;
 
@@ -111,7 +113,6 @@ void Player::End()
         m_modelHandle = -1;
     }
 }
-
 void Player::Update(const Input& input, const Timer& timer)
 {
     // タイマーが0秒になったら動けなくする
@@ -446,6 +447,11 @@ bool Player::IsInJustWindow() const
     // ジャスト回避は回避開始から数フレームだけ成立する
     if (!m_isDodge) return false;
     return m_dodgeTimer > (kDodgeTime - m_justFrame);
+}
+
+bool Player::WasInJustWindowRecently(int frames) const
+{
+    return m_framesSinceJustWindow <= frames;
 }
 
 float Player::GetJustColRadius() const

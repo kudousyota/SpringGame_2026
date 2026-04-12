@@ -235,8 +235,12 @@ void Enemy::Update(Player& player, const Timer& timer)
 		float hitDist = playerRadius + bulletRadius;
 		float justDist = player.GetJustColRadius() + bulletRadius;
 
-		// ジャスト判定
-		if (player.IsDodging() && player.IsInJustWindow() &&
+        // ジャスト判定
+		// 成功条件を拡張: 現在ジャストウィンドウにいるか、
+		// 直近30フレーム以内にジャストウィンドウにいた場合にも許可する
+		const int kJustRecentFrames = 30;
+		bool recentJust = player.IsInJustWindow() || player.WasInJustWindowRecently(kJustRecentFrames);
+		if (player.IsDodging() && recentJust &&
 			justDistSq <= justDist * justDist)
 		{
 			player.OnJustDodge();
