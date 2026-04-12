@@ -41,7 +41,21 @@ void TitleScene::NormalDraw()
     const int cx = Game::kScreenWidth / 2;
 	const int cy = Game::kScreenHeight / 2;
 
-	DrawStringToHandle(cx, cy , "Title Scene", GetColor(0, 0, 0),m_fontHandle);
+	const int white = GetColor(255, 255, 255);
+	const int Cyan = GetColor(0, 255, 255);
+	const int Color = GetColor(224, 255, 255);
+
+	DrawStringToHandle(510, 330 , "Title Scene", GetColor(0, 0, 0),m_fontHandle);
+
+	//ì_ñ≈ïpìx
+	const int intervar = 650;
+	int now = GetNowCount();
+	bool visible = (now / intervar) % 2;
+	if (visible)
+	{
+		//ëÄçÏê‡ñæï\é¶
+		DrawStringToHandle(470, 580, "Press A to Title", white, m_fontHandle);
+	}
 
 }
 

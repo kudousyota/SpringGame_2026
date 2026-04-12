@@ -62,7 +62,7 @@ void ResultScene::NormalDraw()
 	const int Cyan = GetColor(0, 255, 255);
 	const int Color = GetColor(224, 255, 255);
 
-	DrawFormatString2ToHandle(470, 400, Color, Cyan, m_fontHandle, "kaihikaisuu:%d", m_finalScore);
+	DrawFormatString2ToHandle(370, 400, Color, Cyan, m_fontHandle, "kaihikaisuu:%d", m_finalScore);
 	//点滅頻度
 	const int intervar = 650;
 	int now = GetNowCount();
