@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="system\Effect.cpp" />
     <ClCompile Include="Game\Camera.cpp" />
     <ClCompile Include="Game\Enemy.cpp" />
     <ClCompile Include="Game\GameObject.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="system\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="system\Effect.h" />
     <ClInclude Include="Game\Camera.h" />
     <ClInclude Include="Game\Enemy.h" />
     <ClInclude Include="Game.h" />
