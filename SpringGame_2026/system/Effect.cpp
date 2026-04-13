@@ -13,6 +13,7 @@ Effect::~Effect()
 
 void Effect::Init()
 {
+	m_effectHandle = LoadEffekseerEffect("data/Hit.efk");
 }
 
 void Effect::Update()
