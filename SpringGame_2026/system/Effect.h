@@ -1,4 +1,6 @@
 #pragma once
+#include "Vector3.h"
+
 class Effect
 {
 public:
@@ -8,6 +10,7 @@ public:
 	void Update();
 	void Draw();
 private:
+	Vector3 m_pos;
 	int m_effectHandle;
 };
 

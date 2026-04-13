@@ -7,6 +7,7 @@
 #include "Scene/TitleScene.h"
 #include "Scene/SceneController.h"
 #include "Scene/ResultScene.h"
+#include "EffekseerForDXLib.h"
 //定数定義
 namespace
 {
@@ -31,6 +32,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 	//フォントの読み込み
 	AddFontResourceEx("data/x10y12pxDonguriDuel.ttf",FR_PRIVATE,NULL);
+
+	//DirectX11をしようするための初期化
+	//Effecseerを使用するには必ず設定する
+	SetUseDirect3DVersion(DX_DIRECT3D_11);
+
+	//Effekseer使用の初期化
+	//引数には画面に表示する最大パーティクルを設定する
+	if(Effekseer_Init(8000) == -1)
+	{
+		return -1;			// エラーが起きたら直ちに終了
+	}
+
+	//フルスクリーンウインドウの切り替えでリソースが消えるのを防ぐ
+	SetChangeScreenModeGraphicsSystemResetFlag(false);
+
+
+
 
 	//描画対象をバックバッファに変更
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -126,6 +144,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 	}
 
+	Effkseer_End();			// Effekseer使用の終了処理
 	DxLib_End();				// ＤＸライブラリ使用の終了処理
 
 	return 0;

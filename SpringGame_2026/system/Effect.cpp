@@ -1,6 +1,9 @@
 #include "Effect.h"
+#include "EffekseerForDXLib.h"
 
-Effect::Effect()
+Effect::Effect():
+	m_pos({ 0.0f,0.0f,0.0f }),
+	m_effectHandle(-1)
 {
 }
 
