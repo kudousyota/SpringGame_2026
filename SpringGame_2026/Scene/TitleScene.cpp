@@ -44,8 +44,9 @@ void TitleScene::NormalDraw()
 	const int white = GetColor(255, 255, 255);
 	const int Cyan = GetColor(0, 255, 255);
 	const int Color = GetColor(224, 255, 255);
+	const int black = GetColor(0, 0, 0);
 
-	DrawStringToHandle(510, 330 , "Title Scene", GetColor(0, 0, 0),m_fontHandle);
+	DrawStringToHandle(510, 330 , "Title Scene", black, m_fontHandle);
 
 	//“_–Å•p“x
 	const int intervar = 650;

@@ -55,9 +55,9 @@ Player::Player() :
     m_colRadius(0.0f),
     m_justColRadius(0.0f),
     m_justFrame(0.0f),
-    // m_justCount is now a static counter
     m_isHit(false),
     m_currentAnimCount(0.0f),
+	m_scene(PlayerScene::Game),
     m_framesSinceJustWindow(100000)
 {
 }

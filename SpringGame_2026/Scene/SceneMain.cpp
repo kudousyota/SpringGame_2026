@@ -49,7 +49,7 @@ void SceneMain::Init()
 	// カメラの設定
 	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
-	SetCameraNearFar(200.0f, 2000.0f);
+	SetCameraNearFar(200.0f, 2200.0f);
 
    // ステージを作成して初期化
 	m_pStage = std::make_shared<Stage>();

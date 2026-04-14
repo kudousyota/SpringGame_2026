@@ -8,7 +8,7 @@ namespace
 	const Vector3 kTargetToCamera = VGet(0.0f, 250.0f, 1100.0f);
 
 	// 注視点からカメラまでの距離
-	constexpr float kCameraDistance = 900.0f;
+	constexpr float kCameraDistance = 700.0f;
 	// カメラの高さ
 	constexpr float kCameraHeight = -350.0f;
 

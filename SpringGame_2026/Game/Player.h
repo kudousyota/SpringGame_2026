@@ -54,6 +54,14 @@ private:
 		Left,
 		Right
 	};
+
+	enum class PlayerScene
+	{
+		Game,
+		TitleScene,
+		ResultScene
+	};
+
 	// カメラへの参照
 	Camera* m_pCamera;
 	// ステージへの参照
@@ -70,6 +78,8 @@ private:
 	float m_doubleInputTimer;
 	Inputdata m_inputData;
 	bool m_isInput;
+
+	PlayerScene m_scene;
 	
 	// 回避中か
 	bool m_isDodge;
