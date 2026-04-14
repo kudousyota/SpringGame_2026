@@ -76,10 +76,13 @@ void Camera::Update()
 
 	// 右スティック入力取得
 	GetJoypadAnalogInputRight(&xBuf, &yBuf, DX_INPUT_PAD1);
+#ifdef _DEBUG
+
 
 	DrawFormatString(256, 128, 0xffffff, "Right Stick X : %d", xBuf);
 	DrawFormatString(256, 144, 0xffffff, "Right Stick Y : %d", yBuf);
 	DrawFormatString(256, 160, 0xffffff, "CameraAngle : %.3f", m_cameraAngleX);
+#endif // _DEBUG
 
 	// デッドゾーン
 	if (abs(xBuf) < kStickDeadZone) xBuf = 0;
@@ -114,7 +117,7 @@ void Camera::Update()
 	// カメラ反映
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos.ToDxLibVector(),m_cameraTarget.ToDxLibVector());
 
-	MV1SetPosition(m_skyDomeHandle, m_cameraTarget.ToDxLibVector());
+	MV1SetPosition(m_skyDomeHandle, m_cameraPos.ToDxLibVector());
 }
 
 void Camera::Draw()
