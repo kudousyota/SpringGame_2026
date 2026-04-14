@@ -6,7 +6,7 @@ namespace
 	//エフェクトのサイズ
 	constexpr float keffectSize = 10.0f;
 	//エフェクトの再生間隔
-	constexpr int keffectPlayInterval = 300;
+	constexpr int keffectPlayInterval = 30;
 }
 
 EffectManager::EffectManager():

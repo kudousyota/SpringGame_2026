@@ -82,7 +82,7 @@ TitleScene::TitleScene():
 
 void TitleScene::Init()
 {
-	SetBackgroundColor(100, 150, 255);
+	//SetBackgroundColor(100, 150, 255);
 	//ƒtƒHƒ“ƒg‚Ì“Ç‚İ‚İ
 	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
 }

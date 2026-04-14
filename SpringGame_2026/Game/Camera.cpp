@@ -27,7 +27,8 @@ namespace
 Camera::Camera():
 	m_cameraAngleX(0.0f),
 	m_cameraPos(VGet(0.0f, 0.0f, 0.0f)),
-	m_cameraTarget(VGet(0.0f, 0.0f, 0.0f))
+	m_cameraTarget(VGet(0.0f, 0.0f, 0.0f)),
+	m_skyDomeHandle(-1)
 {
 }
 
@@ -53,6 +54,8 @@ void Camera::Init()
 	m_cameraPos = cameraTarget - offset;
 
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos.ToDxLibVector(),m_cameraTarget.ToDxLibVector());
+
+	m_skyDomeHandle = MV1LoadModel("data/Sky_Daylight01.mv1");
 }
 
 void Camera::End()
@@ -110,6 +113,13 @@ void Camera::Update()
 
 	// カメラ反映
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos.ToDxLibVector(),m_cameraTarget.ToDxLibVector());
+
+	MV1SetPosition(m_skyDomeHandle, m_cameraTarget.ToDxLibVector());
+}
+
+void Camera::Draw()
+{
+	MV1DrawModel(m_skyDomeHandle);
 }
 
 Vector3 Camera::GetForward() const

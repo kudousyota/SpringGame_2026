@@ -15,7 +15,7 @@ namespace
 	constexpr int kScreenWidth = 1280;
 	constexpr int kScreenHeight = 720;
 }
-
+//ClearDrawScreen
 
 // ƒvƒƒOƒ‰ƒ€‚Í WinMain ‚©‚çn‚Ü‚è‚Ü‚·
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)

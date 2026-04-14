@@ -10,7 +10,7 @@ public:
 	void Init();
 	void End();
 	void Update();
-
+	void Draw();
 	void SetPlayer(std::shared_ptr<Player> player) { m_pPlayer = player; }
 
 	Vector3 GetForward() const;
@@ -25,6 +25,9 @@ private:
 	// カメラの位置
 	Vector3 m_cameraTarget;
 	Vector3 m_cameraPos;
+
+	//スカイドームのハンドル
+	int m_skyDomeHandle;
 
 	//カメラの角度
 	//カメラの水平回転角度

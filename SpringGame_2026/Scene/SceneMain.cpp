@@ -106,7 +106,7 @@ void SceneMain::Init()
 
 	// ”wŒiF‚ðÝ’è(‚±‚±‚ÅRGB‚ð•ÏX‚·‚ê‚Î”wŒiF‚ð•Ï‚¦‚ê‚é)
 	// ”–‚¢Â
-	SetBackgroundColor(100, 150, 255); 
+	//SetBackgroundColor(100, 150, 255); 
 	
 }
 
@@ -160,8 +160,8 @@ void SceneMain::Update(const Input& input)
 void SceneMain::Draw()
 {
 	// ‰æ–Ê‚ð”wŒiF‚ÅƒNƒŠƒA‚µ‚Ä‚©‚ç•`‰æ‚·‚é
-	ClearDrawScreen();
-
+	//ClearDrawScreen();
+	m_pCamera->Draw();
     if (m_pPlayer)
 	{
 		m_pPlayer->Draw();
@@ -176,11 +176,13 @@ void SceneMain::Draw()
 			}
 		}
 	}
+	
 	//ƒGƒtƒFƒNƒg‚ð•`‰æ
 	if (m_pEffect)
 	{
 		m_pEffect->Draw();
 	}
+
 	if (m_pTimer)
 	{
 		m_pTimer->Draw();
