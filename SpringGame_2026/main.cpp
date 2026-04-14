@@ -143,7 +143,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			break;
 		}
 	}
-
+	//フォントの解放
+	RemoveFontResourceEx("data/x10y12pxDonguriDuel.ttf", FR_PRIVATE, NULL);
 	Effkseer_End();			// Effekseer使用の終了処理
 	DxLib_End();				// ＤＸライブラリ使用の終了処理
 

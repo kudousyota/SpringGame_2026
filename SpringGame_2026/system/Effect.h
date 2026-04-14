@@ -10,7 +10,16 @@ public:
 	void Update();
 	void Draw();
 private:
+	enum class EffectState
+	{
+		Stoped,//完全停止
+		Playing,//再生中
+	};
+
 	Vector3 m_pos;
-	int m_effectHandle;
+    // エフェクトリソースのハンドル
+	int m_effectResourceHandle;
+	// 再生中のエフェクトハンドル
+	int m_playingHandle;
 };
 

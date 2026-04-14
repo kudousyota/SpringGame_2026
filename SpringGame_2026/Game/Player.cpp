@@ -239,7 +239,7 @@ void Player::Update(const Input& input, const Timer& timer)
             moveVec += right;
         }
    
-
+		// 移動ベクトルの正規化と移動
         if (moveVec.SqMagnitude() > 0.0001f)
         {
             moveVec = moveVec.Normalize();
@@ -291,6 +291,7 @@ void Player::Update(const Input& input, const Timer& timer)
     {
         MV1SetAttachAnimBlendRate(m_modelHandle, m_cureentAnimHandle, 1.0f);
     }
+	// Lastアニメがあるときはフレーム数に応じてブレンド
     else
     {
         float rate = static_cast<float>(m_animChangeFrame) / kAnimChangeFrame;
@@ -298,7 +299,7 @@ void Player::Update(const Input& input, const Timer& timer)
 
         MV1SetAttachAnimBlendRate(m_modelHandle, m_cureentAnimHandle, rate);
         MV1SetAttachAnimBlendRate(m_modelHandle, m_lastAnimHandle, 1.0f - rate);
-
+		// ブレンドが完了したらLastアニメをデタッチ
         if (rate >= 1.0f)
         {
             MV1DetachAnim(m_modelHandle, m_lastAnimHandle);

@@ -5,6 +5,7 @@
 #include "../Game/Camera.h"
 #include "../system/Timer.h"
 #include "../Game/Stage.h"
+#include "../system/EffectManager.h"
 
 class Stage;
 class Input;
@@ -31,6 +32,7 @@ private:
 	std::shared_ptr<Camera> m_pCamera;
 	std::shared_ptr<Timer> m_pTimer;
     std::shared_ptr<Stage> m_pStage;
+    std::shared_ptr<EffectManager> m_pEffect;
 
 	
 

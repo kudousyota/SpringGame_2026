@@ -3,7 +3,8 @@
 #include "../system/Timer.h"
 #include "Dxlib.h"
 #include <cmath>
-
+#include "../system/Effect.h"
+#include "../system/EffectManager.h"
 namespace
 {
 	//弾の速度
@@ -116,7 +117,7 @@ void Enemy::End()
 	}
 }
 
-void Enemy::Update(Player& player, const Timer& timer)
+void Enemy::Update(Player& player, const Timer& timer, EffectManager& effectManager)
 {
 	// プレイヤーの位置を取得
 	Vector3 playerPos = player.GetPos();
@@ -236,22 +237,24 @@ void Enemy::Update(Player& player, const Timer& timer)
 		float justDist = player.GetJustColRadius() + bulletRadius;
 
         // ジャスト判定
-		// 成功条件を拡張: 現在ジャストウィンドウにいるか、
+		// 現在ジャストの範囲ににいるか、
 		// 直近30フレーム以内にジャストウィンドウにいた場合にも許可する
 		const int kJustRecentFrames = 30;
 		bool recentJust = player.IsInJustWindow() || player.WasInJustWindowRecently(kJustRecentFrames);
-		if (player.IsDodging() && recentJust &&
+        if (player.IsDodging() && recentJust &&
 			justDistSq <= justDist * justDist)
 		{
 			player.OnJustDodge();
+			effectManager.PlayHitEffect(m_bulletPos);
 			m_hasBullet = false;
 		}
 		// 通常ヒット
-		else if (distSq <= hitDist * hitDist)
+        else if (distSq <= hitDist * hitDist)
 		{
 			if (!player.IsInvincible())
 			{
 				player.OnHit();
+				effectManager.PlayHitEffect(m_bulletPos);
 				m_hasBullet = false;
 			}
 		}

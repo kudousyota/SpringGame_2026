@@ -4,6 +4,7 @@
 #include "../Game/Enemy.h"
 #include "../Game/Input.h"
 #include "../Game/Stage.h"
+#include "../system/EffectManager.h"
 
 SceneMain::SceneMain():
 m_frameCount(0)
@@ -57,6 +58,10 @@ void SceneMain::Init()
     // プレイヤーと敵を作成
 	m_pPlayer = std::make_shared<Player>();
 	m_pPlayer->Init();
+
+    // Use EffectManager to play hit effects
+	m_pEffect = std::make_shared<EffectManager>();
+	m_pEffect->Init();
 
 	// 複数の敵をvectorで管理する
 	// 例として3体作成して初期位置をそれぞれずらす
@@ -128,20 +133,27 @@ void SceneMain::Update(const Input& input)
 
     if (!m_pEnemy.empty() && m_pPlayer)
 	{
-		for (auto& enemy : m_pEnemy)
+        for (auto& enemy : m_pEnemy)
 		{
 			if (enemy)
 			{
-				enemy->Update(*m_pPlayer, *m_pTimer);
+                // Pass effect manager to enemy update so it can play hit effects
+				enemy->Update(*m_pPlayer, *m_pTimer, *m_pEffect);
 			}
 		}
 	}
+	// カメラの更新はPlayerの更新後に行う
 	if (m_pCamera)
 	{
 		m_pCamera->Update();
 	}
     // m_pTimerの更新はPlayer更新時にまとめて行うためここでは行わない
 	
+	//エフェクトを更新
+	if (m_pEffect)
+	{
+		m_pEffect->Update();
+	}
 
 }
 
@@ -164,10 +176,16 @@ void SceneMain::Draw()
 			}
 		}
 	}
+	//エフェクトを描画
+	if (m_pEffect)
+	{
+		m_pEffect->Draw();
+	}
 	if (m_pTimer)
 	{
 		m_pTimer->Draw();
 	}
+    
 #ifdef _DEBUG
 
 	DrawGrid();

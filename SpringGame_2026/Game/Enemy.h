@@ -2,6 +2,7 @@
 #include "../system/Vector3.h"
 class Player;
 class Timer;
+class EffectManager;
 class Enemy
 {
 public:
@@ -9,7 +10,7 @@ public:
 	~Enemy();
 	void Init();
 	void End();
-    void Update(Player& player, const Timer& timer);
+    void Update(Player& player, const Timer& timer, EffectManager& effectManager);
 	void Draw();
 
 	// 敵の位置を外部から設定する
