@@ -65,7 +65,7 @@ void ResultScene::NormalDraw()
 	const int Cyan = GetColor(0, 255, 255);
 	const int Color = GetColor(224, 255, 255);
 
-	DrawFormatString2ToHandle(470, 400, Color, Cyan, m_fontHandle, "kaihi:%d", m_finalScore);
+	DrawFormatString2ToHandle(470, 400, Color, Cyan, m_fontHandle, "Dodge:%d", m_finalScore);
 	//点滅頻度
 	const int intervar = 650;
 	int now = GetNowCount();
@@ -114,6 +114,8 @@ void ResultScene::Init()
 	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
 
 	m_skyHandle = MV1LoadModel("data/Sky_Daylight01.mv1");
+
+
 
 	//カメラを初期化
 	Camera* camera = new Camera();

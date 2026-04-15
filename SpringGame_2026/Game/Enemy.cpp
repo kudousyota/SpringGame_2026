@@ -59,7 +59,8 @@ Enemy::Enemy() :
 	m_BiteAnimeFrame(0),
 	m_bulletSpeed(0.0f),
 	m_attackCoolTime(0),
-	m_isAttac(false)
+	m_isAttac(false),
+	m_bulletModelHandle(-1)
 {
 }
 
@@ -70,11 +71,11 @@ Enemy::~Enemy()
 void Enemy::Init()
 {
 	m_modelHandle = MV1LoadModel("data/Enemy.mv1");
-
+	m_bulletModelHandle = MV1LoadModel("data/Bullet.mv1");
 	// 敵の初期位置を設定
 	m_pos = VGet(0.0f, 350.0f, 350.0f);
 	MV1SetPosition(m_modelHandle, m_pos.ToDxLibVector());
-
+	
 	int animNo = MV1GetAnimIndex(m_modelHandle, kIdleAnimName);
 	m_currentAnimCount = 0.0f;
 
@@ -96,6 +97,9 @@ void Enemy::Init()
 	{
 		m_attackCoolTime = kDefaultAttackCoolTime; // デフォルト1秒
 	}
+
+	
+
 }
 
 void Enemy::End()
@@ -119,8 +123,12 @@ void Enemy::End()
 
 void Enemy::Update(Player& player, const Timer& timer, EffectManager& effectManager)
 {
+
+	MV1SetPosition(m_bulletModelHandle, m_bulletPos.ToDxLibVector());
+
 	// プレイヤーの位置を取得
 	Vector3 playerPos = player.GetPos();
+
 
 	// 敵の向きをプレイヤーに向ける
 	Vector3 toPlayer = playerPos - m_pos;
@@ -328,6 +336,8 @@ void Enemy::Draw()
 	// 弾を描画
 	if (m_hasBullet)
 	{
-		DrawSphere3D(m_bulletPos.ToDxLibVector(), kBulletSize, 8, GetColor(255, 255, 0), GetColor(255, 255, 0), true);
+		
+		//DrawSphere3D(m_bulletPos.ToDxLibVector(), kBulletSize, 8, GetColor(255, 255, 0), GetColor(255, 255, 0), true);
+		MV1DrawModel(m_bulletModelHandle);
 	}
 }

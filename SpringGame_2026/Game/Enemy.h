@@ -19,7 +19,10 @@ public:
 	
 
 private:
+	//モデルのハンドル
 	int m_modelHandle;
+	//敵の弾のモデルのハンドル
+	int m_bulletModelHandle;
 	Vector3 m_pos;
 	float m_angle;
 	//弾
