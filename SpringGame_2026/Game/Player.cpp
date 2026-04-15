@@ -85,8 +85,8 @@ void Player::Init()
     //ジャスト回避が成立するフレーム(回避中の最初の数フレームを想定)
     m_justFrame = 6.0f;
     //ジャストカウントは静的カウンタで管理
-    s_justCount = 0;
-    // 初期値: 何フレーム経過しているかは大きな値にしておく（最近触れていない）
+    m_justCount = 0;
+    // 初期値: 何フレーム経過しているかは大きな値にしておく(最近触れていない)
     m_framesSinceJustWindow = 100000;
 	//ジャスト回避の半径(当たり判定より少しでかくする)
     m_justColRadius = 130.0f;
@@ -424,18 +424,17 @@ bool Player::IsHitPlaying() const
 
 void Player::OnJustDodge()
 {
-    s_justCount++;
+    m_justCount++;
     // 発動時は短時間無敵にする
     m_invincibleTimer = 30.0f;
 
 }
 
-// static member definition
-int Player::s_justCount = 0;
+int Player::m_justCount = 0;
 
 int Player::GetJustCount()
 {
-    return s_justCount;
+    return m_justCount;
 }
 
 bool Player::IsDodging()const

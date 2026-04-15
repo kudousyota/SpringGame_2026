@@ -42,7 +42,7 @@ public:
 	// 最近ジャストウィンドウにいたか（frames以内）
 	bool WasInJustWindowRecently(int frames) const;
 
-  void setCamera(Camera* camera) { m_pCamera = camera; }
+	void setCamera(Camera* camera) { m_pCamera = camera; }
 	void setStage(Stage* stage) { m_pStage = stage; }
 
 private:
@@ -107,7 +107,7 @@ private:
     //ジャスト回避のフレーム
 	float m_justFrame;
 	//ジャスト回避できた回数(全体で管理する静的カウンタ)
-	static int s_justCount;
+	static int m_justCount;
 	// ジャスト判定に触れてからの経過フレーム（最近触れていたかを判定するため）
 	int m_framesSinceJustWindow;
 	
