@@ -49,7 +49,7 @@ void SceneMain::Init()
 	// カメラの設定
 	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
-	SetCameraNearFar(20.0f, 3500.0f);
+	SetCameraNearFar(20.0f, 4500.0f);
 
    // ステージを作成して初期化
 	m_pStage = std::make_shared<Stage>();
@@ -162,6 +162,7 @@ void SceneMain::Draw()
 	// 画面を背景色でクリアしてから描画する
 	//ClearDrawScreen();
 	m_pCamera->Draw();
+	m_pStage->Draw();
     if (m_pPlayer)
 	{
 		m_pPlayer->Draw();
@@ -187,6 +188,7 @@ void SceneMain::Draw()
 	{
 		m_pTimer->Draw();
 	}
+
     
 #ifdef _DEBUG
 

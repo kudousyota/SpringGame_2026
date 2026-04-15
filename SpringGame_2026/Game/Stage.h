@@ -19,6 +19,9 @@ private:
 	Vector3 m_stageMin;
 	//移動可能な範囲
 	Vector3 m_stageMax;
+	//ステージのハンドル
+	int m_stageHandle;
+
 
 
 };

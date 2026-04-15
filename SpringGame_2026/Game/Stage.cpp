@@ -3,7 +3,8 @@
 
 Stage::Stage():
 	m_stageMin(VGet(-1200.0f, 0.0f, -700.0f)),
-	m_stageMax(VGet(1200.0f, 0.0f, 700.0f))
+	m_stageMax(VGet(1200.0f, 0.0f, 700.0f)),
+	m_stageHandle(-1)
 {
 }
 
@@ -13,6 +14,7 @@ Stage::~Stage()
 
 void Stage::Init()
 {
+	m_stageHandle = MV1LoadModel("data/Ground.mv1");
 }
 
 void Stage::End()
@@ -25,6 +27,7 @@ void Stage::Update()
 
 void Stage::Draw()
 {
+	MV1DrawModel(m_stageHandle);
 }
 
 bool Stage::CanMove(const Vector3& pos, float radius)const
