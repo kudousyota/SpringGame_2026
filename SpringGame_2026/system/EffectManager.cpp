@@ -38,7 +38,7 @@ EffectManager::~EffectManager()
 void EffectManager::Init()
 {
 	// エフェクトリソースを読み込む
-	m_effectHandle = LoadEffekseerEffect("data/Hit.efk",3.0f);
+	m_effectHandle = LoadEffekseerEffect("data/Hit2.efk",3.0f);
 
 }
 

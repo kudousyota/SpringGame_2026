@@ -163,6 +163,10 @@ void SceneMain::Draw()
 	//ClearDrawScreen();
 	m_pCamera->Draw();
 	m_pStage->Draw();
+	if (m_pEffect)
+	{
+		m_pEffect->Draw();
+	}
     if (m_pPlayer)
 	{
 		m_pPlayer->Draw();
@@ -179,10 +183,7 @@ void SceneMain::Draw()
 	}
 	
 	//エフェクトを描画
-	if (m_pEffect)
-	{
-		m_pEffect->Draw();
-	}
+	
 
 	if (m_pTimer)
 	{
