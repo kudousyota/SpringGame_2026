@@ -38,6 +38,8 @@ void TitleScene::FadeOutUpdate(Input&)
 
 void TitleScene::NormalDraw()
 {
+	MV1DrawModel(m_skyHandle);
+
     const int cx = Game::kScreenWidth / 2;
 	const int cy = Game::kScreenHeight / 2;
 
@@ -46,7 +48,7 @@ void TitleScene::NormalDraw()
 	const int Color = GetColor(224, 255, 255);
 	const int black = GetColor(0, 0, 0);
 
-	DrawStringToHandle(510, 330 , "Title Scene", black, m_fontHandle);
+	DrawStringToHandle(510, 330 , "nigeusagi", black, m_fontHandle);
 
 	//点滅頻度
 	const int intervar = 650;
@@ -55,7 +57,7 @@ void TitleScene::NormalDraw()
 	if (visible)
 	{
 		//操作説明表示
-		DrawStringToHandle(470, 580, "Press A to Title", white, m_fontHandle);
+		DrawStringToHandle(470, 580, "Press A to Game", white, m_fontHandle);
 	}
 
 }
@@ -71,7 +73,8 @@ void TitleScene::FadeDraw()
 }
 
 TitleScene::TitleScene():
-	m_fontHandle(-1)
+	m_fontHandle(-1),
+	m_skyHandle(-1)
 {
 	
 	m_update = &TitleScene::FadeInUpdate;
@@ -85,6 +88,8 @@ void TitleScene::Init()
 	//SetBackgroundColor(100, 150, 255);
 	//フォントの読み込み
 	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
+
+	m_skyHandle = MV1LoadModel("data/Sky_Daylight01.mv1");
 }
 
 void TitleScene::Update(Input& input)

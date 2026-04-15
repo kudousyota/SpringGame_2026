@@ -49,7 +49,7 @@ void SceneMain::Init()
 	// カメラの設定
 	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
-	SetCameraNearFar(200.0f, 2200.0f);
+	SetCameraNearFar(20.0f, 3500.0f);
 
    // ステージを作成して初期化
 	m_pStage = std::make_shared<Stage>();
@@ -123,7 +123,7 @@ void SceneMain::Update(const Input& input)
 		}
 		else
 		{
-			// タイマーが無ければ通常の更新を行う（時間切れフラグはfalseとみなす）
+			// タイマーが無ければ通常の更新を行う(時間切れフラグはfalseとみなす)
 			Timer dummy;
 			// dummy を初期化してから渡す
 			dummy.Init();
@@ -137,7 +137,7 @@ void SceneMain::Update(const Input& input)
 		{
 			if (enemy)
 			{
-                // Pass effect manager to enemy update so it can play hit effects
+                
 				enemy->Update(*m_pPlayer, *m_pTimer, *m_pEffect);
 			}
 		}

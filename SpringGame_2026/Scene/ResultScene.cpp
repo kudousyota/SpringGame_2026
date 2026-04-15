@@ -7,6 +7,7 @@
 #include "SceneController.h"
 #include "../Game.h"
 #include "../Game/Player.h"
+#include "../Game/Camera.h"
 
 constexpr int fade_interval = 60;
 
@@ -57,12 +58,14 @@ void ResultScene::FadeOutUpdate(Input&)
 }
 void ResultScene::NormalDraw()
 {
+	MV1DrawModel(m_skyHandle);
+
 	DrawStringToHandle(470, 240, "Result Scene", GetColor(0, 0, 0), m_fontHandle);
 	const int white = GetColor(255, 255, 255);
 	const int Cyan = GetColor(0, 255, 255);
 	const int Color = GetColor(224, 255, 255);
 
-	DrawFormatString2ToHandle(470, 400, Color, Cyan, m_fontHandle, "kaihikaisuu:%d", m_finalScore);
+	DrawFormatString2ToHandle(470, 400, Color, Cyan, m_fontHandle, "kaihi:%d", m_finalScore);
 	//点滅頻度
 	const int intervar = 650;
 	int now = GetNowCount();
@@ -92,7 +95,8 @@ ResultScene::ResultScene(SceneController& controller) :
 	m_finalScore(0),
 	m_scoreAnimTime(0),
 	m_finished(false),
-	Scene(controller)
+	Scene(controller),
+	m_skyHandle(-1)
 {
 	m_update = &ResultScene::FadeInUpdate;
 	m_draw = &ResultScene::FadeDraw;
@@ -109,6 +113,10 @@ void ResultScene::Init()
 	// フォントの読み込み
 	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
 
+	m_skyHandle = MV1LoadModel("data/Sky_Daylight01.mv1");
+
+	//カメラを初期化
+	Camera* camera = new Camera();
 }
 
 void ResultScene::Update(Input& input)

@@ -24,6 +24,9 @@ private:
 	float m_scoreAnimTime;
 	//シーン終了フラグ
 	bool m_finished;
+	//スカイドームのモデルハンドル
+	int m_skyHandle;
+
 
 	// メンバ関数ポインタを使用して内部状態を書き換える
 	// update関数とdraw関数を、現在のTitleSceneの状態に合わせて

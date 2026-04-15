@@ -3,8 +3,14 @@
 
 class TitleScene
 {
+public:
+	TitleScene();
+	void Init();
+	void Update(Input& input);
+	void Draw();
+	bool IsFinished() const { return m_finished; }
 private:
-	int m_frame;	// 経過フレーム
+	
 
 	// メンバ関数ポインタを使用して内部状態を書き換える
 	// update関数とdraw関数を、現在のTitleSceneの状態に合わせて
@@ -26,12 +32,9 @@ private:
 	
 	//フォントハンドル
 	int m_fontHandle;
-
-public:
-	TitleScene();
-	void Init();
-	void Update(Input& input);
-	void Draw();
-	bool IsFinished() const { return m_finished; }
+	// 経過フレーム
+	int m_frame;
+	// スカイドームのモデルハンドル
+	int m_skyHandle;
 };
 
