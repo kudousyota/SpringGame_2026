@@ -149,16 +149,12 @@ void ResultScene::Init()
 
 	m_playerPos = VGet(0.0f, 0.0f, -10.0f);
 
-	// プレイヤーのアニメーションのインデックスを取得
 	int animNo = MV1GetAnimIndex(m_playerHandle, kWaveAnimName);
-	// アニメーションが見つかったときだけアタッチして再生準備をする
-	if (animNo >= 0)
-	{
-		// 結果画面用のプレイヤーモデルにアニメをアタッチして再生準備をする
-		m_cureentAnimHandle = MV1AttachAnim(m_playerHandle, animNo, -1, -1);
-		m_currentAnimIndex = animNo;
-		m_currentAnimCount = 0.0f;
-	}
+	m_currentAnimCount = 0.0f;
+
+	m_cureentAnimHandle = MV1AttachAnim(m_playerHandle, animNo, -1, -1);
+	m_currentAnimIndex = animNo;
+	
 
 	//カメラを初期化
 	Camera* camera = new Camera();

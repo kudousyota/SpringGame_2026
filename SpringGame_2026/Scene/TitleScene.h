@@ -1,5 +1,6 @@
 #pragma once
 #include "../Game/Input.h"
+#include "../system/Vector3.h"
 
 class TitleScene
 {
@@ -36,5 +37,16 @@ private:
 	int m_frame;
 	// スカイドームのモデルハンドル
 	int m_skyHandle;
+	//プレイヤーのモデルハンドル
+	int m_playerHandle;
+    //アニメーションハンドル
+	int m_cureentAnimHandle;
+
+	// アニメーション再生時間を小数で扱うためfloatにする
+	float m_currentAnimCount;
+	//現在セットしているアニメーションのインデックス
+	int m_currentAnimIndex;
+	//プレイヤーの位置
+	Vector3 m_playerPos;
 };
 
