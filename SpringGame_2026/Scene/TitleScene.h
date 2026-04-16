@@ -48,5 +48,9 @@ private:
 	int m_currentAnimIndex;
 	//プレイヤーの位置
 	Vector3 m_playerPos;
+	//タイトルの地面ハンドル
+	int m_groundHandle;
+	//タイトルの地面の位置
+	Vector3 m_groundPos;
 };
 

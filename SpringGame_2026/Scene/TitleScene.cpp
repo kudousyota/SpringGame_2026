@@ -58,6 +58,9 @@ void TitleScene::NormalDraw()
 	//ƒ‚ƒfƒ‹‚ÌˆÊ’u‚ð”½‰f‚µ‚Ä‚©‚ç•`‰æ
 	MV1SetPosition(m_playerHandle, m_playerPos.ToDxLibVector());
 	MV1DrawModel(m_playerHandle);
+	
+	MV1SetPosition(m_groundHandle, m_groundPos.ToDxLibVector());
+	MV1DrawModel(m_groundHandle);
 
     const int cx = Game::kScreenWidth / 2;
 	const int cy = Game::kScreenHeight / 2;
@@ -98,7 +101,9 @@ TitleScene::TitleScene():
 	m_cureentAnimHandle(-1),
 	m_currentAnimCount(0.0f),
 	m_playerPos(VGet(0.0f, 0.0f, 0.0f)),
-	m_currentAnimIndex(-1)
+	m_currentAnimIndex(-1),
+	m_groundHandle(-1),
+	m_groundPos(VGet(0.0f, 0.0f, 0.0f))
 {
 	
 	m_update = &TitleScene::FadeInUpdate;
@@ -117,7 +122,10 @@ void TitleScene::Init()
 
 	m_playerHandle = MV1LoadModel("data/Player.mv1");
 
-	m_playerPos = VGet(0, 0.0f, -10.0f);
+	m_groundHandle = MV1LoadModel("data/Ground.mv1");
+
+	m_playerPos = VGet(0.0f, -80.0f, -10.0f);
+	m_groundPos = VGet(0.0f, -100.0f, 150.0f);
 
 	int animNo = MV1GetAnimIndex(m_playerHandle, kWaveAnimName);
 	m_currentAnimCount = 0.0f;
