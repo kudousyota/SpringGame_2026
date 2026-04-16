@@ -11,7 +11,7 @@ Effect::Effect():
 
 Effect::~Effect()
 {
-    // 停止とリソース解放
+    //停止とリソース解放
 	if (m_playingHandle != -1)
 	{
 		StopEffekseer3DEffect(m_playingHandle);
@@ -30,7 +30,7 @@ void Effect::Init()
    
 	EffectState effectState = EffectState::Stoped;
 
-	// 初期位置: 画面中央
+	//初期位置: 画面中央
 	m_pos = VGet(Game::kScreenWidth * 0.5f, Game::kScreenHeight * 0.5f, 0.0f);
 }
 
@@ -40,13 +40,13 @@ void Effect::Update()
 
 	
 
-	// 再生中でなければ再生を開始する
+	//再生中でなければ再生を開始する
 	if (m_playingHandle == -1)
 	{
 		m_playingHandle = PlayEffekseer3DEffect(m_effectResourceHandle);
 	}
 
-	// 再生中なら位置を設定
+	//再生中なら位置を設定
 	if (m_playingHandle != -1)
 	{
 		SetPosPlayingEffekseer3DEffect(m_playingHandle, m_pos.x, m_pos.y, m_pos.z);

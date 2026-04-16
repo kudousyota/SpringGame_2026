@@ -17,7 +17,7 @@ namespace
 }
 //ClearDrawScreen
 
-// プログラムは WinMain から始まります
+//プログラムは WinMain から始まります
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	//ウィンドウモード設定
@@ -26,9 +26,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetMainWindowText("ゲーム名");
 	//画面のサイズ変更
 	SetGraphMode(Game::kScreenWidth, Game::kScreenHeight, Game::kColorBitNum);
-	if (DxLib_Init() == -1) 		// ＤＸライブラリ初期化処理
+	if (DxLib_Init() == -1) 		//ＤＸライブラリ初期化処理
 	{
-		return -1;			// エラーが起きたら直ちに終了
+		return -1;			//エラーが起きたら直ちに終了
 	}
 	//フォントの読み込み
 	AddFontResourceEx("data/x10y12pxDonguriDuel.ttf",FR_PRIVATE,NULL);
@@ -41,7 +41,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//引数には画面に表示する最大パーティクルを設定する
 	if(Effekseer_Init(8000) == -1)
 	{
-		return -1;			// エラーが起きたら直ちに終了
+		return -1;			//エラーが起きたら直ちに終了
 	}
 
 	//フルスクリーンウインドウの切り替えでリソースが消えるのを防ぐ
@@ -52,17 +52,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	//描画対象をバックバッファに変更
 	SetDrawScreen(DX_SCREEN_BACK);
-	// カリングの設定
+	//カリングの設定
 	SetUseBackCulling(true);
 
-    // 入力はアプリ全体で一つ用意しておく
+    //入力はアプリ全体で一つ用意しておく
 	Input input;
 
 	bool running = true;
 
 	while (running && ProcessMessage() != -1)
 	{
-		// タイトルを表示
+		//タイトルを表示
 		TitleScene title;
 		title.Init();
 		while (running && ProcessMessage() != -1 && !title.IsFinished())
@@ -83,7 +83,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		if (!running) break;
 
-		// メインシーンを作成して実行
+		//メインシーンを作成して実行
 		std::shared_ptr<SceneMain> pScene = std::make_shared<SceneMain>();
 		pScene->Init();
 		bool timeUpTriggered = false;
@@ -109,12 +109,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			while (GetNowHiPerformanceCount() - start < 16667) {}
 		}
 
-		// メインシーン解放
+		//メインシーン解放
 		pScene.reset();
 
 		if (!running) break;
 
-		// タイムアップならリザルトを表示してからタイトルに戻る
+		//タイムアップならリザルトを表示してからタイトルに戻る
 		if (timeUpTriggered)
 		{
 			SceneController controller;
@@ -135,18 +135,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				ScreenFlip();
 				while (GetNowHiPerformanceCount() - start < 16667) {}
 			}
-			// リザルト終了後はループを継続してタイトルに戻る
+			//リザルト終了後はループを継続してタイトルに戻る
 		}
 		else
 		{
-			// タイムアップでなく通常終了（ESCなど）の場合は終了
+			//タイムアップでなく通常終了（ESCなど）の場合は終了
 			break;
 		}
 	}
 	//フォントの解放
 	RemoveFontResourceEx("data/x10y12pxDonguriDuel.ttf", FR_PRIVATE, NULL);
-	Effkseer_End();			// Effekseer使用の終了処理
-	DxLib_End();				// ＤＸライブラリ使用の終了処理
+	Effkseer_End();			//Effekseer使用の終了処理
+	DxLib_End();				//ＤＸライブラリ使用の終了処理
 
 	return 0;
 }

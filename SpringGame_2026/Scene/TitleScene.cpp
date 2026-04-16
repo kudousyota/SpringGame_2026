@@ -22,9 +22,9 @@ void TitleScene::FadeInUpdate(Input&)
 void TitleScene::NormalUpdate(Input& input)
 {
 
-	// アニメ進行
+	//アニメ進行
 	m_currentAnimCount += 0.5f;
-	// アニメの総時間を超えたらループさせる
+	//アニメの総時間を超えたらループさせる
 	float currentTotal = MV1GetAttachAnimTotalTime(m_playerHandle, m_cureentAnimHandle);
 	if (m_currentAnimCount >= currentTotal)
 	{
@@ -37,7 +37,7 @@ void TitleScene::NormalUpdate(Input& input)
 	{
 		m_update = &TitleScene::FadeOutUpdate;
 		m_draw = &TitleScene::FadeDraw;
-		m_frame = 0;	// フェードアウトの最初
+		m_frame = 0;	//フェードアウトの最初
 		return;
 	}
 }
@@ -46,7 +46,7 @@ void TitleScene::FadeOutUpdate(Input&)
 {
 	if (m_frame++ >= fade_interval)
 	{
-		// フェードアウト完了
+		//フェードアウト完了
 		m_finished = true;
 		return;
 	}
@@ -55,7 +55,7 @@ void TitleScene::FadeOutUpdate(Input&)
 void TitleScene::NormalDraw()
 {
 	MV1DrawModel(m_skyHandle);
-	// モデルの位置を反映してから描画
+	//モデルの位置を反映してから描画
 	MV1SetPosition(m_playerHandle, m_playerPos.ToDxLibVector());
 	MV1DrawModel(m_playerHandle);
 
@@ -84,11 +84,11 @@ void TitleScene::NormalDraw()
 void TitleScene::FadeDraw()
 {
 
-	// 値の範囲をいったん0.0~1.0にしておくといろいろと扱いやすくなります
+	//値の範囲をいったん0.0~1.0にしておくといろいろと扱いやすくなります
 	auto rate = static_cast<float>(m_frame) / static_cast<float>(fade_interval);
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA,255 * rate); // αブレンド
-	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);	// 画面全体に黒フィルムをかける
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);	// ブレンドしない
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA,255 * rate); //αブレンド
+	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);	//画面全体に黒フィルムをかける
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);	//ブレンドしない
 }
 
 TitleScene::TitleScene():
@@ -117,13 +117,20 @@ void TitleScene::Init()
 
 	m_playerHandle = MV1LoadModel("data/Player.mv1");
 
-	m_playerPos = VGet(550.0f, 0.0f, -10.0f);
+	m_playerPos = VGet(0, 0.0f, -10.0f);
 
 	int animNo = MV1GetAnimIndex(m_playerHandle, kWaveAnimName);
 	m_currentAnimCount = 0.0f;
 
 	m_cureentAnimHandle = MV1AttachAnim(m_playerHandle, animNo, -1, -1);
 	m_currentAnimIndex = animNo;
+
+	//カメラを初期化
+	//カメラをタイトル用に初期化(SceneMainと同じ初期位置に戻す)
+	//これでメインシーンから引き継いだカメラの位置がリセットされる
+	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
+	SetupCamera_Perspective(DX_PI_F / 3.0f);
+	SetCameraNearFar(20.0f, 4500.0f);
 }
 
 void TitleScene::Update(Input& input)

@@ -13,7 +13,7 @@ public:
     void Update(Player& player, const Timer& timer, EffectManager& effectManager);
 	void Draw();
 
-	// 敵の位置を外部から設定する
+	//敵の位置を外部から設定する
 	void SetPos(const Vector3& pos);
 
 	
@@ -41,7 +41,7 @@ private:
 	//アニメーションのハンドル
 	int m_cureentAnimHandle;
 	int m_lastAnimHandle;
-	// 現在セットしているアニメーションのインデックス
+	//現在セットしているアニメーションのインデックス
 	int m_currentAnimIndex;
 	//アニメーション切り替えフレーム数
 	int m_animChangeFrame;
@@ -55,9 +55,9 @@ private:
 	int m_attackCoolTime;
 
 public:
-	// 攻撃頻度(初期クールタイム)をフレームで設定
+	//攻撃頻度(初期クールタイム)をフレームで設定
 	void SetAttackCoolTime(int frames) { m_attackCoolTime = frames; }
-	// 弾の速度を設定
+	//弾の速度を設定
 	void SetBulletSpeed(float speed) { m_bulletSpeed = speed; }
 };
 

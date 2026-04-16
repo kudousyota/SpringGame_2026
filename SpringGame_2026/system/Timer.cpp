@@ -2,9 +2,9 @@
 #include "DxLib.h"
 namespace
 {
-	// 初期のフレーム数（秒数 * FPS）を取得
+	//初期のフレーム数（秒数 * FPS）を取得
 	static constexpr int kFps = 60;
-	static constexpr int kTimeLimit = 60; // 秒
+	static constexpr int kTimeLimit = 3; //秒
 }
 Timer::Timer():
 	m_gameTimer(0)
@@ -27,7 +27,7 @@ void Timer::End()
 
 void Timer::Update()
 {
-    // ゲームタイマーが0より大きいときだけ減らす
+    //ゲームタイマーが0より大きいときだけ減らす
 	if (m_gameTimer > 0)
 	{
 		m_gameTimer--;
@@ -36,8 +36,8 @@ void Timer::Update()
 
 void Timer::Draw()
 {
-	// 残り秒数に変換
-	// 切り上げ表示
+	//残り秒数に変換
+	//切り上げ表示
 	int displayTime = (m_gameTimer + kFps - 1) / kFps;
 
 	DrawFormatString(30, 30, GetColor(255, 255, 255), "Timer:%d", displayTime);
@@ -50,7 +50,7 @@ void Timer::Draw()
 
 bool Timer::IsTimeUp() const
 {
-	// ゲームタイマーが0以下なら時間切れ
+	//ゲームタイマーが0以下なら時間切れ
 	return m_gameTimer <= 0;
 }
 

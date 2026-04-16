@@ -22,7 +22,7 @@ private:
     //再生中のエフェクトのハンドル（複数再生に対応）
 	std::vector<int> m_playingEffectHandles;
 
-	// 再生間隔用タイマー
+	//再生間隔用タイマー
 	int m_playTimer;
 
 

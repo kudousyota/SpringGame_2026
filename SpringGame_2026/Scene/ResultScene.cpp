@@ -15,18 +15,18 @@ namespace
 {
 	constexpr int kFadeInterval = 60;
 
-	const char* const kWaveAnimName = "CharacterArmature|Wave";
+	const char* const kShootAnimName = "CharacterArmature|Idle_Shoot";
 }
 
 
 void ResultScene::FadeInUpdate(Input& input)
 {
-	// フェードイン中でもエンター("ok")でフェードアウトを開始できるようにする
+	//フェードイン中でもエンター("ok")でフェードアウトを開始できるようにする
 	if (input.IsTriggered("ok"))
 	{
 		m_update = &ResultScene::FadeOutUpdate;
 		m_draw = &ResultScene::FadeDraw;
-		m_frame = 0;	// フェードアウトの最初
+		m_frame = 0;	//フェードアウトの最初
 		return;
 	}
 
@@ -46,9 +46,9 @@ void ResultScene::NormalUpdate(Input& input)
 	
 	m_finalScore = Player::GetJustCount();
 
-	// アニメ進行
+	//アニメ進行
 	m_currentAnimCount += 0.5f;
-	// アニメの総時間を超えたらループさせる
+	//アニメの総時間を超えたらループさせる
 	float currentTotal = MV1GetAttachAnimTotalTime(m_playerHandle, m_cureentAnimHandle);
 	if (m_currentAnimCount >= currentTotal)
 	{
@@ -61,19 +61,18 @@ void ResultScene::NormalUpdate(Input& input)
 	{
 		m_update = &ResultScene::FadeOutUpdate;
 		m_draw = &ResultScene::FadeDraw;
-		m_frame = 0;	// フェードアウトの最初
+		m_frame = 0;	//フェードアウトの最初
 		return;
 	}
 
-
-
+	
 }
 
 void ResultScene::FadeOutUpdate(Input&)
 {
 	if (m_frame++ >= kFadeInterval)
 	{
-		// フェードアウト完了
+		//フェードアウト完了
 		m_finished = true;
 		return;
 	}
@@ -81,9 +80,12 @@ void ResultScene::FadeOutUpdate(Input&)
 void ResultScene::NormalDraw()
 {
     MV1DrawModel(m_skyHandle);
-	// モデルの位置を反映してから描画
+	//モデルの位置を反映してから描画
 	MV1SetPosition(m_playerHandle, m_playerPos.ToDxLibVector());
 	MV1DrawModel(m_playerHandle);
+
+	MV1SetPosition(m_enemyHandle, m_enemyPos.ToDxLibVector());
+	MV1DrawModel(m_enemyHandle);
 
 	DrawStringToHandle(470, 240, "Result Scene", GetColor(0, 0, 0), m_fontHandle);
 	const int white = GetColor(255, 255, 255);
@@ -126,7 +128,10 @@ ResultScene::ResultScene(SceneController& controller) :
 	m_playerPos(VGet(0.0f, 0.0f, 0.0f)),
 	m_currentAnimCount(0.0f),
 	m_cureentAnimHandle(-1),
-	m_currentAnimIndex(-1)
+	m_currentAnimIndex(-1),
+	m_enemyHandle(-1),
+	m_enemyPos(VGet(0.0f, 0.0f, 0.0f)),
+	m_enemyAngle(0.0f)
 {
 	m_update = &ResultScene::FadeInUpdate;
 	m_draw = &ResultScene::FadeDraw;
@@ -140,24 +145,40 @@ ResultScene::~ResultScene()
 void ResultScene::Init()
 	
 {
-	// フォントの読み込み
+	//フォントの読み込み
 	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
 
 	m_skyHandle = MV1LoadModel("data/Sky_Daylight01.mv1");
 
 	m_playerHandle = MV1LoadModel("data/Player.mv1");
 
+	m_enemyHandle = MV1LoadModel("data/Enemy.mv1");
+
 	m_playerPos = VGet(0.0f, 0.0f, -10.0f);
 
-	int animNo = MV1GetAnimIndex(m_playerHandle, kWaveAnimName);
+	m_enemyPos = VGet(0.0f, 0.0f, -400.0f);
+
+	int animNo = MV1GetAnimIndex(m_playerHandle, kShootAnimName);
 	m_currentAnimCount = 0.0f;
 
 	m_cureentAnimHandle = MV1AttachAnim(m_playerHandle, animNo, -1, -1);
 	m_currentAnimIndex = animNo;
 	
+	m_enemyAngle += DX_PI_F;
+
+	//モデル行列を毎フレーム更新して回転と位置を反映する
+	MATRIX rotMtx = MGetRotY(m_enemyAngle);
+	MATRIX transMtx = MGetTranslate(m_enemyPos.ToDxLibVector());
+	MATRIX world = MMult(rotMtx, transMtx);
+	MV1SetMatrix(m_enemyHandle, world);
+
 
 	//カメラを初期化
-	Camera* camera = new Camera();
+	//カメラをリザルト用に初期化(SceneMain と同じ初期位置に戻す)
+	//これでメインシーンから引き継いだカメラの位置がリセットされる
+	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
+	SetupCamera_Perspective(DX_PI_F / 3.0f);
+	SetCameraNearFar(20.0f, 4500.0f);
 }
 
 void ResultScene::Update(Input& input)

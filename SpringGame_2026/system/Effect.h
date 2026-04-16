@@ -17,9 +17,9 @@ private:
 	};
 
 	Vector3 m_pos;
-    // エフェクトリソースのハンドル
+    //エフェクトリソースのハンドル
 	int m_effectResourceHandle;
-	// 再生中のエフェクトハンドル
+	//再生中のエフェクトハンドル
 	int m_playingHandle;
 };
 

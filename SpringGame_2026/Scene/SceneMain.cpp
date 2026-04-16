@@ -15,7 +15,7 @@ m_frameCount(0)
 
 SceneMain::~SceneMain()
 {
-	// PlayerとEnemy の終了処理を呼び出す
+	//PlayerとEnemy の終了処理を呼び出す
     if (m_pPlayer)
 	{
 		m_pPlayer->End();
@@ -42,70 +42,70 @@ void SceneMain::Init()
 {
 	
 
-	// Zバッファの設定
-	SetUseZBuffer3D(true);	// Zバッファを使います
-	SetWriteZBuffer3D(true);	// 描画する物体はZバッファにも距離を書き込む
+	//Zバッファの設定
+	SetUseZBuffer3D(true);	//Zバッファを使います
+	SetWriteZBuffer3D(true);	//描画する物体はZバッファにも距離を書き込む
 
-	// カメラの設定
+	//カメラの設定
 	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(20.0f, 4500.0f);
 
-   // ステージを作成して初期化
+   //ステージを作成して初期化
 	m_pStage = std::make_shared<Stage>();
 	m_pStage->Init();
 
-    // プレイヤーと敵を作成
+    //プレイヤーと敵を作成
 	m_pPlayer = std::make_shared<Player>();
 	m_pPlayer->Init();
 
-    // Use EffectManager to play hit effects
+    //Use EffectManager to play hit effects
 	m_pEffect = std::make_shared<EffectManager>();
 	m_pEffect->Init();
 
-	// 複数の敵をvectorで管理する
-	// 例として3体作成して初期位置をそれぞれずらす
-	// 既存の敵をクリア
+	//複数の敵をvectorで管理する
+	//例として3体作成して初期位置をそれぞれずらす
+	//既存の敵をクリア
 	m_pEnemy.clear();
 	auto enemy = std::make_shared<Enemy>();
 	enemy->Init();
-	// 位置を設定
+	//位置を設定
 	Vector3 pos = VGet(-200.0f, 150.0f, 450.0f);
 	enemy->SetPos(pos);
 	m_pEnemy.push_back(enemy);
-	// 2体目
+	//2体目
 	auto enemyTwo = std::make_shared<Enemy>();
 	enemyTwo->Init();
-    // 2体目は攻撃が速め
+    //2体目は攻撃が速め
 	enemyTwo->SetAttackCoolTime(45);
 	enemyTwo->SetBulletSpeed(12.0f);
 	Vector3 posTwo = VGet(-700.0f, 150.0f, -350.0f);
 	enemyTwo->SetPos(posTwo);
 	m_pEnemy.push_back(enemyTwo);
-	// 3体目
+	//3体目
 	auto enemyThree = std::make_shared<Enemy>();
 	enemyThree->Init();
-    // 3体目は攻撃が遅め
+    //3体目は攻撃が遅め
 	enemyThree->SetAttackCoolTime(80);
 	enemyThree->SetBulletSpeed(8.0f);
 	Vector3 posThree = VGet(700.0f, 150.0f, -350.0f);
 	enemyThree->SetPos(posThree);
 	m_pEnemy.push_back(enemyThree);
 
-	// カメラを作成しプレイヤーをセット
+	//カメラを作成しプレイヤーをセット
 	m_pCamera = std::make_shared<Camera>();
 	m_pCamera->SetPlayer(m_pPlayer);
 	m_pCamera->Init();
 
-	// プレイヤーにカメラとステージを渡す
+	//プレイヤーにカメラとステージを渡す
 	m_pPlayer->setCamera(m_pCamera.get());
 	m_pPlayer->setStage(m_pStage.get());
 
 	m_pTimer = std::make_shared<Timer>();
 	m_pTimer->Init();
 
-	// 背景色を設定(ここでRGBを変更すれば背景色を変えれる)
-	// 薄い青
+	//背景色を設定(ここでRGBを変更すれば背景色を変えれる)
+	//薄い青
 	//SetBackgroundColor(100, 150, 255); 
 	
 }
@@ -115,7 +115,7 @@ void SceneMain::Update(const Input& input)
 	m_frameCount++;
     if (m_pPlayer)
 	{
-		// Timerはm_pTimerを内部で保持しているため、PlayerのUpdateのシグネチャに合わせて呼び出す
+		//Timerはm_pTimerを内部で保持しているため、PlayerのUpdateのシグネチャに合わせて呼び出す
 		if (m_pTimer)
 		{
 			m_pTimer->Update();
@@ -123,9 +123,9 @@ void SceneMain::Update(const Input& input)
 		}
 		else
 		{
-			// タイマーが無ければ通常の更新を行う(時間切れフラグはfalseとみなす)
+			//タイマーが無ければ通常の更新を行う(時間切れフラグはfalseとみなす)
 			Timer dummy;
-			// dummy を初期化してから渡す
+			//dummy を初期化してから渡す
 			dummy.Init();
 			m_pPlayer->Update(input, dummy);
 		}
@@ -142,12 +142,12 @@ void SceneMain::Update(const Input& input)
 			}
 		}
 	}
-	// カメラの更新はPlayerの更新後に行う
+	//カメラの更新はPlayerの更新後に行う
 	if (m_pCamera)
 	{
 		m_pCamera->Update();
 	}
-    // m_pTimerの更新はPlayer更新時にまとめて行うためここでは行わない
+    //m_pTimerの更新はPlayer更新時にまとめて行うためここでは行わない
 	
 	//エフェクトを更新
 	if (m_pEffect)
@@ -159,7 +159,7 @@ void SceneMain::Update(const Input& input)
 
 void SceneMain::Draw()
 {
-	// 画面を背景色でクリアしてから描画する
+	//画面を背景色でクリアしてから描画する
 	//ClearDrawScreen();
 	m_pCamera->Draw();
 	m_pStage->Draw();
@@ -196,14 +196,14 @@ void SceneMain::Draw()
 	DrawGrid();
 	DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));
 	DrawFormatString(0, 16, GetColor(255, 255, 255), "FRAME:%d", m_frameCount);
-#endif // _DEBUG
+#endif //_DEBUG
 
 	
 }
 
 void SceneMain::DrawGrid()
 {
-	// 直線の始点と終点
+	//直線の始点と終点
 	VECTOR startPos;
 	VECTOR endPos;
 
