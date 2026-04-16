@@ -48,9 +48,15 @@ private:
 	int m_currentAnimIndex;
 	//プレイヤーの位置
 	Vector3 m_playerPos;
+	//プレイヤーの角度
+	float m_playerAngle;
 	//タイトルの地面ハンドル
 	int m_groundHandle;
 	//タイトルの地面の位置
 	Vector3 m_groundPos;
+	//ロゴハンドル
+	int m_logoHandle;
+	//ロゴの位置
+	Vector3 m_logoPos;
 };
 

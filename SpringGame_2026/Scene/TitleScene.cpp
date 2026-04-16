@@ -54,6 +54,8 @@ void TitleScene::FadeOutUpdate(Input&)
 
 void TitleScene::NormalDraw()
 {
+	
+
 	MV1DrawModel(m_skyHandle);
 	//モデルの位置を反映してから描画
 	MV1SetPosition(m_playerHandle, m_playerPos.ToDxLibVector());
@@ -70,8 +72,9 @@ void TitleScene::NormalDraw()
 	const int Color = GetColor(224, 255, 255);
 	const int black = GetColor(0, 0, 0);
 
-	DrawStringToHandle(510, 330 , "nigeusagi", black, m_fontHandle);
-
+	//DrawStringToHandle(510, 330 , "nigeusagi", black, m_fontHandle);
+	//DrawGraph(m_logoPos.x, m_logoPos.y, m_logoHandle, true);
+	DrawRotaGraph(660, 120, 0.5, 0.0, m_logoHandle, true);
 	//点滅頻度
 	const int intervar = 650;
 	int now = GetNowCount();
@@ -103,7 +106,9 @@ TitleScene::TitleScene():
 	m_playerPos(VGet(0.0f, 0.0f, 0.0f)),
 	m_currentAnimIndex(-1),
 	m_groundHandle(-1),
-	m_groundPos(VGet(0.0f, 0.0f, 0.0f))
+	m_groundPos(VGet(0.0f, 0.0f, 0.0f)),
+	m_logoHandle(-1),
+	m_logoPos(VGet(0.0f, 0.0f, 0.0f))
 {
 	
 	m_update = &TitleScene::FadeInUpdate;
@@ -124,8 +129,12 @@ void TitleScene::Init()
 
 	m_groundHandle = MV1LoadModel("data/Ground.mv1");
 
+	m_logoHandle = LoadGraph("data/Logo.png");
+
 	m_playerPos = VGet(0.0f, -80.0f, -10.0f);
 	m_groundPos = VGet(0.0f, -100.0f, 150.0f);
+	m_logoPos = VGet(130.0f, -270.0f, 0.0f);
+
 
 	int animNo = MV1GetAnimIndex(m_playerHandle, kWaveAnimName);
 	m_currentAnimCount = 0.0f;
@@ -136,7 +145,7 @@ void TitleScene::Init()
 	//カメラを初期化
 	//カメラをタイトル用に初期化(SceneMainと同じ初期位置に戻す)
 	//これでメインシーンから引き継いだカメラの位置がリセットされる
-	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
+	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 100.0f, -700.0f), VGet(0.0f, 100.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(20.0f, 4500.0f);
 }

@@ -23,7 +23,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//ウィンドウモード設定
 	ChangeWindowMode(true);
 	//タイトル変更
-	SetMainWindowText("ゲーム名");
+	SetMainWindowText("nigeusagi");
 	//画面のサイズ変更
 	SetGraphMode(Game::kScreenWidth, Game::kScreenHeight, Game::kColorBitNum);
 	if (DxLib_Init() == -1) 		//ＤＸライブラリ初期化処理
