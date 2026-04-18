@@ -22,5 +22,6 @@ public:
 	
 private:
 	int m_gameTimer;
+	int m_fontHandle;
 };
 

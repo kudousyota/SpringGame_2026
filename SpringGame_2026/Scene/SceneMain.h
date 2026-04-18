@@ -22,11 +22,15 @@ public:
 	void Update(const Input& input);
 	void Draw();
     bool IsTimeUp() const;
+
+	
+
 private:
 	void DrawGrid();
 
-private:
+	int m_fontHandle;
 	int m_frameCount;
+
 	std::shared_ptr<Player> m_pPlayer;
 	std::vector<std::shared_ptr<Enemy>>m_pEnemy;
 	std::shared_ptr<Camera> m_pCamera;

@@ -1,5 +1,6 @@
 #include "Timer.h"
 #include "DxLib.h"
+#include "../Game.h"
 namespace
 {
 	//初期のフレーム数（秒数 * FPS）を取得
@@ -7,7 +8,8 @@ namespace
 	static constexpr int kTimeLimit = 60; //秒
 }
 Timer::Timer():
-	m_gameTimer(0)
+	m_gameTimer(0),
+	m_fontHandle(-1)
 {
 }
 
@@ -19,10 +21,16 @@ void Timer::Init()
 {
 	//ゲームタイマーを設定
     m_gameTimer = kTimeLimit * kFps;
+	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 80, -1, DX_FONTTYPE_ANTIALIASING);
 }
 
 void Timer::End()
 {
+	if (m_fontHandle != -1)
+	{
+		DeleteFontToHandle(m_fontHandle);
+		m_fontHandle = -1;
+	}
 }
 
 void Timer::Update()
@@ -40,7 +48,7 @@ void Timer::Draw()
 	//切り上げ表示
 	int displayTime = (m_gameTimer + kFps - 1) / kFps;
 
-	DrawFormatString(30, 30, GetColor(255, 255, 255), "Timer:%d", displayTime);
+	DrawFormatStringToHandle(500, 30, GetColor(0, 0, 0), m_fontHandle, "Timer:%d", displayTime);
 
 	if (m_gameTimer == 0)
 	{

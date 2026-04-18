@@ -337,9 +337,7 @@ void Player::Update(const Input& input, const Timer& timer)
 
 void Player::Draw()
 {
-	//ジャスト回避回数の表示
-    DrawFormatString(10, 10, GetColor(255, 255, 255), "Just Dodge Count: %d", Player::GetJustCount());
-
+	
 	//被弾したら点滅
     if(m_hitAnimFrame > 0)
     {

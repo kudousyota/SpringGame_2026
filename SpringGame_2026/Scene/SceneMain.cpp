@@ -7,7 +7,8 @@
 #include "../system/EffectManager.h"
 
 SceneMain::SceneMain():
-m_frameCount(0)
+m_frameCount(0),
+m_fontHandle(-1)
 {
 }
 
@@ -104,6 +105,11 @@ void SceneMain::Init()
 	m_pTimer = std::make_shared<Timer>();
 	m_pTimer->Init();
 
+	//フォントのサイズを大きくして見やすくする
+	//CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
+
+	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
+
 	//背景色を設定(ここでRGBを変更すれば背景色を変えれる)
 	//薄い青
 	//SetBackgroundColor(100, 150, 255); 
@@ -182,13 +188,15 @@ void SceneMain::Draw()
 		}
 	}
 	
-	//エフェクトを描画
 	
-
+	//タイマーを描画
 	if (m_pTimer)
 	{
 		m_pTimer->Draw();
 	}
+
+	//ジャスト回避回数の表示
+	DrawFormatStringToHandle(10, 10, GetColor(0, 0, 0), m_fontHandle, "Just Dodge Count: %d", Player::GetJustCount());
 
     
 #ifdef _DEBUG
