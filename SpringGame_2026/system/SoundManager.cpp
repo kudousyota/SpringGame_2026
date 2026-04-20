@@ -1,11 +1,23 @@
 #include "SoundManager.h"
 #include <DxLib.h>
+std::unordered_map<std::string, int> SoundManager::m_bgmList;
+std::unordered_map<std::string, int> SoundManager::m_seList;
+int SoundManager::m_currentBgm = -1;
+SoundManager::SoundManager()
+{
+}
+
+SoundManager::~SoundManager()
+{
+}
 
 void SoundManager::Load()
 {
 	//ここでBGMとSEのファイルを読み込んで、m_bgmListとm_seListにハンドルを保存する
 	//例
 	//m_seList["hit"] = LoadSoundMem("hit.wav");
+
+	m_bgmList["title"] = LoadSoundMem("Sound/title.ogg");
 }
 
 void SoundManager::PlayBGM(const std::string& key, bool loop)

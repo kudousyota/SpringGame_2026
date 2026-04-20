@@ -42,6 +42,10 @@ private:
 	Vector3 m_enemyPos;
 	//敵の角度
 	float m_enemyAngle;
+	//地面のハンドル
+	int m_groundHandle;
+	//地面の位置
+	Vector3 m_groundPos;
 
 
 	//メンバ関数ポインタを使用して内部状態を書き換える

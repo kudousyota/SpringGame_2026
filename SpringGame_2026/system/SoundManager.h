@@ -5,6 +5,9 @@
 class SoundManager
 {
 public:
+	SoundManager();
+	~SoundManager();
+
 	static void Load();
 	//BGMを再生する関数。引数はBGMの鍵となる文字列
 	static void PlayBGM(const std::string& key, bool loop);

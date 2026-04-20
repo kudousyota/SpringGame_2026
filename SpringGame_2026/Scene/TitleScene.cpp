@@ -1,7 +1,7 @@
 #include "TitleScene.h"
 #include "DxLib.h"
 #include "../Game.h"
-
+#include "../system/SoundManager.h"
 namespace
 {
 	constexpr int fade_interval = 60;
@@ -15,13 +15,20 @@ void TitleScene::FadeInUpdate(Input&)
 	{
 		m_update = &TitleScene::NormalUpdate;
 		m_draw = &TitleScene::NormalDraw;
+		m_frame = 0;	//念のためフレームを0にしておく
+		return;
+	}
+
+	if (m_frame-- <= 0)
+	{
+		m_update = &TitleScene::NormalUpdate;
+		m_draw = &TitleScene::NormalDraw;
 		return;
 	}
 }
 
 void TitleScene::NormalUpdate(Input& input)
 {
-
 	//アニメ進行
 	m_currentAnimCount += 0.5f;
 	//アニメの総時間を超えたらループさせる
@@ -48,6 +55,7 @@ void TitleScene::FadeOutUpdate(Input&)
 	{
 		//フェードアウト完了
 		m_finished = true;
+		//m_controller.ChangeScene(std::make_shared<SceneMain>(m_controller));
 		return;
 	}
 }
@@ -89,6 +97,8 @@ void TitleScene::NormalDraw()
 
 void TitleScene::FadeDraw()
 {
+	DrawRotaGraph(660, 120, 0.5, 0.0, m_logoHandle, true);
+
 
 	//値の範囲をいったん0.0~1.0にしておくといろいろと扱いやすくなります
 	auto rate = static_cast<float>(m_frame) / static_cast<float>(fade_interval);
@@ -135,6 +145,9 @@ void TitleScene::Init()
 	m_groundPos = VGet(0.0f, -100.0f, 150.0f);
 	m_logoPos = VGet(130.0f, -270.0f, 0.0f);
 
+	SoundManager::Load();
+
+	SoundManager::PlayBGM("title", true);
 
 	int animNo = MV1GetAnimIndex(m_playerHandle, kWaveAnimName);
 	m_currentAnimCount = 0.0f;

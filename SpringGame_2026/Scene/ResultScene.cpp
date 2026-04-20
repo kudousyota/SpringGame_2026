@@ -83,9 +83,12 @@ void ResultScene::NormalDraw()
 	//モデルの位置を反映してから描画
 	MV1SetPosition(m_playerHandle, m_playerPos.ToDxLibVector());
 	MV1DrawModel(m_playerHandle);
-
+	//モデルの位置を反映してから描画
 	MV1SetPosition(m_enemyHandle, m_enemyPos.ToDxLibVector());
 	MV1DrawModel(m_enemyHandle);
+	//モデルの位置を反映してから描画
+	MV1SetPosition(m_groundHandle, m_groundPos.ToDxLibVector());
+	MV1DrawModel(m_groundHandle);
 
 	DrawStringToHandle(470, 240, "Result Scene", GetColor(0, 0, 0), m_fontHandle);
 	const int white = GetColor(255, 255, 255);
@@ -131,7 +134,8 @@ ResultScene::ResultScene(SceneController& controller) :
 	m_currentAnimIndex(-1),
 	m_enemyHandle(-1),
 	m_enemyPos(VGet(0.0f, 0.0f, 0.0f)),
-	m_enemyAngle(0.0f)
+	m_enemyAngle(0.0f),
+	m_groundHandle(-1)
 {
 	m_update = &ResultScene::FadeInUpdate;
 	m_draw = &ResultScene::FadeDraw;
@@ -143,20 +147,23 @@ ResultScene::~ResultScene()
 }
 
 void ResultScene::Init()
-	
 {
 	//フォントの読み込み
-	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
+	m_fontHandle	= CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
 
-	m_skyHandle = MV1LoadModel("data/Sky_Daylight01.mv1");
+	m_skyHandle		= MV1LoadModel("data/Sky_Daylight01.mv1");
 
-	m_playerHandle = MV1LoadModel("data/Player.mv1");
+	m_playerHandle	= MV1LoadModel("data/Player.mv1");
 
-	m_enemyHandle = MV1LoadModel("data/Enemy.mv1");
+	m_enemyHandle	= MV1LoadModel("data/Enemy.mv1");
 
-	m_playerPos = VGet(0.0f, 0.0f, -10.0f);
+	m_groundHandle	= MV1LoadModel("data/Ground.mv1");	
 
-	m_enemyPos = VGet(0.0f, 0.0f, -400.0f);
+	m_playerPos		= VGet(0.0f, 0.0f, -10.0f);
+
+	m_enemyPos		= VGet(0.0f, 0.0f, -400.0f);
+
+	m_groundPos		= VGet(0.0f, -100.0f, 150.0f);
 
 	int animNo = MV1GetAnimIndex(m_playerHandle, kShootAnimName);
 	m_currentAnimCount = 0.0f;
