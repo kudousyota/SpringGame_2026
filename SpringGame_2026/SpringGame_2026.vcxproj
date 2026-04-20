@@ -135,7 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="system\SoundManager.cpp" />
     <ClCompile Include="system\EffectManager.cpp" />
     <ClCompile Include="system\Effect.cpp" />
     <ClCompile Include="Game\Camera.cpp" />
@@ -154,7 +154,7 @@
     <ClCompile Include="system\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="system\SoundManager.h" />
     <ClInclude Include="system\EffectManager.h" />
     <ClInclude Include="system\Effect.h" />
     <ClInclude Include="Game\Camera.h" />
