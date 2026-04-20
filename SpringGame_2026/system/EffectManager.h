@@ -1,30 +1,39 @@
 #pragma once
 #include "Vector3.h"
-#include <memory>
 #include <vector>
 
-class Effect;
 class EffectManager
 {
+
 public:
-	EffectManager();
-	~EffectManager();
-	virtual void Init();
-	virtual void Update();
-	virtual void Draw();
-	virtual void PlayHitEffect(const Vector3& pos);
+    EffectManager();
+    ~EffectManager();
+
+    void Init();
+    void Update();
+    void Draw();
+
+    // ヒットエフェクト再生
+    void PlayHitEffect(const Vector3& pos);
 
 private:
-	std::shared_ptr<Effect> m_Effect;
+    enum EffectType
+    {
+        //ヒット
+        Hit,
+        //ジャスト
+        Just,
+        //配列サイズ
+        Max
+    };
 
-	//エフェクトのハンドル
-	int m_effectHandle;
-    //再生中のエフェクトのハンドル
-	std::vector<int> m_effects;
+    // Effekseerエフェクトのリソースハンドル
+    int m_effectHandles[EffectType::Max];
 
-	//再生間隔用タイマー
-	int m_playTimer;
+    // 再生中エフェクトのハンドル群(実体を複数管理)
+    std::vector<int> m_pEffects;
 
-
+    // 再生間隔用タイマー
+    int m_playTimer;
 };
 

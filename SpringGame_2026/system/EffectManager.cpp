@@ -10,75 +10,71 @@ namespace
 }
 
 EffectManager::EffectManager():
-	m_effectHandle(-1),
-    m_playTimer(0)
+	m_playTimer(0)
 {
 }
 
 EffectManager::~EffectManager()
 {
     //再生中のハンドルを停止または解放
-	for (int handle : m_effects)
+	for (int handle : m_pEffects)
 	{
 		if (handle != -1)
 		{
 			StopEffekseer3DEffect(handle);
 		}
 	}
-	m_effects.clear();
+	m_pEffects.clear();
 
 	//リソース解放
-	if (m_effectHandle != -1)
+	for (int i = 0; i < EffectType::Max; ++i)
 	{
-		DeleteEffekseerEffect(m_effectHandle);
-		m_effectHandle = -1;
+		if (m_effectHandles[i] != -1)
+		{
+			DeleteEffekseerEffect(m_effectHandles[i]);
+			m_effectHandles[i] = -1;
+		}
 	}
 }
 
 void EffectManager::Init()
 {
 	//エフェクトリソースを読み込む
-	m_effectHandle = LoadEffekseerEffect("data/Hit2.efk",3.0f);
+	m_effectHandles[EffectType::Hit] = LoadEffekseerEffect("data/Hit2.efk",3.0f);
+	m_effectHandles[EffectType::Just] = LoadEffekseerEffect("data/Just.efk", 3.0f);
 
 }
 
+
 void EffectManager::Update()
 {
-
-	//3D描画設定を同期
 	Effekseer_Sync3DSetting();
 
-	//再生間隔のタイマーをデクリメント
 	if (m_playTimer > 0)
 	{
 		m_playTimer--;
 	}
 
-	//Effekseerにより再生中のエフェクトを更新する
-    UpdateEffekseer3D();
-
-	//再生終了したハンドルを削除
-	for (auto Handleit = m_effects.begin(); Handleit != m_effects.end(); )
+	for (auto it = m_pEffects.begin(); it != m_pEffects.end(); )
 	{
-		int handle = *Handleit;
-		if (handle == -1)
+		//再生中のエフェクトのハンドルを取得
+		int handle = *it;
+		//再生が終了しているか確認
+		if (handle == -1 || !IsEffekseer3DEffectPlaying(handle))
 		{
-			Handleit = m_effects.erase(Handleit);
-			continue;
+			StopEffekseer3DEffect(handle);
+			it = m_pEffects.erase(it);
 		}
-
-		int playing = IsEffekseer3DEffectPlaying(handle);
-		if (playing == -1)
-		{
-			//再生終了している
-			Handleit = m_effects.erase(Handleit);
-		}
+		//再生中なら次のエフェクトへ
 		else
 		{
-			++Handleit;
+			++it;
 		}
 	}
+
+	UpdateEffekseer3D();
 }
+
 
 void EffectManager::Draw()
 {
@@ -86,26 +82,26 @@ void EffectManager::Draw()
 	DrawEffekseer3D();
 }
 
+
 void EffectManager::PlayHitEffect(const Vector3& pos)
 {
-    if (m_effectHandle == -1) return;
-
-	//再生間隔が残っている場合は再生しない
+	if (m_effectHandles[EffectType::Hit] == -1) return;
 	if (m_playTimer > 0) return;
 
-	
-
-	//リソースを使って再生(戻り値を複数保持しておく)
-	int playing = PlayEffekseer3DEffect(m_effectHandle);
+	int playing = PlayEffekseer3DEffect(m_effectHandles[EffectType::Hit]);
 	if (playing != -1)
 	{
-		m_effects.push_back(playing);
-		//位置を設定
+		m_pEffects.push_back(playing);
 		SetPosPlayingEffekseer3DEffect(playing, pos.x, pos.y, pos.z);
+		SetScalePlayingEffekseer3DEffect
+		(
+			playing,
+			keffectSize,
+			keffectSize,
+			keffectSize
+		);
 
-		SetScalePlayingEffekseer3DEffect(playing, keffectSize, keffectSize, keffectSize);
-
-		//再生間隔タイマーをリセット
 		m_playTimer = keffectPlayInterval;
 	}
 }
+
