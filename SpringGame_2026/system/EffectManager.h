@@ -15,12 +15,12 @@ public:
 	virtual void PlayHitEffect(const Vector3& pos);
 
 private:
-	std::shared_ptr<Effect> m_Effects;
+	std::shared_ptr<Effect> m_Effect;
 
 	//エフェクトのハンドル
 	int m_effectHandle;
-    //再生中のエフェクトのハンドル（複数再生に対応）
-	std::vector<int> m_playingEffectHandles;
+    //再生中のエフェクトのハンドル
+	std::vector<int> m_effects;
 
 	//再生間隔用タイマー
 	int m_playTimer;

@@ -18,14 +18,14 @@ EffectManager::EffectManager():
 EffectManager::~EffectManager()
 {
     //再生中のハンドルを停止または解放
-	for (int handle : m_playingEffectHandles)
+	for (int handle : m_effects)
 	{
 		if (handle != -1)
 		{
 			StopEffekseer3DEffect(handle);
 		}
 	}
-	m_playingEffectHandles.clear();
+	m_effects.clear();
 
 	//リソース解放
 	if (m_effectHandle != -1)
@@ -58,12 +58,12 @@ void EffectManager::Update()
     UpdateEffekseer3D();
 
 	//再生終了したハンドルを削除
-	for (auto Handleit = m_playingEffectHandles.begin(); Handleit != m_playingEffectHandles.end(); )
+	for (auto Handleit = m_effects.begin(); Handleit != m_effects.end(); )
 	{
 		int handle = *Handleit;
 		if (handle == -1)
 		{
-			Handleit = m_playingEffectHandles.erase(Handleit);
+			Handleit = m_effects.erase(Handleit);
 			continue;
 		}
 
@@ -71,7 +71,7 @@ void EffectManager::Update()
 		if (playing == -1)
 		{
 			//再生終了している
-			Handleit = m_playingEffectHandles.erase(Handleit);
+			Handleit = m_effects.erase(Handleit);
 		}
 		else
 		{
@@ -99,7 +99,7 @@ void EffectManager::PlayHitEffect(const Vector3& pos)
 	int playing = PlayEffekseer3DEffect(m_effectHandle);
 	if (playing != -1)
 	{
-		m_playingEffectHandles.push_back(playing);
+		m_effects.push_back(playing);
 		//位置を設定
 		SetPosPlayingEffekseer3DEffect(playing, pos.x, pos.y, pos.z);
 
