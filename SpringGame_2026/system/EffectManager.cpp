@@ -62,7 +62,6 @@ void EffectManager::Update()
 		//再生が終了しているか確認
 		if (handle == -1 || !IsEffekseer3DEffectPlaying(handle))
 		{
-			StopEffekseer3DEffect(handle);
 			it = m_pEffects.erase(it);
 		}
 		//再生中なら次のエフェクトへ

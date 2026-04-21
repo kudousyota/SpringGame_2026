@@ -169,14 +169,12 @@ void SceneMain::Draw()
 	//ClearDrawScreen();
 	m_pCamera->Draw();
 	m_pStage->Draw();
+	m_pPlayer->Draw();
 	if (m_pEffect)
 	{
 		m_pEffect->Draw();
 	}
-    if (m_pPlayer)
-	{
-		m_pPlayer->Draw();
-	}
+		
 	if (!m_pEnemy.empty())
 	{
 		for (auto& enemy : m_pEnemy)
