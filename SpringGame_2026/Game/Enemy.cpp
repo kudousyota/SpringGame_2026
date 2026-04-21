@@ -240,7 +240,7 @@ void Enemy::Update(Player& player, const Timer& timer, EffectManager& effectMana
 			justDistSq <= justDist * justDist)
 		{
 			player.OnJustDodge();
-			effectManager.PlayHitEffect(m_bulletPos);
+			effectManager.PlayEffect(EffectManager::EffectType::Just, m_bulletPos);
 			m_hasBullet = false;
 		}
 		//通常ヒット
@@ -249,7 +249,7 @@ void Enemy::Update(Player& player, const Timer& timer, EffectManager& effectMana
 			if (!player.IsInvincible())
 			{
 				player.OnHit();
-				effectManager.PlayHitEffect(m_bulletPos);
+				effectManager.PlayEffect(EffectManager::EffectType::Hit, m_bulletPos);
 				m_hasBullet = false;
 			}
 		}

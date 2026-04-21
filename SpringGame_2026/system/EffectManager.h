@@ -4,7 +4,6 @@
 
 class EffectManager
 {
-
 public:
     EffectManager();
     ~EffectManager();
@@ -13,27 +12,30 @@ public:
     void Update();
     void Draw();
 
-    // ヒットエフェクト再生
-    void PlayHitEffect(const Vector3& pos);
+    // 汎用エフェクト再生
+    void PlayEffect(int type, const Vector3& pos);
 
-private:
     enum EffectType
     {
-        //ヒット
         Hit,
-        //ジャスト
         Just,
-        //配列サイズ
         Max
     };
+private:
+   
 
-    // Effekseerエフェクトのリソースハンドル
-    int m_effectHandles[EffectType::Max];
+    struct EffectData
+    {
+        int handle = -1;
+        float scale = 1.0f;
+        int playInterval = 0;
+        int timer = 0;
+    };
 
-    // 再生中エフェクトのハンドル群(実体を複数管理)
+    // エフェクト情報まとめて管理
+    EffectData m_effects[EffectType::Max];
+
+    // 再生中の実体
     std::vector<int> m_pEffects;
-
-    // 再生間隔用タイマー
-    int m_playTimer;
 };
 

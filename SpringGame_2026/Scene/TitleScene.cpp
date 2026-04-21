@@ -11,18 +11,13 @@ namespace
 
 void TitleScene::FadeInUpdate(Input&)
 {
-	if (m_frame-- <= 0)
-	{
-		m_update = &TitleScene::NormalUpdate;
-		m_draw = &TitleScene::NormalDraw;
-		m_frame = 0;	//念のためフレームを0にしておく
-		return;
-	}
+	
 
 	if (m_frame-- <= 0)
 	{
 		m_update = &TitleScene::NormalUpdate;
 		m_draw = &TitleScene::NormalDraw;
+		m_frame = 0;	//念のためフレームを0にしておく
 		return;
 	}
 }
@@ -63,7 +58,6 @@ void TitleScene::FadeOutUpdate(Input&)
 void TitleScene::NormalDraw()
 {
 	
-
 	MV1DrawModel(m_skyHandle);
 	//モデルの位置を反映してから描画
 	MV1SetPosition(m_playerHandle, m_playerPos.ToDxLibVector());
@@ -97,14 +91,16 @@ void TitleScene::NormalDraw()
 
 void TitleScene::FadeDraw()
 {
-	DrawRotaGraph(660, 120, 0.5, 0.0, m_logoHandle, true);
 
+	DrawRotaGraph(660, 120, 0.5, 0.0, m_logoHandle, true);
 
 	//値の範囲をいったん0.0~1.0にしておくといろいろと扱いやすくなります
 	auto rate = static_cast<float>(m_frame) / static_cast<float>(fade_interval);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA,255 * rate); //αブレンド
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);	//画面全体に黒フィルムをかける
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);	//ブレンドしない
+
+	
 }
 
 TitleScene::TitleScene():
@@ -118,6 +114,7 @@ TitleScene::TitleScene():
 	m_groundHandle(-1),
 	m_groundPos(VGet(0.0f, 0.0f, 0.0f)),
 	m_logoHandle(-1),
+	m_playerAngle(0.0f),
 	m_logoPos(VGet(0.0f, 0.0f, 0.0f))
 {
 	
