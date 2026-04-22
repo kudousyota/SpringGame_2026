@@ -8,7 +8,8 @@
 
 SceneMain::SceneMain():
 m_frameCount(0),
-m_fontHandle(-1)
+m_fontHandle(-1),
+m_operationHandle(-1)
 {
 }
 
@@ -109,6 +110,7 @@ void SceneMain::Init()
 	//CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
 
 	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
+	m_operationHandle = LoadGraph("data/Operation.png");
 
 	//”wŒiF‚ğİ’è(‚±‚±‚ÅRGB‚ğ•ÏX‚·‚ê‚Î”wŒiF‚ğ•Ï‚¦‚ê‚é)
 	//”–‚¢Â
@@ -167,7 +169,11 @@ void SceneMain::Draw()
 {
 	//‰æ–Ê‚ğ”wŒiF‚ÅƒNƒŠƒA‚µ‚Ä‚©‚ç•`‰æ‚·‚é
 	//ClearDrawScreen();
+	//‘€ìà–¾‚ğ•`‰æ
+	
+
 	m_pCamera->Draw();
+	
 	m_pStage->Draw();
 	m_pPlayer->Draw();
 	if (m_pEffect)
@@ -195,6 +201,7 @@ void SceneMain::Draw()
 
 	//ƒWƒƒƒXƒg‰ñ”ğ‰ñ”‚Ì•\¦
 	DrawFormatStringToHandle(10, 10, GetColor(0, 0, 0), m_fontHandle, "Just Dodge Count: %d", Player::GetJustCount());
+	DrawRotaGraph(240, 600, 1.0f, 0.0f, m_operationHandle, true);
 
     
 #ifdef _DEBUG

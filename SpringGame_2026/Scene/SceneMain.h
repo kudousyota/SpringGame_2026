@@ -30,6 +30,7 @@ private:
 
 	int m_fontHandle;
 	int m_frameCount;
+	int m_operationHandle;
 
 	std::shared_ptr<Player> m_pPlayer;
 	std::vector<std::shared_ptr<Enemy>>m_pEnemy;

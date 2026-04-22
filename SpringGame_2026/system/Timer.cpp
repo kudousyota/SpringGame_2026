@@ -5,7 +5,7 @@ namespace
 {
 	//初期のフレーム数（秒数 * FPS）を取得
 	static constexpr int kFps = 60;
-	static constexpr int kTimeLimit = 60; //秒
+	static constexpr int kTimeLimit = 20; //秒
 }
 Timer::Timer():
 	m_gameTimer(0),
