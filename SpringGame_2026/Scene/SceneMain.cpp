@@ -109,7 +109,7 @@ void SceneMain::Init()
 	//フォントのサイズを大きくして見やすくする
 	//CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
 
-	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
+	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
 	m_operationHandle = LoadGraph("data/Operation.png");
 
 	//背景色を設定(ここでRGBを変更すれば背景色を変えれる)
@@ -200,7 +200,7 @@ void SceneMain::Draw()
 	}
 
 	//ジャスト回避回数の表示
-	DrawFormatStringToHandle(10, 10, GetColor(0, 0, 0), m_fontHandle, "Just Dodge Count: %d", Player::GetJustCount());
+	DrawFormatStringToHandle(10, 10, GetColor(255, 255, 255), m_fontHandle, "Just Dodge Count: %d", Player::GetJustCount());
 	DrawRotaGraph(240, 600, 1.0f, 0.0f, m_operationHandle, true);
 
     

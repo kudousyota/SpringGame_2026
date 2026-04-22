@@ -21,7 +21,7 @@ void Timer::Init()
 {
 	//ゲームタイマーを設定
     m_gameTimer = kTimeLimit * kFps;
-	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 80, -1, DX_FONTTYPE_ANTIALIASING);
+	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 80, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
 }
 
 void Timer::End()
@@ -48,7 +48,7 @@ void Timer::Draw()
 	//切り上げ表示
 	int displayTime = (m_gameTimer + kFps - 1) / kFps;
 
-	DrawFormatStringToHandle(500, 30, GetColor(0, 0, 0), m_fontHandle, "Timer:%d", displayTime);
+	DrawFormatStringToHandle(500, 30, GetColor(255, 255, 255), m_fontHandle, "Timer:%d", displayTime);
 
 	if (m_gameTimer == 0)
 	{

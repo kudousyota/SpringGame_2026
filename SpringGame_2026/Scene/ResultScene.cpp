@@ -90,12 +90,16 @@ void ResultScene::NormalDraw()
 	MV1SetPosition(m_groundHandle, m_groundPos.ToDxLibVector());
 	MV1DrawModel(m_groundHandle);
 
-	DrawStringToHandle(500, 50, "Result Scene", GetColor(0, 0, 0), m_fontHandle);
-	const int white = GetColor(255, 255, 255);
-	const int Cyan = GetColor(0, 255, 255);
-	const int Color = GetColor(224, 255, 255);
+	
+	const int white = GetColor(255,255,255);
+	const int Cyan	= GetColor(0,255,255);
+	const int Color = GetColor(224,255,255);
+	const int black = GetColor(0,	0,	0);
 
-	DrawFormatString2ToHandle(470, 300, Color, Cyan, m_fontHandle, "Dodge:%d", m_finalScore);
+	DrawStringToHandle(480, 50, "Result", white, m_fontHandle);
+
+
+	DrawFormatString2ToHandle(470, 300, white, black, m_fontHandle, "Dodge:%d", m_finalScore);
 	//点滅頻度
 	const int intervar = 650;
 	int now = GetNowCount();
@@ -149,7 +153,7 @@ ResultScene::~ResultScene()
 void ResultScene::Init()
 {
 	//フォントの読み込み
-	m_fontHandle	= CreateFontToHandle("x10y12pxDonguriDuel", 60, -1, DX_FONTTYPE_ANTIALIASING);
+	m_fontHandle	= CreateFontToHandle("x10y12pxDonguriDuel", 60, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
 
 	m_skyHandle		= MV1LoadModel("data/Sky_Daylight01.mv1");
 
