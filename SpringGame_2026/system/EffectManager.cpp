@@ -3,7 +3,7 @@
 
 namespace
 {
-    // デフォルトスケール（未設定時）
+    // デフォルトスケール
     constexpr float kDefaultScale = 10.0f;
 }
 
@@ -51,8 +51,8 @@ void EffectManager::Init()
 
     // Just
     m_effects[EffectType::Just].handle = LoadEffekseerEffect("data/Just.efk", 3.0f);
-    m_effects[EffectType::Just].scale = 12.0f;
-    m_effects[EffectType::Just].playInterval = 30;
+    m_effects[EffectType::Just].scale = 9.0f;
+    m_effects[EffectType::Just].playInterval = 10;
 }
 
 void EffectManager::Update()

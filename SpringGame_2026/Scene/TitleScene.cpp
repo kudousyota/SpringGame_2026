@@ -92,7 +92,7 @@ void TitleScene::NormalDraw()
 void TitleScene::FadeDraw()
 {
 
-	DrawRotaGraph(660, 120, 0.5, 0.0, m_logoHandle, true);
+	NormalDraw();
 
 	//’l‚Ì”ÍˆÍ‚ð‚¢‚Á‚½‚ñ0.0~1.0‚É‚µ‚Ä‚¨‚­‚Æ‚¢‚ë‚¢‚ë‚Æˆµ‚¢‚â‚·‚­‚È‚è‚Ü‚·
 	auto rate = static_cast<float>(m_frame) / static_cast<float>(fade_interval);
