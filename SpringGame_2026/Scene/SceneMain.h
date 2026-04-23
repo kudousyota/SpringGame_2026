@@ -7,6 +7,7 @@
 #include "../Game/Stage.h"
 #include "../system/EffectManager.h"
 
+class ResultScene;
 class Stage;
 class Input;
 class Player;
@@ -27,10 +28,23 @@ public:
 
 private:
 	void DrawGrid();
+	//フェードインupdate
+	void FadeInUpdate(Input&);
+	void NormalUpdate(Input& input);
+	void HitStopUpdate(Input& input);
+	void FadeOutUpdate(Input&);
+	using UpdateFunc_t = void(SceneMain::*)(Input&);
+	UpdateFunc_t m_update;	// Update系を受け取るメンバ関数ポインタ
+
+	void FadeDraw();
+	void NormalDraw();
+	using DrawFunc_t = void(SceneMain::*)();
+	DrawFunc_t m_draw;	// Draw系を受け取るメンバ関数ポインタ
 
 	int m_fontHandle;
 	int m_frameCount;
 	int m_operationHandle;
+	int m_frame;
 
 	std::shared_ptr<Player> m_pPlayer;
 	std::vector<std::shared_ptr<Enemy>>m_pEnemy;
@@ -38,7 +52,7 @@ private:
 	std::shared_ptr<Timer> m_pTimer;
     std::shared_ptr<Stage> m_pStage;
     std::shared_ptr<EffectManager> m_pEffect;
-
+	
 	
 
 };

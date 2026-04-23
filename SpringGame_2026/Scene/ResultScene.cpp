@@ -8,7 +8,8 @@
 #include "../Game.h"
 #include "../Game/Player.h"
 #include "../Game/Camera.h"
-#include "../System/Vector3.h"
+#include "../system/Vector3.h"
+#include "../system/SoundManager.h"
 
 
 namespace 
@@ -28,6 +29,7 @@ void ResultScene::FadeInUpdate(Input& input)
 		m_draw = &ResultScene::FadeDraw;
 		m_frame = 0;	//フェードアウトの最初
 		return;
+		SoundManager::PlaySE("Ok");
 	}
 
 
@@ -63,6 +65,7 @@ void ResultScene::NormalUpdate(Input& input)
 		m_draw = &ResultScene::FadeDraw;
 		m_frame = 0;	//フェードアウトの最初
 		return;
+		SoundManager::PlaySE("Ok");
 	}
 
 	
@@ -187,7 +190,7 @@ void ResultScene::Init()
 	//カメラを初期化
 	//カメラをリザルト用に初期化(SceneMain と同じ初期位置に戻す)
 	//これでメインシーンから引き継いだカメラの位置がリセットされる
-	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
+	SetCameraPositionAndTarget_UpVecY(VGet(300.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(20.0f, 4500.0f);
 }

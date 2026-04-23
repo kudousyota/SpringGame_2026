@@ -37,6 +37,7 @@ void TitleScene::NormalUpdate(Input& input)
 
 	if (input.IsTriggered("ok"))
 	{
+		SoundManager::PlaySE("Ok");
 		m_update = &TitleScene::FadeOutUpdate;
 		m_draw = &TitleScene::FadeDraw;
 		m_frame = 0;	//フェードアウトの最初
@@ -144,7 +145,7 @@ void TitleScene::Init()
 
 	SoundManager::Load();
 
-	SoundManager::PlayBGM("title", true);
+	SoundManager::PlayBGM("Title", true);
 
 	int animNo = MV1GetAnimIndex(m_playerHandle, kWaveAnimName);
 	m_currentAnimCount = 0.0f;

@@ -5,6 +5,12 @@
 #include "../Game/Input.h"
 #include "../Game/Stage.h"
 #include "../system/EffectManager.h"
+#include "ResultScene.h"
+
+namespace
+{
+	constexpr int kFadeInterval = 60;
+}
 
 SceneMain::SceneMain():
 m_frameCount(0),
@@ -64,6 +70,7 @@ void SceneMain::Init()
     //Use EffectManager to play hit effects
 	m_pEffect = std::make_shared<EffectManager>();
 	m_pEffect->Init();
+
 
 	//•¡”‚Ì“G‚ğvector‚ÅŠÇ—‚·‚é
 	//—á‚Æ‚µ‚Ä3‘Ìì¬‚µ‚Ä‰ŠúˆÊ’u‚ğ‚»‚ê‚¼‚ê‚¸‚ç‚·
@@ -232,6 +239,30 @@ void SceneMain::DrawGrid()
 		endPos = VGet(static_cast<float>(x), 0.0f, 300.0f);
 		DrawLine3D(startPos, endPos, 0x0000ff);
 	}
+}
+
+void SceneMain::FadeInUpdate(Input& input)
+{
+}
+
+void SceneMain::NormalUpdate(Input& input)
+{
+}
+
+void SceneMain::HitStopUpdate(Input& input)
+{
+}
+
+void SceneMain::FadeOutUpdate(Input&)
+{
+}
+
+void SceneMain::FadeDraw()
+{
+}
+
+void SceneMain::NormalDraw()
+{
 }
 
 bool SceneMain::IsTimeUp() const

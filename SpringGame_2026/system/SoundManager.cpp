@@ -17,7 +17,11 @@ void SoundManager::Load()
 	//例
 	//m_seList["hit"] = LoadSoundMem("hit.wav");
 
-	m_bgmList["title"] = LoadSoundMem("Sound/title.ogg");
+	m_bgmList["Title"] = LoadSoundMem("Sound/Title.ogg");
+	m_seList["Ok"] = LoadSoundMem("Sound/Ok.mp3");
+	m_seList["Dodge"] = LoadSoundMem("Sound/Dodge.mp3");
+	m_seList["Just"] = LoadSoundMem("Sound/Just.mp3");
+	m_seList["Hit"] = LoadSoundMem("Sound/Hit.mp3");
 }
 
 void SoundManager::PlayBGM(const std::string& key, bool loop)

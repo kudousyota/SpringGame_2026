@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "../system/Timer.h"
 #include "Stage.h"
+#include "../system/SoundManager.h"
 
 namespace
 {
@@ -175,6 +176,7 @@ void Player::Update(const Input& input, const Timer& timer)
                 m_isDodge = true;
                 m_dodgeTimer = kDodgeTime;
                 m_invincibleTimer = kInvincibleTime;
+                SoundManager::PlaySE("Just");
             }
 
             m_inputData = now;
@@ -392,7 +394,7 @@ void Player::OnHit()
         m_currentAnimCount = 0.0f;
         m_animChangeFrame = 0;
     }
-	
+    SoundManager::PlaySE("Hit");
 }
 
 Vector3 Player::GetCameraTarget() const
@@ -425,7 +427,7 @@ void Player::OnJustDodge()
     m_justCount++;
     //発動時は短時間無敵にする
     m_invincibleTimer = 30.0f;
-
+	SoundManager::PlaySE("Dodge");
 }
 
 int Player::m_justCount = 0;
