@@ -6,6 +6,7 @@
 #include "../Game/Stage.h"
 #include "../system/EffectManager.h"
 #include "ResultScene.h"
+#include "../Game.h"
 
 namespace
 {
@@ -17,6 +18,9 @@ m_frameCount(0),
 m_fontHandle(-1),
 m_operationHandle(-1)
 {
+	m_update = &SceneMain::FadeInUpdate;
+	m_draw = &SceneMain::FadeDraw;
+	m_frame = kFadeInterval;
 }
 
 
@@ -119,106 +123,22 @@ void SceneMain::Init()
 	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
 	m_operationHandle = LoadGraph("data/Operation.png");
 
+
+
 	//背景色を設定(ここでRGBを変更すれば背景色を変えれる)
 	//薄い青
 	//SetBackgroundColor(100, 150, 255); 
 	
 }
 
-void SceneMain::Update(const Input& input)
+void SceneMain::Update(Input& input)
 {
-	m_frameCount++;
-    if (m_pPlayer)
-	{
-		//Timerはm_pTimerを内部で保持しているため、PlayerのUpdateのシグネチャに合わせて呼び出す
-		if (m_pTimer)
-		{
-			m_pTimer->Update();
-			m_pPlayer->Update(input, *m_pTimer);
-		}
-		else
-		{
-			//タイマーが無ければ通常の更新を行う(時間切れフラグはfalseとみなす)
-			Timer dummy;
-			//dummy を初期化してから渡す
-			dummy.Init();
-			m_pPlayer->Update(input, dummy);
-		}
-	}
-
-    if (!m_pEnemy.empty() && m_pPlayer)
-	{
-        for (auto& enemy : m_pEnemy)
-		{
-			if (enemy)
-			{
-                
-				enemy->Update(*m_pPlayer, *m_pTimer, *m_pEffect);
-			}
-		}
-	}
-	//カメラの更新はPlayerの更新後に行う
-	if (m_pCamera)
-	{
-		m_pCamera->Update();
-	}
-    //m_pTimerの更新はPlayer更新時にまとめて行うためここでは行わない
-	
-	//エフェクトを更新
-	if (m_pEffect)
-	{
-		m_pEffect->Update();
-	}
-
+	(this->*m_update)(input);
 }
 
 void SceneMain::Draw()
 {
-	//画面を背景色でクリアしてから描画する
-	//ClearDrawScreen();
-	//操作説明を描画
-	
-
-	m_pCamera->Draw();
-	
-	m_pStage->Draw();
-	m_pPlayer->Draw();
-	if (m_pEffect)
-	{
-		m_pEffect->Draw();
-	}
-		
-	if (!m_pEnemy.empty())
-	{
-		for (auto& enemy : m_pEnemy)
-		{
-			if (enemy)
-			{
-				enemy->Draw();
-			}
-		}
-	}
-	
-	
-	//タイマーを描画
-	if (m_pTimer)
-	{
-		m_pTimer->Draw();
-	}
-
-	//ジャスト回避回数の表示
-	DrawFormatStringToHandle(10, 10, GetColor(255, 255, 255), m_fontHandle, "Just Dodge Count: %d", Player::GetJustCount());
-	DrawRotaGraph(240, 600, 1.0f, 0.0f, m_operationHandle, true);
-
-    
-#ifdef _DEBUG
-
-	DrawGrid();
-	DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));
-	DrawFormatString(0, 16, GetColor(255, 255, 255), "FRAME:%d", m_frameCount);
-#endif //_DEBUG
-
-	
+	(this->*m_draw)();
 }
 
 void SceneMain::DrawGrid()
@@ -243,26 +163,135 @@ void SceneMain::DrawGrid()
 
 void SceneMain::FadeInUpdate(Input& input)
 {
+	if (input.IsTriggered("ok"))
+	{
+		m_update = &SceneMain::FadeOutUpdate;
+		m_draw = &SceneMain::FadeDraw;
+		m_frame = 0;
+		return;
+	}
+
+	if (m_frame-- <= 0)
+	{
+		m_update = &SceneMain::NormalUpdate;
+		m_draw = &SceneMain::NormalDraw;
+	}
 }
 
 void SceneMain::NormalUpdate(Input& input)
 {
-}
+	m_frameCount++;
+	if (m_pPlayer)
+	{
+		//Timerはm_pTimerを内部で保持しているため、PlayerのUpdateのシグネチャに合わせて呼び出す
+		if (m_pTimer)
+		{
+			m_pTimer->Update();
+			m_pPlayer->Update(input, *m_pTimer);
+		}
+		else
+		{
+			//タイマーが無ければ通常の更新を行う(時間切れフラグはfalseとみなす)
+			Timer dummy;
+			//dummy を初期化してから渡す
+			dummy.Init();
+			m_pPlayer->Update(input, dummy);
+		}
+	}
 
-void SceneMain::HitStopUpdate(Input& input)
-{
+	if (!m_pEnemy.empty() && m_pPlayer)
+	{
+		for (auto& enemy : m_pEnemy)
+		{
+			if (enemy)
+			{
+
+				enemy->Update(*m_pPlayer, *m_pTimer, *m_pEffect);
+			}
+		}
+	}
+	//カメラの更新はPlayerの更新後に行う
+	if (m_pCamera)
+	{
+		m_pCamera->Update();
+	}
+	//m_pTimerの更新はPlayer更新時にまとめて行うためここでは行わない
+
+	//エフェクトを更新
+	if (m_pEffect)
+	{
+		m_pEffect->Update();
+	}
+
 }
 
 void SceneMain::FadeOutUpdate(Input&)
 {
+	if (m_frame++ >= kFadeInterval)
+	{
+		//フェードアウト完了
+		m_isFinished = true;
+		return;
+	}
 }
 
 void SceneMain::FadeDraw()
 {
+	NormalDraw();
+
+	auto rate = static_cast<float>(m_frame) / static_cast<float>(kFadeInterval);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 * rate);
+	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 void SceneMain::NormalDraw()
 {
+	//画面を背景色でクリアしてから描画する
+	//ClearDrawScreen();
+	//操作説明を描画
+
+
+	m_pCamera->Draw();
+
+	m_pStage->Draw();
+	m_pPlayer->Draw();
+	if (m_pEffect)
+	{
+		m_pEffect->Draw();
+	}
+
+	if (!m_pEnemy.empty())
+	{
+		for (auto& enemy : m_pEnemy)
+		{
+			if (enemy)
+			{
+				enemy->Draw();
+			}
+		}
+	}
+
+
+	//タイマーを描画
+	if (m_pTimer)
+	{
+		m_pTimer->Draw();
+	}
+
+	//ジャスト回避回数の表示
+	DrawFormatStringToHandle(10, 10, GetColor(255, 255, 255), m_fontHandle, "Just Dodge Count: %d", Player::GetJustCount());
+	DrawRotaGraph(240, 600, 1.0f, 0.0f, m_operationHandle, true);
+
+
+#ifdef _DEBUG
+
+	DrawGrid();
+	DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));
+	DrawFormatString(0, 16, GetColor(255, 255, 255), "FRAME:%d", m_frameCount);
+#endif //_DEBUG
+
+
 }
 
 bool SceneMain::IsTimeUp() const

@@ -20,7 +20,7 @@ public:
 	~SceneMain();
 
 	void Init();
-	void Update(const Input& input);
+	void Update(Input& input);
 	void Draw();
     bool IsTimeUp() const;
 
@@ -31,7 +31,6 @@ private:
 	//フェードインupdate
 	void FadeInUpdate(Input&);
 	void NormalUpdate(Input& input);
-	void HitStopUpdate(Input& input);
 	void FadeOutUpdate(Input&);
 	using UpdateFunc_t = void(SceneMain::*)(Input&);
 	UpdateFunc_t m_update;	// Update系を受け取るメンバ関数ポインタ
@@ -45,7 +44,7 @@ private:
 	int m_frameCount;
 	int m_operationHandle;
 	int m_frame;
-
+	bool m_isFinished;
 	std::shared_ptr<Player> m_pPlayer;
 	std::vector<std::shared_ptr<Enemy>>m_pEnemy;
 	std::shared_ptr<Camera> m_pCamera;
