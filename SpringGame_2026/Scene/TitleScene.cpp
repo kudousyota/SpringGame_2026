@@ -2,6 +2,8 @@
 #include "DxLib.h"
 #include "../Game.h"
 #include "../system/SoundManager.h"
+#include "SceneMain.h"
+#include "SceneController.h"
 namespace
 {
 	constexpr int fade_interval = 60;
@@ -51,7 +53,7 @@ void TitleScene::FadeOutUpdate(Input&)
 	{
 		//フェードアウト完了
 		m_finished = true;
-		//m_controller.ChangeScene(std::make_shared<SceneMain>(m_controller));
+		m_controller.ChangeScene(std::make_shared<SceneMain>(m_controller));
 		return;
 	}
 }
@@ -59,6 +61,8 @@ void TitleScene::FadeOutUpdate(Input&)
 void TitleScene::NormalDraw()
 {
 	
+
+
 	MV1DrawModel(m_skyHandle);
 	//モデルの位置を反映してから描画
 	MV1SetPosition(m_playerHandle, m_playerPos.ToDxLibVector());
@@ -104,7 +108,8 @@ void TitleScene::FadeDraw()
 	
 }
 
-TitleScene::TitleScene():
+TitleScene::TitleScene(SceneController& controller):
+	Scene(controller),
 	m_fontHandle(-1),
 	m_skyHandle(-1),
 	m_playerHandle(-1),
@@ -118,7 +123,7 @@ TitleScene::TitleScene():
 	m_playerAngle(0.0f),
 	m_logoPos(VGet(0.0f, 0.0f, 0.0f))
 {
-	
+	Init();
 	m_update = &TitleScene::FadeInUpdate;
 	m_draw = &TitleScene::FadeDraw;
 	m_frame = fade_interval;
@@ -128,6 +133,7 @@ TitleScene::TitleScene():
 void TitleScene::Init()
 {
 	//SetBackgroundColor(100, 150, 255);
+
 	
 	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
 
@@ -168,5 +174,6 @@ void TitleScene::Update(Input& input)
 
 void TitleScene::Draw()
 {
+	DrawString(0, 0, "TitleScene", GetColor(255, 255, 255));
 	(this->*m_draw)();
 }

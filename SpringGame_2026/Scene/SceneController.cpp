@@ -1,5 +1,6 @@
 #include "SceneController.h"
 #include "Scene.h"
+#include "SceneMain.h"
 
 void SceneController::ResetScene(std::shared_ptr<Scene> scene)
 {
@@ -20,7 +21,9 @@ void SceneController::ChangeScene(std::shared_ptr<Scene> scene)
 	else
 	{
 		m_scenes.back() = scene;	// この行の時点で元のシーンは自動的に削除されています
+		
 	}
+	m_scenes.back()->Init();
 }
 
 void SceneController::PushScene(std::shared_ptr<Scene> scene)

@@ -7,13 +7,15 @@
 #include "../system/EffectManager.h"
 #include "ResultScene.h"
 #include "../Game.h"
+#include "SceneController.h"
 
 namespace
 {
 	constexpr int kFadeInterval = 60;
 }
 
-SceneMain::SceneMain():
+SceneMain::SceneMain(SceneController& controller):
+Scene(controller),
 m_frameCount(0),
 m_fontHandle(-1),
 m_operationHandle(-1)
@@ -27,6 +29,8 @@ m_operationHandle(-1)
 
 SceneMain::~SceneMain()
 {
+	
+
 	//PlayerとEnemy の終了処理を呼び出す
     if (m_pPlayer)
 	{
@@ -198,6 +202,12 @@ void SceneMain::NormalUpdate(Input& input)
 			m_pPlayer->Update(input, dummy);
 		}
 	}
+	if (m_pTimer && m_pTimer->IsTimeUp())
+	{
+		m_update = &SceneMain::FadeOutUpdate;
+		m_draw = &SceneMain::FadeDraw;
+		m_frame = 0;
+	}
 
 	if (!m_pEnemy.empty() && m_pPlayer)
 	{
@@ -230,7 +240,9 @@ void SceneMain::FadeOutUpdate(Input&)
 	if (m_frame++ >= kFadeInterval)
 	{
 		//フェードアウト完了
-		m_isFinished = true;
+		
+		//m_isFinished = true;
+		m_controller.ChangeScene(std::make_shared<ResultScene>(m_controller));
 		return;
 	}
 }

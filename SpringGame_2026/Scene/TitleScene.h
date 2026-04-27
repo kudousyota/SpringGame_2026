@@ -1,11 +1,12 @@
 #pragma once
 #include "../Game/Input.h"
 #include "../system/Vector3.h"
+#include "Scene.h"
 
-class TitleScene
+class TitleScene: public Scene
 {
 public:
-	TitleScene();
+	TitleScene(SceneController& controller);
 	void Init();
 	void Update(Input& input);
 	void Draw();

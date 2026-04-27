@@ -11,6 +11,8 @@ protected:
 	SceneController& m_controller;
 public:
 	Scene(SceneController& controller);
+
+	virtual void Init() =0;
 	///<summary>
 	///シーンの情報の更新
 	///</summary>

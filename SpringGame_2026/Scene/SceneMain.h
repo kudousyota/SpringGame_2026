@@ -6,6 +6,7 @@
 #include "../system/Timer.h"
 #include "../Game/Stage.h"
 #include "../system/EffectManager.h"
+#include "Scene.h"
 
 class ResultScene;
 class Stage;
@@ -13,10 +14,10 @@ class Input;
 class Player;
 class Enemy;
 class Timer;
-class SceneMain
+class SceneMain:public Scene
 {
 public:
-	SceneMain();
+	SceneMain(SceneController& controller);
 	~SceneMain();
 
 	void Init();

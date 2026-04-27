@@ -116,6 +116,7 @@ void ResultScene::NormalDraw()
 
 void ResultScene::FadeDraw()
 {
+	NormalDraw();
 	//値の範囲を一旦0.0~1.0fにしておくといろいろと扱いやすい
 	auto rate = static_cast<float>(m_frame) / static_cast<float>(kFadeInterval);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 * rate);
@@ -190,7 +191,7 @@ void ResultScene::Init()
 	//カメラを初期化
 	//カメラをリザルト用に初期化(SceneMain と同じ初期位置に戻す)
 	//これでメインシーンから引き継いだカメラの位置がリセットされる
-	SetCameraPositionAndTarget_UpVecY(VGet(300.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
+	SetCameraPositionAndTarget_UpVecY(VGet(500.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(20.0f, 4500.0f);
 }
