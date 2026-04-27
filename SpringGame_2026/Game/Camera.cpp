@@ -56,6 +56,8 @@ void Camera::Init()
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos.ToDxLibVector(),m_cameraTarget.ToDxLibVector());
 
 	m_skyDomeHandle = MV1LoadModel("data/Sky_Daylight01.mv1");
+
+	MV1SetScale(m_skyDomeHandle, VGet(1.5f, 1.5f, 1.5f));
 }
 
 void Camera::End()

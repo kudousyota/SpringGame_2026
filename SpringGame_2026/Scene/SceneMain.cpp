@@ -65,7 +65,7 @@ void SceneMain::Init()
 	//カメラの設定
 	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
-	SetCameraNearFar(20.0f, 4500.0f);
+	SetCameraNearFar(20.0f, 10000.0f);
 
    //ステージを作成して初期化
 	m_pStage = std::make_shared<Stage>();
@@ -87,7 +87,7 @@ void SceneMain::Init()
 	auto enemy = std::make_shared<Enemy>();
 	enemy->Init();
 	//位置を設定
-	Vector3 pos = VGet(-200.0f, 150.0f, 450.0f);
+	Vector3 pos = VGet(-200.0f, 150.0f, 550.0f);
 	enemy->SetPos(pos);
 	m_pEnemy.push_back(enemy);
 	//2体目
@@ -96,7 +96,7 @@ void SceneMain::Init()
     //2体目は攻撃が速め
 	enemyTwo->SetAttackCoolTime(45);
 	enemyTwo->SetBulletSpeed(12.0f);
-	Vector3 posTwo = VGet(-700.0f, 150.0f, -350.0f);
+	Vector3 posTwo = VGet(-1000.0f, 150.0f, -350.0f);
 	enemyTwo->SetPos(posTwo);
 	m_pEnemy.push_back(enemyTwo);
 	//3体目
@@ -105,7 +105,7 @@ void SceneMain::Init()
     //3体目は攻撃が遅め
 	enemyThree->SetAttackCoolTime(80);
 	enemyThree->SetBulletSpeed(8.0f);
-	Vector3 posThree = VGet(700.0f, 150.0f, -350.0f);
+	Vector3 posThree = VGet(1000.0f, 150.0f, -350.0f);
 	enemyThree->SetPos(posThree);
 	m_pEnemy.push_back(enemyThree);
 

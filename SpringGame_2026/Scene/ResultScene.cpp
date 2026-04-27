@@ -99,10 +99,10 @@ void ResultScene::NormalDraw()
 	const int Color = GetColor(224,255,255);
 	const int black = GetColor(0,	0,	0);
 
-	DrawStringToHandle(480, 50, "Result", white, m_fontHandle);
+	DrawStringToHandle(550, 50, "Result", white, m_fontHandle);
 
 
-	DrawFormatString2ToHandle(470, 300, white, black, m_fontHandle, "Dodge:%d", m_finalScore);
+	DrawFormatString2ToHandle(540, 300, white, black, m_fontHandle, "Dodge:%d", m_finalScore);
 	//点滅頻度
 	const int intervar = 650;
 	int now = GetNowCount();

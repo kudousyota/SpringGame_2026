@@ -159,8 +159,28 @@ void Player::Update(const Input& input, const Timer& timer)
     m_isInput = (now != Inputdata::None);
 
     //回避開始判定
-    if (!m_isDodge && m_isInput)
+    if (!m_isDodge)
     {
+        //xボタンおされても回避するように
+        if (input.IsTriggered("Dodge"))
+        {
+            m_isDodge = true;
+            m_dodgeTimer = kDodgeTime;
+            m_invincibleTimer = kInvincibleTime;
+
+            //入力している方向に行く
+            if (now != Inputdata::None)
+            {
+                m_inputData = now;
+            }
+            //入力方向がない場合
+            else if (m_inputData == Inputdata::None)
+            {
+                m_inputData = Inputdata::Up;
+            }
+            SoundManager::PlaySE("Just");
+        }
+
         bool triggered = false;
 		//現在の入力が新たに押されたものか判定
         if (now == Inputdata::Up)         triggered = input.IsTriggered("up");

@@ -27,6 +27,7 @@ Application& Application::GetInstance()
 
 bool Application::Init()
 {
+
 	//ウィンドウモード設定
 	ChangeWindowMode(true);
 	//タイトル変更
@@ -77,6 +78,9 @@ void Application::Run()
 	while (ProcessMessage() != -1 && !m_IsRequstendExit)
 	{
 		
+		//このフレームの開始時間を取得
+		LONGLONG start = GetNowHiPerformanceCount();
+
 		ClearDrawScreen();
 		input.Update();
 		controller.Update(input);
@@ -87,6 +91,12 @@ void Application::Run()
 			break;
 		}
 		ScreenFlip();
+
+		//フレームレート６０に固定
+		while (GetNowHiPerformanceCount() - start < 16667)
+		{
+
+		}
 	}
 }
 

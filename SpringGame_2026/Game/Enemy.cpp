@@ -138,6 +138,21 @@ void Enemy::Update(Player& player, const Timer& timer, EffectManager& effectMana
 		MV1SetMatrix(m_modelHandle, world);
 	}
 
+	
+	//敵の弾の回転
+	static float spin = 0.0f;
+	spin += 0.2f;
+
+	//進行方向に向くようにする
+	//角度を毎回計算する
+	float angle = atan2f(m_bulletDir.x, m_bulletDir.z);
+	MATRIX bulletRotMtxY = MGetRotY(angle);
+	MATRIX bulletRotMtxZ = MGetRotZ(spin);
+	//ｚを先にやる
+	MATRIX rot = MMult(bulletRotMtxZ, bulletRotMtxY);
+	MATRIX trans = MGetTranslate(m_bulletPos.ToDxLibVector());
+	MV1SetMatrix(m_bulletModelHandle, MMult(rot,trans));
+
     //クールタイムを更新
 	m_shotTimer++;
 
@@ -236,8 +251,7 @@ void Enemy::Update(Player& player, const Timer& timer, EffectManager& effectMana
 		//直近30フレーム以内にジャストウィンドウにいた場合にも許可する
 		const int kJustRecentFrames = 30;
 		bool recentJust = player.IsInJustWindow() || player.WasInJustWindowRecently(kJustRecentFrames);
-        if (player.IsDodging() && recentJust &&
-			justDistSq <= justDist * justDist)
+        if (player.IsDodging() && recentJust &&justDistSq <= justDist * justDist)
 		{
 			player.OnJustDodge();
 			effectManager.PlayEffect(EffectManager::EffectType::Just, m_bulletPos);
@@ -323,7 +337,6 @@ void Enemy::Draw()
 	//弾を描画
 	if (m_hasBullet)
 	{
-		
 		//DrawSphere3D(m_bulletPos.ToDxLibVector(), kBulletSize, 8, GetColor(255, 255, 0), GetColor(255, 255, 0), true);
 		MV1DrawModel(m_bulletModelHandle);
 	}
