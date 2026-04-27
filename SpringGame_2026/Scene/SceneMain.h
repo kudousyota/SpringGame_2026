@@ -41,7 +41,13 @@ private:
 	using DrawFunc_t = void(SceneMain::*)();
 	DrawFunc_t m_draw;	// Draw系を受け取るメンバ関数ポインタ
 
+	//カウントダウン
+	void CountDownUpdate(Input& input);
+	void CountDownDraw();
+	int m_countDownFrame;
+
 	int m_fontHandle;
+	int m_fontHandleTwo;
 	int m_frameCount;
 	int m_operationHandle;
 	int m_frame;

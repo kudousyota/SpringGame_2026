@@ -8,6 +8,7 @@
 #include "ResultScene.h"
 #include "../Game.h"
 #include "SceneController.h"
+#include "../system/SoundManager.h"
 
 namespace
 {
@@ -18,7 +19,9 @@ SceneMain::SceneMain(SceneController& controller):
 Scene(controller),
 m_frameCount(0),
 m_fontHandle(-1),
-m_operationHandle(-1)
+m_operationHandle(-1),
+m_fontHandleTwo(-1),
+m_countDownFrame(0)
 {
 	m_update = &SceneMain::FadeInUpdate;
 	m_draw = &SceneMain::FadeDraw;
@@ -125,7 +128,13 @@ void SceneMain::Init()
 	//CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING);
 
 	m_fontHandle = CreateFontToHandle("x10y12pxDonguriDuel", 40, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
+	m_fontHandleTwo = CreateFontToHandle("x10y12pxDonguriDuel", 160, -1, DX_FONTTYPE_ANTIALIASING_EDGE);
 	m_operationHandle = LoadGraph("data/Operation.png");
+
+	//4•b
+	m_countDownFrame = 240;
+
+	
 
 
 
@@ -177,8 +186,9 @@ void SceneMain::FadeInUpdate(Input& input)
 
 	if (m_frame-- <= 0)
 	{
-		m_update = &SceneMain::NormalUpdate;
-		m_draw = &SceneMain::NormalDraw;
+		m_update = &SceneMain::CountDownUpdate;
+		m_draw = &SceneMain::CountDownDraw;
+		SoundManager::PlaySE("CountDown");
 	}
 }
 
@@ -304,6 +314,35 @@ void SceneMain::NormalDraw()
 #endif //_DEBUG
 
 
+}
+
+void SceneMain::CountDownUpdate(Input& input)
+{
+	m_countDownFrame--;
+	if (m_countDownFrame < 0)
+	{
+		m_update = &SceneMain::NormalUpdate;
+		m_draw = &SceneMain::NormalDraw;
+	}
+}
+
+void SceneMain::CountDownDraw()
+{
+	//ƒQ[ƒ€‰æ–Ê‚ÍŒ©‚¦‚Ä‚é‚Ü‚Ü
+	NormalDraw(); 
+
+	int Timer = m_countDownFrame / 60;
+
+	if (Timer > 0)
+	{
+		DrawFormatStringToHandle(600, 300, GetColor(255, 255, 255), m_fontHandleTwo, "%d", Timer);
+		
+	}
+	else
+	{
+		DrawStringToHandle(580, 300, "GO!", GetColor(255, 255, 255), m_fontHandleTwo);
+	}
+	
 }
 
 bool SceneMain::IsTimeUp() const
