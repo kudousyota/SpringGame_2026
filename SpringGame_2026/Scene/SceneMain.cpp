@@ -55,6 +55,7 @@ SceneMain::~SceneMain()
 		m_pStage->End();
 	}
 
+	DeleteShadowMap(m_shadowMapHandle);
 	
 }
 void SceneMain::Init()
@@ -134,7 +135,7 @@ void SceneMain::Init()
 	//4秒
 	m_countDownFrame = 240;
 
-	
+	m_shadowMapHandle = MakeShadowMap(4096, 4096);
 
 
 
@@ -276,8 +277,19 @@ void SceneMain::NormalDraw()
 
 	m_pCamera->Draw();
 
-	m_pStage->Draw();
+	// シャドウマップにプレイヤーの影を書き込む
+	ShadowMap_DrawSetup(m_shadowMapHandle);
 	m_pPlayer->Draw();
+	ShadowMap_DrawEnd();
+
+	// シャドウマップを使用してステージを描画
+	SetUseShadowMap(0, m_shadowMapHandle);
+	m_pStage->Draw();
+	SetUseShadowMap(0, -1);
+
+	// プレイヤー本体を描画
+	m_pPlayer->Draw();
+
 	if (m_pEffect)
 	{
 		m_pEffect->Draw();

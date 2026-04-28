@@ -50,6 +50,7 @@ private:
 	int m_fontHandleTwo;
 	int m_frameCount;
 	int m_operationHandle;
+	int m_shadowMapHandle;
 	int m_frame;
 	bool m_isFinished;
 	std::shared_ptr<Player> m_pPlayer;
