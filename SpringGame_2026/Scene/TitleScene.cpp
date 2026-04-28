@@ -89,7 +89,7 @@ void TitleScene::NormalDraw()
 	if (visible)
 	{
 		//‘€ìà–¾•\¦
-		DrawStringToHandle(470, 580, "Press A to Game", white, m_fontHandle);
+		DrawStringToHandle(470, 580, "Press B to Game", white, m_fontHandle);
 	}
 
 }

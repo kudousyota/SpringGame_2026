@@ -55,6 +55,7 @@ void ResultScene::NormalUpdate(Input& input)
 	if (m_currentAnimCount >= currentTotal)
 	{
 		m_currentAnimCount -= currentTotal;
+		m_effectManger.PlayEffect(EffectManager::EffectType::Hit, m_effectPos);
 	}
 	MV1SetAttachAnimTime(m_playerHandle, m_cureentAnimHandle, m_currentAnimCount);
 
@@ -64,8 +65,9 @@ void ResultScene::NormalUpdate(Input& input)
 		m_update = &ResultScene::FadeOutUpdate;
 		m_draw = &ResultScene::FadeDraw;
 		m_frame = 0;	//フェードアウトの最初
-		return;
 		SoundManager::PlaySE("Ok");
+		return;
+		
 	}
 
 	
@@ -77,6 +79,7 @@ void ResultScene::FadeOutUpdate(Input&)
 	{
 		//フェードアウト完了
 		m_finished = true;
+		m_controller.ChangeScene(std::make_shared<TitleScene>(m_controller));
 		return;
 	}
 }
@@ -110,7 +113,7 @@ void ResultScene::NormalDraw()
 	if (visible)
 	{
 		//操作説明表示
-		DrawStringToHandle(470, 580, "Press A to Title", white, m_fontHandle);
+		DrawStringToHandle(470, 580, "Press B to Title", white, m_fontHandle);
 	}
 }
 
@@ -143,6 +146,7 @@ ResultScene::ResultScene(SceneController& controller) :
 	m_enemyHandle(-1),
 	m_enemyPos(VGet(0.0f, 0.0f, 0.0f)),
 	m_enemyAngle(0.0f),
+	m_effectPos(VGet(0,0,0)),
 	m_groundHandle(-1)
 {
 	m_update = &ResultScene::FadeInUpdate;
@@ -187,11 +191,13 @@ void ResultScene::Init()
 	MATRIX world = MMult(rotMtx, transMtx);
 	MV1SetMatrix(m_enemyHandle, world);
 
+	m_effectManger.Init();
 
-	//カメラを初期化
-	//カメラをリザルト用に初期化(SceneMain と同じ初期位置に戻す)
+	m_effectPos = m_enemyPos;
+
+	//カメラをリザルト用に初期化
 	//これでメインシーンから引き継いだカメラの位置がリセットされる
-	SetCameraPositionAndTarget_UpVecY(VGet(500.0f, 300.0f, -300.0f), VGet(0.0f, 0.0f, 0.0f));
+	SetCameraPositionAndTarget_UpVecY(VGet(500.0f, 300.0f, -350.0f), VGet(0.0f, 0.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(20.0f, 4500.0f);
 }
@@ -199,10 +205,11 @@ void ResultScene::Init()
 void ResultScene::Update(Input& input)
 {
 	(this->*m_update)(input);
+	m_effectManger.Update();
 }
 void ResultScene::Draw()
 {
 	
     (this->*m_draw)();
-
+	m_effectManger.Draw();
 }

@@ -19,12 +19,12 @@ namespace
 void Input::InitializeInputTable()
 {
 	m_inputTable["ok"] = { { PeripheralType::keyboard,KEY_INPUT_RETURN},
-                      { PeripheralType::pad1,PAD_INPUT_A } };	// PADのAボタン
+                      { PeripheralType::pad1,PAD_INPUT_B } };	// PADのAボタン
 	m_inputTable["pause"] = { { PeripheralType::keyboard,KEY_INPUT_P},
                        { PeripheralType::pad1,PAD_INPUT_START } };	// PADのSTARTボタン
 
 	m_inputTable["Dodge"] = { { PeripheralType::keyboard,KEY_INPUT_Z},
-						  { PeripheralType::pad1,PAD_INPUT_C } };	// PADのXボタン
+						  { PeripheralType::pad1,PAD_INPUT_A } };	// PADのAボタン
 	//m_inputTable["slow"] = { { PeripheralType::keyboard,KEY_INPUT_LSHIFT},
 	//					  { PeripheralType::pad1,PAD_INPUT_A } };	// PADのAボタン
 	//m_inputTable["bomb"] = { { PeripheralType::keyboard,KEY_INPUT_X},

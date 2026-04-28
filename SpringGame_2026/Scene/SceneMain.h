@@ -52,7 +52,7 @@ private:
 	int m_operationHandle;
 	int m_shadowMapHandle;
 	int m_frame;
-	bool m_isFinished;
+	//bool m_isFinished;
 	std::shared_ptr<Player> m_pPlayer;
 	std::vector<std::shared_ptr<Enemy>>m_pEnemy;
 	std::shared_ptr<Camera> m_pCamera;

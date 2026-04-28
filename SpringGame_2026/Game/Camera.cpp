@@ -120,6 +120,7 @@ void Camera::Update()
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos.ToDxLibVector(),m_cameraTarget.ToDxLibVector());
 
 	MV1SetPosition(m_skyDomeHandle, m_cameraPos.ToDxLibVector());
+
 }
 
 void Camera::Draw()

@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "../system/Vector3.h"
+#include "../system/EffectManager.h"
 
 class ResultScene :public Scene
 {
@@ -46,6 +47,8 @@ private:
 	int m_groundHandle;
 	//地面の位置
 	Vector3 m_groundPos;
+	//エフェクトの位置
+	Vector3 m_effectPos;
 
 
 	//メンバ関数ポインタを使用して内部状態を書き換える
@@ -67,6 +70,6 @@ private:
 	using DrawFunc_t = void(ResultScene::*)();
 	DrawFunc_t m_draw;	//Drawメンバ関数を代入できるメンバ関数ポインタ
 
-
+	EffectManager m_effectManger;
 };
 

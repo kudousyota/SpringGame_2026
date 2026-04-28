@@ -135,9 +135,9 @@ void SceneMain::Init()
 	//4•b
 	m_countDownFrame = 240;
 
-	m_shadowMapHandle = MakeShadowMap(4096, 4096);
+	m_shadowMapHandle = MakeShadowMap(8192, 8192);
 
-
+	
 
 	//”wŒiF‚ğİ’è(‚±‚±‚ÅRGB‚ğ•ÏX‚·‚ê‚Î”wŒiF‚ğ•Ï‚¦‚ê‚é)
 	//”–‚¢Â
