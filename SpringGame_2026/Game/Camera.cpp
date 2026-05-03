@@ -119,6 +119,15 @@ void Camera::Update()
 	//カメラ反映
 	SetCameraPositionAndTarget_UpVecY(m_cameraPos.ToDxLibVector(),m_cameraTarget.ToDxLibVector());
 
+	//光
+	Vector3 camPos = m_cameraPos.ToDxLibVector();
+	Vector3 target = m_cameraTarget.ToDxLibVector();
+
+	//カメラから注視点の方向
+	Vector3 LightDir = VNorm(VSub(target, camPos));
+
+	SetLightDirection(LightDir);
+
 	MV1SetPosition(m_skyDomeHandle, m_cameraPos.ToDxLibVector());
 
 }

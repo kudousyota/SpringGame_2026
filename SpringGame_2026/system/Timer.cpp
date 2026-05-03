@@ -5,7 +5,7 @@ namespace
 {
 	//初期のフレーム数（秒数 * FPS）を取得
 	static constexpr int kFps = 60;
-	static constexpr int kTimeLimit = 20; //秒
+	static constexpr int kTimeLimit = 30; //秒
 }
 Timer::Timer():
 	m_gameTimer(0),
@@ -50,10 +50,10 @@ void Timer::Draw()
 
 	DrawFormatStringToHandle(500, 30, GetColor(255, 255, 255), m_fontHandle, "Timer:%d", displayTime);
 
-	if (m_gameTimer == 0)
+	/*if (m_gameTimer == 0)
 	{
 		DrawString(30, 50, "Time's up!", GetColor(255, 0, 0));
-	}
+	}*/
 }
 
 bool Timer::IsTimeUp() const

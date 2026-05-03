@@ -28,8 +28,9 @@ void ResultScene::FadeInUpdate(Input& input)
 		m_update = &ResultScene::FadeOutUpdate;
 		m_draw = &ResultScene::FadeDraw;
 		m_frame = 0;	//フェードアウトの最初
-		return;
 		SoundManager::PlaySE("Ok");
+		return;
+	
 	}
 
 
@@ -171,6 +172,8 @@ void ResultScene::Init()
 
 	m_groundHandle	= MV1LoadModel("data/Ground.mv1");	
 
+	SoundManager::PlayBGM("Result",true);
+
 	m_playerPos		= VGet(0.0f, 0.0f, -10.0f);
 
 	m_enemyPos		= VGet(0.0f, 0.0f, -400.0f);
@@ -205,6 +208,9 @@ void ResultScene::Init()
 void ResultScene::Update(Input& input)
 {
 	(this->*m_update)(input);
+
+	if (m_finished) return; 
+
 	m_effectManger.Update();
 }
 void ResultScene::Draw()
