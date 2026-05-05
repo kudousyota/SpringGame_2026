@@ -119,8 +119,8 @@ void SceneMain::Init()
 	m_pCamera->Init();
 
 	//プレイヤーにカメラとステージを渡す
-	m_pPlayer->setCamera(m_pCamera.get());
-	m_pPlayer->setStage(m_pStage.get());
+	m_pPlayer->SetCamera(m_pCamera.get());
+	m_pPlayer->SetStage(m_pStage.get());
 
 	m_pTimer = std::make_shared<Timer>();
 	m_pTimer->Init();

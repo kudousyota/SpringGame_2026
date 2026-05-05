@@ -59,7 +59,8 @@ Player::Player() :
     m_isHit(false),
     m_currentAnimCount(0.0f),
 	m_scene(PlayerScene::Game),
-    m_framesSinceJustWindow(100000)
+    m_framesSinceJustFrame(100000),
+    m_dodgeCoolDown(0)
 {
 }
 Player::~Player()
@@ -88,12 +89,14 @@ void Player::Init()
     //ジャストカウントは静的カウンタで管理
     m_justCount = 0;
     //初期値: 何フレーム経過しているかは大きな値にしておく(最近触れていない)
-    m_framesSinceJustWindow = 100000;
+    m_framesSinceJustFrame = 100000;
 	//ジャスト回避の半径(当たり判定より少しでかくする)
     m_justColRadius = 130.0f;
 
     //被弾アニメーションのフレーム数
     m_hitAnimFrame = 0;
+    //回避のクールタイム
+    m_dodgeCoolDown = 30;
 }
 
 void Player::End()
@@ -114,23 +117,31 @@ void Player::End()
         m_modelHandle = -1;
     }
 }
+
 void Player::Update(const Input& input, const Timer& timer)
 {
-    //タイマーが0秒になったら動けなくする
+    // タイムアップなら何もしない
     if (timer.IsTimeUp())
     {
         return;
     }
 
-    if (m_pCamera == nullptr) return;
+    if (m_pCamera == nullptr)
+    {
+        return;
+    }
 
-    //ダブル入力判定用タイマー
-    m_doubleInputTimer++;
+    // 各種タイマー更新
+    // ダブル入力判定用タイマー
+    ++m_doubleInputTimer;
 
-    //アニメブレンド
-    m_animChangeFrame++;
+    // アニメブレンド用
+    ++m_animChangeFrame;
 
-    //無敵時間タイマー
+    // 回避クールタイム
+    --m_dodgeCoolDown;
+
+    // 無敵時間
     if (m_invincibleTimer > 0.0f)
     {
         m_invincibleTimer -= 1.0f;
@@ -140,16 +151,17 @@ void Player::Update(const Input& input, const Timer& timer)
         }
     }
 
-    //被弾アニメーションのタイマー
+    // 被弾アニメ時間
     if (m_hitAnimFrame > 0)
     {
-        m_hitAnimFrame--;
+        --m_hitAnimFrame;
     }
 
+    // カメラ基準ベクトル
     Vector3 forward = m_pCamera->GetForward();
     Vector3 right = m_pCamera->GetRight();
 
-    //入力方向取得
+    // 入力方向取得
     Inputdata now = Inputdata::None;
     if (input.IsPressed("up"))         now = Inputdata::Up;
     else if (input.IsPressed("down"))  now = Inputdata::Down;
@@ -158,57 +170,15 @@ void Player::Update(const Input& input, const Timer& timer)
 
     m_isInput = (now != Inputdata::None);
 
-    //回避開始判定
-    if (!m_isDodge)
-    {
-        //xボタンおされても回避するように
-        if (input.IsTriggered("Dodge"))
-        {
-            m_isDodge = true;
-            m_dodgeTimer = kDodgeTime;
-            m_invincibleTimer = kInvincibleTime;
-
-            //入力している方向に行く
-            if (now != Inputdata::None)
-            {
-                m_inputData = now;
-            }
-            //入力方向がない場合
-            else if (m_inputData == Inputdata::None)
-            {
-                m_inputData = Inputdata::Up;
-            }
-            SoundManager::PlaySE("Just");
-        }
-
-        bool triggered = false;
-		//現在の入力が新たに押されたものか判定
-        if (now == Inputdata::Up)         triggered = input.IsTriggered("up");
-        else if (now == Inputdata::Down)  triggered = input.IsTriggered("down");
-        else if (now == Inputdata::Left)  triggered = input.IsTriggered("left");
-        else if (now == Inputdata::Right) triggered = input.IsTriggered("right");
-
-        //同じ方向が短時間で2回押されたら回避
-        if (triggered)
-        {
-            if (m_inputData == now && m_doubleInputTimer < kDoubleInputTime)
-            {
-                m_isDodge = true;
-                m_dodgeTimer = kDodgeTime;
-                m_invincibleTimer = kInvincibleTime;
-                SoundManager::PlaySE("Just");
-            }
-
-            m_inputData = now;
-            m_doubleInputTimer = 0;
-        }
-    }
-
-    //移動処理
+    
+    // 回避開始判定
+    TryStartDodge(input, now);
+    // 移動処理
     bool isMoving = false;
 
     if (m_isDodge)
     {
+        // 回避中
         Vector3 dodgeVec(0.0f, 0.0f, 0.0f);
 
         switch (m_inputData)
@@ -219,7 +189,7 @@ void Player::Update(const Input& input, const Timer& timer)
         case Inputdata::Right: dodgeVec = right; break;
         default: break;
         }
-		//回避ベクトルの正規化と移動
+
         if (dodgeVec.SqMagnitude() > 0.0001f)
         {
             dodgeVec = dodgeVec.Normalize();
@@ -229,11 +199,12 @@ void Player::Update(const Input& input, const Timer& timer)
             {
                 m_pos = nextPos;
             }
-			//回避方向に向く
+
             m_angle = atan2f(dodgeVec.x, dodgeVec.z) + DX_PI_F;
             isMoving = true;
         }
 
+        // 回避時間更新
         m_dodgeTimer -= 1.0f;
         if (m_dodgeTimer <= 0.0f)
         {
@@ -242,31 +213,19 @@ void Player::Update(const Input& input, const Timer& timer)
     }
     else
     {
+        //  通常移動 
         Vector3 moveVec(0.0f, 0.0f, 0.0f);
 
-        if (input.IsPressed("up"))
-        {
-            moveVec += forward;
-        }
-        if (input.IsPressed("down"))
-        {
-            moveVec -= forward;
-        }
-        if (input.IsPressed("left"))
-        {
-            moveVec -= right;
-        }
-        if (input.IsPressed("right"))
-        {
-            moveVec += right;
-        }
-   
-		//移動ベクトルの正規化と移動
+        if (input.IsPressed("up"))    moveVec += forward;
+        if (input.IsPressed("down"))  moveVec -= forward;
+        if (input.IsPressed("left"))  moveVec -= right;
+        if (input.IsPressed("right")) moveVec += right;
+
         if (moveVec.SqMagnitude() > 0.0001f)
         {
             moveVec = moveVec.Normalize();
             Vector3 nextPos = m_pos + moveVec * kspeed;
-			//ステージの移動可能範囲内か判定してから移動
+
             if (m_pStage == nullptr || m_pStage->CanMove(nextPos, m_colRadius))
             {
                 m_pos = nextPos;
@@ -277,43 +236,57 @@ void Player::Update(const Input& input, const Timer& timer)
         }
     }
 
-    //アニメーション切り替え
-    const char* desiredAnim = nullptr;
+    // アニメーション切り替え
+    const char* desiredAnim;
 
-    //被弾中はHitアニメを最優先
+    // 被弾中は移動状態に関係なくHitアニメーションを最優先する
     if (m_hitAnimFrame > 0)
     {
         desiredAnim = kHitAnimName;
     }
     else
     {
+        // 被弾していない場合は、移動しているかどうかで
+        // RunとIdleアニメーションを切り替える
         desiredAnim = isMoving ? kRunAnimName : kIdleAnimName;
     }
 
+    // 再生したいアニメーションのインデックスを取得
     int animNo = MV1GetAnimIndex(m_modelHandle, desiredAnim);
 
-    //アニメーションが変わるときだけ処理
+    // アニメーション切り替え処理
+    // 現在再生中のアニメと異なる場合のみ切り替えを行う
+    // (毎フレームAttach/Detachしないためのチェック)
     if (animNo != m_currentAnimIndex)
     {
+        // すでにブレンド中のアニメーションがあれば解除する
         if (m_lastAnimHandle != -1)
         {
             MV1DetachAnim(m_modelHandle, m_lastAnimHandle);
         }
 
+        // 現在のアニメを前のアニメとして保存
+        // ブレンド用にこの後もしばらく再生し続ける
         m_lastAnimHandle = m_cureentAnimHandle;
         m_lastAnimCount = m_currentAnimCount;
 
+        // 新しいアニメーションをアタッチ
         m_cureentAnimHandle = MV1AttachAnim(m_modelHandle, animNo, -1, -1);
         m_currentAnimIndex = animNo;
+
+        // 新しいアニメーションは最初から再生
         m_currentAnimCount = 0.0f;
+
+        // ブレンド開始フレームをリセット
         m_animChangeFrame = 0;
     }
-	//アニメーションのブレンド
+
+
+    // ブレンド処理
     if (m_lastAnimHandle == -1)
     {
         MV1SetAttachAnimBlendRate(m_modelHandle, m_cureentAnimHandle, 1.0f);
     }
-	//Lastアニメがあるときはフレーム数に応じてブレンド
     else
     {
         float rate = static_cast<float>(m_animChangeFrame) / kAnimChangeFrame;
@@ -321,7 +294,7 @@ void Player::Update(const Input& input, const Timer& timer)
 
         MV1SetAttachAnimBlendRate(m_modelHandle, m_cureentAnimHandle, rate);
         MV1SetAttachAnimBlendRate(m_modelHandle, m_lastAnimHandle, 1.0f - rate);
-		//ブレンドが完了したらLastアニメをデタッチ
+
         if (rate >= 1.0f)
         {
             MV1DetachAnim(m_modelHandle, m_lastAnimHandle);
@@ -329,16 +302,15 @@ void Player::Update(const Input& input, const Timer& timer)
         }
     }
 
-    //アニメ進行
+    // アニメ進行
     m_currentAnimCount += 0.5f;
-    float currentTotal = MV1GetAttachAnimTotalTime(m_modelHandle, m_cureentAnimHandle);
-    if (m_currentAnimCount >= currentTotal)
+    float total = MV1GetAttachAnimTotalTime(m_modelHandle, m_cureentAnimHandle);
+    if (m_currentAnimCount >= total)
     {
-        m_currentAnimCount -= currentTotal;
+        m_currentAnimCount -= total;
     }
     MV1SetAttachAnimTime(m_modelHandle, m_cureentAnimHandle, m_currentAnimCount);
 
-    //Lastアニメ進行
     if (m_lastAnimHandle != -1)
     {
         m_lastAnimCount += 0.5f;
@@ -350,11 +322,10 @@ void Player::Update(const Input& input, const Timer& timer)
         MV1SetAttachAnimTime(m_modelHandle, m_lastAnimHandle, m_lastAnimCount);
     }
 
-    //モデル行列を毎フレーム更新
-    MATRIX rotMtx = MGetRotY(m_angle);
-    MATRIX transMtx = MGetTranslate(m_pos.ToDxLibVector());
-    MATRIX world = MMult(rotMtx, transMtx);
-    MV1SetMatrix(m_modelHandle, world);
+    // モデル行列更新
+    MATRIX rot = MGetRotY(m_angle);
+    MATRIX trans = MGetTranslate(m_pos.ToDxLibVector());
+    MV1SetMatrix(m_modelHandle, MMult(rot, trans));
 }
 
 void Player::Draw()
@@ -442,6 +413,71 @@ bool Player::IsHitPlaying() const
     return m_hitAnimFrame > 0;
 }
 
+void Player::StartDodge(Inputdata dir)
+{
+
+    m_isDodge = true;
+    m_dodgeTimer = kDodgeTime;
+    m_invincibleTimer = kInvincibleTime;
+
+    // 回避方向の決定
+    if (dir != Inputdata::None)
+    {
+        m_inputData = dir;
+    }
+    else if (m_inputData == Inputdata::None)
+    {
+        m_inputData = Inputdata::Up;
+    }
+
+    m_dodgeCoolDown = 30;
+    SoundManager::PlaySE("Just");
+
+}
+
+void Player::TryStartDodge(const Input& input, Inputdata now)
+{
+
+    // 既に回避中、またはクールタイム中なら何もしない
+    if (m_isDodge || m_dodgeCoolDown >= 0)
+    {
+        return;
+    }
+   
+    // 回避ボタンによる回避
+    if (input.IsTriggered("Dodge"))
+    {
+        StartDodge(now);
+        return;
+    }
+
+    //ダブル入力による回避
+    bool triggered = false;
+
+    if (now == Inputdata::Up)         triggered = input.IsTriggered("up");
+    else if (now == Inputdata::Down)  triggered = input.IsTriggered("down");
+    else if (now == Inputdata::Left)  triggered = input.IsTriggered("left");
+    else if (now == Inputdata::Right) triggered = input.IsTriggered("right");
+
+    if (!triggered)
+    {
+        return;
+    }
+
+    // 同じ方向が短時間で2回入力されたか
+    if (m_inputData == now && m_doubleInputTimer < kDoubleInputTime)
+    {
+        StartDodge(now);
+    }
+
+    // 入力履歴を更新
+    m_inputData = now;
+    m_doubleInputTimer = 0;
+
+}
+
+
+
 void Player::OnJustDodge()
 {
     m_justCount++;
@@ -471,7 +507,7 @@ bool Player::IsInJustWindow() const
 
 bool Player::WasInJustWindowRecently(int frames) const
 {
-    return m_framesSinceJustWindow <= frames;
+    return m_framesSinceJustFrame <= frames;
 }
 
 float Player::GetJustColRadius() const

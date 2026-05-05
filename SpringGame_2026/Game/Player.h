@@ -42,8 +42,8 @@ public:
 	//最近ジャストウィンドウにいたか（frames以内）
 	bool WasInJustWindowRecently(int frames) const;
 
-	void setCamera(Camera* camera) { m_pCamera = camera; }
-	void setStage(Stage* stage) { m_pStage = stage; }
+	void SetCamera(Camera* camera) { m_pCamera = camera; }
+	void SetStage(Stage* stage) { m_pStage = stage; }
 
 private:
 	enum class Inputdata
@@ -109,7 +109,9 @@ private:
 	//ジャスト回避できた回数(全体で管理する静的カウンタ)
 	static int m_justCount;
 	//ジャスト判定に触れてからの経過フレーム（最近触れていたかを判定するため）
-	int m_framesSinceJustWindow;
+	int m_framesSinceJustFrame;
+	//回避のクールタイム
+	int m_dodgeCoolDown;
 	
 	//今被弾中かどうか
 	bool m_isHit;
@@ -117,5 +119,8 @@ private:
 	//ヒットアニメーション中かどうか
 	bool IsHitPlaying() const;
 	
+	//回避関連
+	void TryStartDodge(const Input& input, Inputdata now);
+	void StartDodge(Inputdata dir);
 };
 
